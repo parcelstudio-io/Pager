@@ -116,7 +116,7 @@ Run the remaining commands from this directory.
 cp .env.example .env
 ```
 
-Open `.env` in a text editor. It initially contains:
+Open `.env` in a text editor and find this line among the documented defaults:
 
 ```dotenv
 OPENAI_API_KEY=replace_me
@@ -146,6 +146,8 @@ http://localhost:3000
 
 Use `localhost`; do not open the HTML file directly with a `file://` URL. The first page should show the Mochi face, one conversation start/stop control, and a private/idle state. The caption position below the eyes is intentionally invisible while empty: there is no “Captions appear here” prompt, border, or tinted panel.
 
+Before starting, watch the two pupils for about 30 seconds. After irregular 5–9 second pauses, you should see one or more glance-up, circular-roll, or look-down gestures settle again; the injected-randomness automated test deterministically covers all three paths, so this short manual watch need not happen to sample every one. They must remain two large round eyes—there is no mouth. Enable the operating system/browser reduced-motion preference and reload once: idle rolls should stop and poses should become static. Turn that preference back off for the remaining motion test if desired. If the browser exposes the optional Battery Status API, a low host battery intentionally produces a dim, downward, less-active face; otherwise automated tests are the V1-A battery evidence. The CoreS3 port will use its PMIC/fuel gauge instead.
+
 ### Step 6: start one live session
 
 1. Press `Start listening` once.
@@ -156,6 +158,8 @@ Use `localhost`; do not open the HTML file directly with a `file://` URL. The fi
 6. Continue for at least ten short exchanges without pressing once per utterance.
 
 The microphone remains available while assistant audio plays. That simultaneous input/output behavior—not alternating turns—is the experiment.
+
+Watch the face as well: listening turns the pupils attentive, thinking scans side to side, and assistant speech gently pulses the eye rigs. Starting speech must immediately cancel any idle roll, while the cyan/amber/off indicator remains the only listening truth.
 
 ### Step 7: test voice interruption
 
@@ -259,6 +263,9 @@ BLE onboarding, the mobile app, cloud history sync, physical SIM/APN configurati
 - [ ] `npm test` passes on Node.js 20 or newer.
 - [ ] `npm start` serves `http://localhost:3000` without exposing the standard API key to browser source or logs.
 - [ ] The first screen is private/idle and does not capture automatically.
+- [ ] With normal battery/motion settings, idle pupils show at least one bounded curious gesture after an irregular pause; automated tests cover look-up, circular-roll, and look-down bands, and conversation activity cancels an active gesture immediately.
+- [ ] Reduced-motion preference suppresses curious rolls. If the optional browser battery API exposes a low state, verify its subdued face; otherwise rely on the deterministic low/critical/charging tests. Battery treatment never changes or impersonates the capture indicator.
+- [ ] The face contains exactly two large round eyes and no mouth or lips; attentive, thinking, and speaking cues remain visually distinguishable, and battery cues do too when the host exposes a battery signal.
 - [ ] The empty caption position is transparent, with no placeholder text, border, or colored panel.
 - [ ] There is one visible conversation start/stop control, not per-turn push-to-talk.
 - [ ] Start visibly moves through connecting to live.
@@ -272,6 +279,7 @@ BLE onboarding, the mobile app, cloud history sync, physical SIM/APN configurati
 - [ ] Refresh/restart does not auto-start capture.
 - [ ] A ten-minute basic session completes without a stuck state or stale playback.
 - [ ] `.env`, keys, raw audio, and secrets are not committed or copied into test artifacts.
+- [ ] Prompt tests pass: the `.ftl` begins `You are a companion`, server-rendered fixture context reaches the Realtime session configuration, and browser SDP cannot override it. The localhost defaults do not claim real account history or personalization.
 
 ### CoreS3 incoming baseline
 

@@ -16,6 +16,18 @@
   box-sizing: border-box;
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 body {
   min-height: 100vh;
   margin: 0;
@@ -111,6 +123,16 @@ body {
   animation: breathe 2.3s ease-in-out infinite;
 }
 
+.eye-rig {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  display: grid;
+  place-items: center;
+  transform-origin: center;
+  transition: transform 150ms ease, opacity 180ms ease;
+}
+
 .eye {
   position: relative;
   width: 78px;
@@ -121,10 +143,19 @@ body {
   box-shadow: 0 0 28px rgba(255, 244, 218, 0.2);
   transform-origin: center;
   animation: blink 5.8s infinite;
-  transition: transform 150ms ease;
+  transition:
+    width 220ms ease,
+    height 220ms ease,
+    opacity 220ms ease,
+    background-color 220ms ease,
+    box-shadow 220ms ease;
 }
 
-.eye span {
+.pupil {
+  --rest-x: 0px;
+  --rest-y: 0px;
+  --gaze-x: var(--rest-x);
+  --gaze-y: var(--rest-y);
   position: absolute;
   width: 20px;
   height: 20px;
@@ -132,19 +163,177 @@ body {
   top: 52%;
   border-radius: 50%;
   background: var(--ink);
-  transform: translate(-50%, -50%);
+  transform: translate(
+    calc(-50% + var(--gaze-x)),
+    calc(-50% + var(--gaze-y))
+  );
+  transition:
+    width 180ms ease,
+    height 180ms ease,
+    transform 180ms ease,
+    opacity 180ms ease;
 }
 
-.pager-screen[data-input="user_speaking"] .eye {
+.pager-screen[data-face-activity="listening"] .eye-rig {
   transform: translateY(-3px) scale(1.06);
 }
 
-.pager-screen[data-output="generating"] .eye span {
+.pager-screen[data-face-activity="speaking"] .eye-rig {
+  animation: speak-eyes 420ms ease-in-out infinite alternate;
+}
+
+.pager-screen[data-face-activity="duplex"] .eye-rig {
+  animation: duplex-eyes 360ms ease-in-out infinite alternate;
+}
+
+.pager-screen[data-face-activity="connecting"] .eye-rig {
+  opacity: 0.82;
+}
+
+.pager-screen[data-expression="curious"] .eye {
+  width: 82px;
+  height: 82px;
+}
+
+.pager-screen[data-expression="curious"] .pupil {
+  width: 22px;
+  height: 22px;
+}
+
+.pager-screen[data-expression="delighted"] .eye {
+  width: 84px;
+  height: 76px;
+  box-shadow: 0 0 38px rgba(255, 244, 218, 0.32);
+}
+
+.pager-screen[data-expression="delighted"] .pupil {
+  width: 24px;
+  height: 24px;
+}
+
+.pager-screen[data-expression="confused"] .eye-left .eye {
+  width: 82px;
+  height: 76px;
+}
+
+.pager-screen[data-expression="confused"] .eye-right .eye {
+  width: 74px;
+  height: 70px;
+}
+
+.pager-screen[data-expression="concerned"] .eye {
+  width: 76px;
+  height: 66px;
+}
+
+.pager-screen[data-expression="concerned"] .pupil {
+  width: 17px;
+  height: 17px;
+}
+
+.pager-screen[data-expression="sleepy"] .eye {
+  width: 76px;
+  height: 56px;
+}
+
+.pager-screen[data-expression="sleepy"] .pupil {
+  width: 16px;
+  height: 16px;
+}
+
+.pager-screen[data-charging="true"] .eye {
+  box-shadow:
+    0 0 30px rgba(255, 244, 218, 0.22),
+    0 0 24px rgba(89, 230, 234, 0.24);
+}
+
+.pager-screen[data-energy="low"] .eye {
+  height: 62px;
+  opacity: 0.78;
+}
+
+.pager-screen[data-energy="critical"] .eye {
+  height: 48px;
+  opacity: 0.58;
+  box-shadow: 0 0 16px rgba(255, 113, 106, 0.18);
+}
+
+.pager-screen[data-energy="low"][data-charging="true"] .eye,
+.pager-screen[data-energy="critical"][data-charging="true"] .eye {
+  box-shadow:
+    0 0 16px rgba(255, 113, 106, 0.18),
+    0 0 26px rgba(89, 230, 234, 0.3);
+}
+
+.pager-screen[data-rest-gaze="up"] .pupil {
+  --rest-y: -13px;
+}
+
+.pager-screen[data-rest-gaze="down"] .pupil {
+  --rest-y: 12px;
+}
+
+.pager-screen[data-rest-gaze="side"] .eye-left .pupil {
+  --rest-x: -9px;
+  --rest-y: 3px;
+}
+
+.pager-screen[data-rest-gaze="side"] .eye-right .pupil {
+  --rest-x: 7px;
+  --rest-y: -2px;
+}
+
+.pager-screen[data-gaze-motion="center"] .pupil {
+  --gaze-x: 0px;
+  --gaze-y: 0px;
+}
+
+.pager-screen[data-gaze-motion="up"] .pupil {
+  --gaze-y: -13px;
+}
+
+.pager-screen[data-gaze-motion="down"] .pupil {
+  --gaze-y: 12px;
+}
+
+.pager-screen[data-gaze-motion="side"] .eye-left .pupil {
+  --gaze-x: -9px;
+  --gaze-y: 3px;
+}
+
+.pager-screen[data-gaze-motion="side"] .eye-right .pupil {
+  --gaze-x: 7px;
+  --gaze-y: -2px;
+}
+
+.pager-screen[data-gaze-motion="attentive"] .eye-left .pupil {
+  --gaze-x: 5px;
+  --gaze-y: -2px;
+}
+
+.pager-screen[data-gaze-motion="attentive"] .eye-right .pupil {
+  --gaze-x: -5px;
+  --gaze-y: -2px;
+}
+
+.pager-screen[data-gaze-motion="thinking-scan"] .pupil {
   animation: think 1.15s ease-in-out infinite alternate;
 }
 
-.pager-screen[data-output="playing"] .eye {
-  animation: speak-eyes 420ms ease-in-out infinite alternate;
+.pager-screen[data-gaze-motion="look-up"] .pupil {
+  animation: curious-look-up 1.7s cubic-bezier(0.35, 0, 0.2, 1);
+}
+
+.pager-screen[data-gaze-motion="look-down"] .pupil {
+  animation: curious-look-down 1.7s cubic-bezier(0.35, 0, 0.2, 1);
+}
+
+.pager-screen[data-gaze-motion="roll-around"][data-roll-direction="clockwise"] .pupil {
+  animation: curious-roll-clockwise 2.2s cubic-bezier(0.35, 0, 0.2, 1);
+}
+
+.pager-screen[data-gaze-motion="roll-around"][data-roll-direction="counterclockwise"] .pupil {
+  animation: curious-roll-counterclockwise 2.2s cubic-bezier(0.35, 0, 0.2, 1);
 }
 
 .pager-screen[data-input="user_speaking"] .listening-halo {
@@ -254,15 +443,50 @@ audio {
   to { transform: translateY(-2px) scale(1.04); }
 }
 
+@keyframes duplex-eyes {
+  from { transform: translateY(-2px) scale(1.02); }
+  to { transform: translateY(-5px) scale(1.07); }
+}
+
 @keyframes think {
-  from { transform: translate(-85%, -50%); }
-  to { transform: translate(-15%, -50%); }
+  from { transform: translate(calc(-50% - 14px), -50%); }
+  to { transform: translate(calc(-50% + 14px), -50%); }
+}
+
+@keyframes curious-look-up {
+  0%, 100% { transform: translate(calc(-50% + var(--rest-x)), calc(-50% + var(--rest-y))); }
+  24% { transform: translate(calc(-50% + 5px), calc(-50% - 14px)); }
+  62% { transform: translate(calc(-50% - 5px), calc(-50% - 14px)); }
+}
+
+@keyframes curious-look-down {
+  0%, 100% { transform: translate(calc(-50% + var(--rest-x)), calc(-50% + var(--rest-y))); }
+  28% { transform: translate(calc(-50% - 6px), calc(-50% + 13px)); }
+  66% { transform: translate(calc(-50% + 6px), calc(-50% + 13px)); }
+}
+
+@keyframes curious-roll-clockwise {
+  0%, 100% { transform: translate(calc(-50% + var(--rest-x)), calc(-50% + var(--rest-y))); }
+  18% { transform: translate(-50%, calc(-50% - 14px)); }
+  38% { transform: translate(calc(-50% + 13px), -50%); }
+  58% { transform: translate(-50%, calc(-50% + 13px)); }
+  78% { transform: translate(calc(-50% - 13px), -50%); }
+}
+
+@keyframes curious-roll-counterclockwise {
+  0%, 100% { transform: translate(calc(-50% + var(--rest-x)), calc(-50% + var(--rest-y))); }
+  18% { transform: translate(-50%, calc(-50% - 14px)); }
+  38% { transform: translate(calc(-50% - 13px), -50%); }
+  58% { transform: translate(-50%, calc(-50% + 13px)); }
+  78% { transform: translate(calc(-50% + 13px), -50%); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 1ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 1ms !important;
+  .eye-rig,
+  .eye,
+  .pupil,
+  .listening-halo {
+    animation: none !important;
+    transition: none !important;
   }
 }

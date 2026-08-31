@@ -1,5 +1,6 @@
 import { CaptionPacer } from "./caption-pacer.js";
 import { CaptionMotion } from "./caption-motion.js";
+import { ExpressionDirector } from "./expression-director.js";
 import { closeMediaSession, watchAudioTrackEnds } from "./media.js";
 import {
   SESSION,
@@ -10,6 +11,7 @@ import {
 
 const screen = document.querySelector("#screen");
 const status = document.querySelector("#status");
+const batteryStatus = document.querySelector("#battery-status");
 const indicator = document.querySelector("#indicator");
 const button = document.querySelector("#conversation-button");
 const captionViewport = document.querySelector("#caption-viewport");
@@ -20,6 +22,37 @@ const READY_TIMEOUT_MS = 30_000;
 let state = initialState();
 let nextEpoch = 0;
 let activeSession = null;
+const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+function applyFacePose(pose) {
+  screen.dataset.faceActivity = pose.activity;
+  screen.dataset.expression = pose.expression;
+  screen.dataset.mood = pose.mood;
+  screen.dataset.energy = pose.energy;
+  screen.dataset.charging = String(pose.charging);
+  screen.dataset.restGaze = pose.restGaze;
+  screen.dataset.gazeMotion = pose.gazeMotion;
+  screen.dataset.rollDirection = pose.rollDirection;
+  const nextBatteryStatus = pose.energy === "critical"
+    ? `Battery critical${pose.charging ? " and charging" : ""}`
+    : pose.energy === "low"
+      ? `Battery low${pose.charging ? " and charging" : ""}`
+      : pose.charging
+        ? "Battery charging"
+        : "Battery normal";
+  if (batteryStatus.textContent !== nextBatteryStatus) {
+    batteryStatus.textContent = nextBatteryStatus;
+  }
+}
+
+const expressionDirector = new ExpressionDirector({
+  onPose: applyFacePose,
+  context: {
+    mood: "auto",
+    visible: !document.hidden,
+    reducedMotion: motionPreference.matches,
+  },
+});
 
 const captionMotion = new CaptionMotion({ caption, viewport: captionViewport });
 const captionPacer = new CaptionPacer({
@@ -35,6 +68,11 @@ function render() {
   screen.dataset.session = state.session;
   screen.dataset.input = state.input;
   screen.dataset.output = state.output;
+  expressionDirector.update({
+    session: state.session,
+    input: state.input,
+    output: state.output,
+  });
 }
 
 function dispatch(event) {
@@ -313,10 +351,49 @@ button.addEventListener("click", () => {
   }
 });
 
+function syncMotionPreference() {
+  expressionDirector.update({ reducedMotion: motionPreference.matches });
+}
+
+function syncVisibility() {
+  expressionDirector.update({ visible: !document.hidden });
+}
+
+motionPreference.addEventListener("change", syncMotionPreference);
+document.addEventListener("visibilitychange", syncVisibility);
+
+let releaseBatteryMonitor = () => {};
+let pageDisposed = false;
+if (typeof navigator.getBattery === "function") {
+  navigator.getBattery().then((battery) => {
+    if (pageDisposed) return;
+    const syncBattery = () => {
+      expressionDirector.update({
+        batteryPercent: battery.level * 100,
+        charging: battery.charging,
+      });
+    };
+    battery.addEventListener("levelchange", syncBattery);
+    battery.addEventListener("chargingchange", syncBattery);
+    syncBattery();
+    releaseBatteryMonitor = () => {
+      battery.removeEventListener("levelchange", syncBattery);
+      battery.removeEventListener("chargingchange", syncBattery);
+    };
+  }).catch(() => {
+    // Battery status is optional; the prototype keeps its neutral energy pose.
+  });
+}
+
 window.addEventListener("pagehide", () => {
+  pageDisposed = true;
   stopSession();
   captionPacer.dispose();
   captionMotion.dispose();
+  expressionDirector.dispose();
+  releaseBatteryMonitor();
+  motionPreference.removeEventListener("change", syncMotionPreference);
+  document.removeEventListener("visibilitychange", syncVisibility);
 });
 
 render();

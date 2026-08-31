@@ -12,8 +12,8 @@ import {
   staticAssetForPath,
 } from "../tools/prototype-server/server.js";
 
-async function withServer(env, fetchImpl, run) {
-  const server = createPrototypeServer(env, { fetchImpl });
+async function withServer(env, fetchImpl, run, serverOptions = {}) {
+  const server = createPrototypeServer(env, { fetchImpl, ...serverOptions });
   server.listen(0, "127.0.0.1");
   await once(server, "listening");
   const { port } = server.address();
@@ -66,6 +66,8 @@ test("session configuration is fixed server-side for full-duplex audio", () => {
     interrupt_response: true,
   });
   assert.equal(config.audio.output.voice, "marin");
+  assert.equal(config.instructions.startsWith("You are a companion named Mochi"), true);
+  assert.match(config.instructions, /Reconstructed past conversation history/);
   assert.equal(JSON.stringify(config).includes("OPENAI_API_KEY"), false);
 });
 
@@ -112,8 +114,53 @@ test("broker forwards authorization upstream and returns only SDP", async () => 
   assert.equal(calls[0].options.body.get("sdp"), "v=0\r\nmock-offer");
 });
 
+test("gateway alone selects private prompt context for the Realtime session", async () => {
+  let forwardedSession;
+  let contextCalls = 0;
+  const fakeFetch = async (_url, options) => {
+    forwardedSession = JSON.parse(options.body.get("session"));
+    return new Response("v=0\r\nanswer", { status: 200 });
+  };
+
+  await withServer(
+    { OPENAI_API_KEY: "sk-test", MOCHI_COMPANION_NAME: "Mochi" },
+    fakeFetch,
+    async (baseUrl) => {
+      const response = await fetch(`${baseUrl}/session`, {
+        method: "POST",
+        headers: { "Content-Type": "application/sdp", Origin: baseUrl },
+        body: "v=0\r\n${user_context_json}\r\nuntrusted-browser-prompt",
+      });
+      assert.equal(response.status, 200);
+    },
+    {
+      getPromptContext: async () => {
+        contextCalls += 1;
+        return {
+          user: {
+            status: "available",
+            facts: [{
+              label: "preferred name",
+              value: "Jae",
+              source: "confirmed",
+              purpose: "addressing the user",
+            }],
+          },
+        };
+      },
+    },
+  );
+
+  assert.equal(contextCalls, 1);
+  assert.match(forwardedSession.instructions, /preferred name/);
+  assert.match(forwardedSession.instructions, /"value": "Jae"/);
+  assert.equal(forwardedSession.instructions.includes("untrusted-browser-prompt"), false);
+  assert.equal(forwardedSession.instructions.includes("${user_context_json}"), false);
+});
+
 test("broker rejects cross-origin and malformed session requests", async () => {
   let upstreamCalls = 0;
+  let contextCalls = 0;
   const fakeFetch = async () => {
     upstreamCalls += 1;
     return new Response("unused");
@@ -150,8 +197,80 @@ test("broker rejects cross-origin and malformed session requests", async () => {
       body: "x".repeat(128 * 1024 + 1),
     });
     assert.equal(oversized.status, 413);
+  }, {
+    getPromptContext: async () => {
+      contextCalls += 1;
+      return {};
+    },
   });
 
+  assert.equal(upstreamCalls, 0);
+  assert.equal(contextCalls, 0);
+});
+
+test("prompt-context failures are generic and never reach OpenAI", async () => {
+  let upstreamCalls = 0;
+  const originalConsoleError = console.error;
+  console.error = () => {};
+  try {
+    await withServer(
+      { OPENAI_API_KEY: "sk-test" },
+      async () => {
+        upstreamCalls += 1;
+        return new Response("unused");
+      },
+      async (baseUrl) => {
+        const response = await fetch(`${baseUrl}/session`, {
+          method: "POST",
+          headers: { "Content-Type": "application/sdp", Origin: baseUrl },
+          body: "v=0",
+        });
+        assert.equal(response.status, 500);
+        const body = await response.text();
+        assert.equal(body.includes("private-context-value"), false);
+        assert.match(body, /Prototype server request failed/);
+      },
+      {
+        getPromptContext: async () => {
+          const error = new Error("private-context-value");
+          error.statusCode = 413;
+          throw error;
+        },
+      },
+    );
+  } finally {
+    console.error = originalConsoleError;
+  }
+  assert.equal(upstreamCalls, 0);
+});
+
+test("the setup deadline also bounds server-side context retrieval", async () => {
+  let upstreamCalls = 0;
+  let contextSignal;
+  await withServer(
+    { OPENAI_API_KEY: "sk-test" },
+    async () => {
+      upstreamCalls += 1;
+      return new Response("unused");
+    },
+    async (baseUrl) => {
+      const response = await fetch(`${baseUrl}/session`, {
+        method: "POST",
+        headers: { "Content-Type": "application/sdp", Origin: baseUrl },
+        body: "v=0",
+      });
+      assert.equal(response.status, 504);
+      assert.match(await response.text(), /Realtime session setup timed out/);
+    },
+    {
+      setupTimeoutMs: 20,
+      getPromptContext: async ({ signal }) => {
+        contextSignal = signal;
+        return new Promise(() => {});
+      },
+    },
+  );
+  assert.equal(contextSignal.aborted, true);
   assert.equal(upstreamCalls, 0);
 });
 
@@ -229,6 +348,10 @@ test("static server exposes only the simulator allowlist", async () => {
     "caption-motion.js",
     "text/javascript; charset=utf-8",
   ]);
+  assert.deepEqual(staticAssetForPath("/expression-director.js"), [
+    "expression-director.js",
+    "text/javascript; charset=utf-8",
+  ]);
   assert.equal(staticAssetForPath("/.env"), null);
   assert.equal(staticAssetForPath("/../.env"), null);
 
@@ -244,6 +367,10 @@ test("static server exposes only the simulator allowlist", async () => {
     const envAttempt = await fetch(`${baseUrl}/.env`);
     assert.equal(envAttempt.status, 404);
     assert.equal((await envAttempt.text()).includes("OPENAI_API_KEY"), false);
+
+    const promptAttempt = await fetch(`${baseUrl}/prompt/mochi-realtime.ftl`);
+    assert.equal(promptAttempt.status, 404);
+    assert.equal((await promptAttempt.text()).includes("You are a companion"), false);
   });
 });
 
@@ -255,6 +382,7 @@ test("browser assets contain one control and no provider credential name", async
     "state.js",
     "caption-pacer.js",
     "caption-motion.js",
+    "expression-director.js",
     "media.js",
     "styles.css",
   ];
@@ -272,6 +400,10 @@ test("browser assets contain one control and no provider credential name", async
   assert.equal((html.match(/<button\b/g) || []).length, 1);
   assert.ok(html.indexOf('class="face"') < html.indexOf('id="caption-viewport"'));
   assert.equal(html.includes('class="mouth"'), false);
+  assert.equal((html.match(/class="eye-rig /g) || []).length, 2);
+  assert.equal((html.match(/class="pupil"/g) || []).length, 2);
+  assert.equal(html.includes('id="battery-status"'), true);
+  assert.equal(html.includes('role="status"'), true);
   assert.equal(styles.includes(".mouth"), false);
   assert.equal(styles.includes("--caption-height: 58px"), true);
   assert.equal(styles.includes("--caption-font-size: clamp(20px, 5vw, 24px)"), true);
@@ -283,6 +415,11 @@ test("browser assets contain one control and no provider credential name", async
   assert.equal(styles.includes(".caption-empty"), false);
   assert.equal(styles.includes("will-change: transform"), true);
   assert.equal(contents[4].includes("DEFAULT_CAPTION_SPEED_PX_PER_SECOND = 60"), true);
+  assert.equal(styles.includes("@keyframes curious-roll-clockwise"), true);
+  assert.equal(styles.includes('[data-gaze-motion="look-down"]'), true);
+  assert.equal(styles.includes('[data-gaze-motion="center"]'), true);
+  assert.equal(styles.includes('[data-energy="critical"][data-charging="true"]'), true);
+  assert.equal(app.includes("new ExpressionDirector"), true);
   assert.match(app, /function interruptCaption\(\)[\s\S]*?captionMotion\.freeze\(\)/);
   assert.equal(app.includes("button.dataset.indicator = view.indicator"), true);
   assert.match(app, /pagehide[\s\S]*stopSession\(\)/);

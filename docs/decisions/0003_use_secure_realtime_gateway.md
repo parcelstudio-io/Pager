@@ -60,6 +60,10 @@ OpenAI Realtime conversation state is session-scoped inference state, not Mochi'
 
 Revisit if the added hop prevents latency targets, or offline/local inference becomes a product requirement. The former conditions about constrained-device authentication and embedded WebRTC practicality fired in 2026-08 (see amendment) and were resolved in favor of keeping the gateway.
 
+## Amendment — 2026-08-31: server-owned prompt assembly
+
+[ADR 0009](0009_use_server_owned_contextual_prompt_assembly.md) makes the gateway the only prompt-assembly authority. It selects separately authorized history, user, retrieval, and device context; renders the versioned constrained `.ftl` template; and sends the result as Realtime session instructions. Browsers and pagers cannot supply or override that context, rendered prompts are not routine log payloads, and provider/model instructions never replace server-side tool or capture authorization.
+
 ## Primary references
 
 - [Realtime API with WebSocket](https://developers.openai.com/api/docs/guides/realtime-websocket)

@@ -4,6 +4,8 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
+import { buildCompanionPrompt } from "./prompt-builder.js";
+
 const CURRENT_FILE = fileURLToPath(import.meta.url);
 const REPO_ROOT = path.resolve(path.dirname(CURRENT_FILE), "../..");
 const WEB_ROOT = path.join(REPO_ROOT, "tools/device-simulator");
@@ -16,6 +18,7 @@ const STATIC_ASSETS = Object.freeze({
   "/state.js": ["state.js", "text/javascript; charset=utf-8"],
   "/caption-pacer.js": ["caption-pacer.js", "text/javascript; charset=utf-8"],
   "/caption-motion.js": ["caption-motion.js", "text/javascript; charset=utf-8"],
+  "/expression-director.js": ["expression-director.js", "text/javascript; charset=utf-8"],
   "/media.js": ["media.js", "text/javascript; charset=utf-8"],
   "/styles.css": ["styles.css", "text/css; charset=utf-8"],
 });
@@ -50,15 +53,16 @@ export function hasUsableApiKey(env = process.env) {
   return Boolean(key && key !== "replace_me" && key !== "your_api_key_here");
 }
 
-export function buildSessionConfig(env = process.env) {
+export function buildSessionConfig(env = process.env, promptContext = {}) {
   return {
     type: "realtime",
     model: env.OPENAI_REALTIME_MODEL || "gpt-realtime-2.1-mini",
     output_modalities: ["audio"],
     tools: [],
-    instructions:
-      "You are Mochi, a warm and concise voice companion. Speak naturally in short responses. " +
-      "Let the user interrupt you, acknowledge corrections without fuss, and do not use markdown.",
+    instructions: buildCompanionPrompt({
+      ...promptContext,
+      companionName: env.MOCHI_COMPANION_NAME || "Mochi",
+    }),
     audio: {
       input: {
         turn_detection: {
@@ -105,6 +109,7 @@ async function readSdp(request) {
     if (size > SDP_LIMIT_BYTES) {
       const error = new Error("SDP payload is too large");
       error.statusCode = 413;
+      error.code = "SDP_TOO_LARGE";
       throw error;
     }
     chunks.push(chunk);
@@ -143,7 +148,27 @@ function hasAllowedOrigin(request) {
   }
 }
 
-async function createRealtimeSession(request, response, env, fetchImpl) {
+function runWithAbort(factory, signal) {
+  if (signal.aborted) return Promise.reject(new DOMException("Aborted", "AbortError"));
+
+  return new Promise((resolve, reject) => {
+    const abort = () => reject(new DOMException("Aborted", "AbortError"));
+    signal.addEventListener("abort", abort, { once: true });
+    Promise.resolve()
+      .then(factory)
+      .then(resolve, reject)
+      .finally(() => signal.removeEventListener("abort", abort));
+  });
+}
+
+async function createRealtimeSession(
+  request,
+  response,
+  env,
+  fetchImpl,
+  getPromptContext,
+  setupTimeoutMs,
+) {
   if (!hasAllowedOrigin(request)) {
     sendJson(response, 403, { error: "Cross-origin session setup is not allowed." });
     return;
@@ -167,17 +192,6 @@ async function createRealtimeSession(request, response, env, fetchImpl) {
     return;
   }
 
-  const form = new FormData();
-  form.set("sdp", sdp);
-  form.set("session", JSON.stringify(buildSessionConfig(env)));
-
-  const headers = {
-    Authorization: `Bearer ${env.OPENAI_API_KEY.trim()}`,
-  };
-  if (env.OPENAI_SAFETY_IDENTIFIER) {
-    headers["OpenAI-Safety-Identifier"] = env.OPENAI_SAFETY_IDENTIFIER;
-  }
-
   const upstreamController = new AbortController();
   let clientDisconnected = false;
   let setupTimedOut = false;
@@ -189,7 +203,7 @@ async function createRealtimeSession(request, response, env, fetchImpl) {
   const setupTimeout = setTimeout(() => {
     setupTimedOut = true;
     upstreamController.abort();
-  }, 30_000);
+  }, setupTimeoutMs);
 
   request.once("aborted", abortForDisconnect);
   response.once("close", abortForDisconnect);
@@ -197,6 +211,27 @@ async function createRealtimeSession(request, response, env, fetchImpl) {
   let upstream;
   let answer;
   try {
+    // Context stays behind the gateway. The browser supplies only SDP and cannot
+    // choose system instructions, history, memory, or retrieved search material.
+    const promptContext = await runWithAbort(
+      () => getPromptContext({
+        request,
+        signal: upstreamController.signal,
+      }),
+      upstreamController.signal,
+    );
+
+    const form = new FormData();
+    form.set("sdp", sdp);
+    form.set("session", JSON.stringify(buildSessionConfig(env, promptContext)));
+
+    const headers = {
+      Authorization: `Bearer ${env.OPENAI_API_KEY.trim()}`,
+    };
+    if (env.OPENAI_SAFETY_IDENTIFIER) {
+      headers["OpenAI-Safety-Identifier"] = env.OPENAI_SAFETY_IDENTIFIER;
+    }
+
     upstream = await fetchImpl("https://api.openai.com/v1/realtime/calls", {
       method: "POST",
       headers,
@@ -207,7 +242,7 @@ async function createRealtimeSession(request, response, env, fetchImpl) {
   } catch (error) {
     if (clientDisconnected || response.destroyed) return;
     if (setupTimedOut) {
-      sendJson(response, 504, { error: "OpenAI session setup timed out." });
+      sendJson(response, 504, { error: "Realtime session setup timed out." });
       return;
     }
     throw error;
@@ -233,7 +268,14 @@ async function createRealtimeSession(request, response, env, fetchImpl) {
   response.end(answer);
 }
 
-export function createPrototypeServer(env = process.env, { fetchImpl = fetch } = {}) {
+export function createPrototypeServer(
+  env = process.env,
+  {
+    fetchImpl = fetch,
+    getPromptContext = async () => ({}),
+    setupTimeoutMs = 30_000,
+  } = {},
+) {
   return createServer(async (request, response) => {
     try {
       const url = new URL(request.url || "/", "http://localhost");
@@ -248,7 +290,14 @@ export function createPrototypeServer(env = process.env, { fetchImpl = fetch } =
       }
 
       if (request.method === "POST" && url.pathname === "/session") {
-        await createRealtimeSession(request, response, env, fetchImpl);
+        await createRealtimeSession(
+          request,
+          response,
+          env,
+          fetchImpl,
+          getPromptContext,
+          setupTimeoutMs,
+        );
         return;
       }
 
@@ -258,11 +307,19 @@ export function createPrototypeServer(env = process.env, { fetchImpl = fetch } =
 
       sendJson(response, 404, { error: "Not found" });
     } catch (error) {
-      const status = error.statusCode || 500;
-      if (status >= 500) console.error("Prototype server error", error.message);
+      const isOversizedSdp = error.code === "SDP_TOO_LARGE";
+      const status = isOversizedSdp ? 413 : 500;
+      if (status >= 500) {
+        console.error("Prototype server error", {
+          name: error.name || "Error",
+          code: error.code || "UNEXPECTED_ERROR",
+        });
+      }
       if (!response.headersSent) {
         sendJson(response, status, {
-          error: status === 413 ? error.message : "Prototype server request failed.",
+          error: isOversizedSdp
+            ? "SDP payload is too large"
+            : "Prototype server request failed.",
         });
       } else {
         response.end();

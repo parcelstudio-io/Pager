@@ -9,7 +9,7 @@ V1 is the smallest useful proof of Mochi's interaction, followed by a direct por
 
 | Increment | Purpose | Completion boundary |
 |---|---|---|
-| V1-A — laptop proof | Prove the live conversation, one-action start/stop contract, full-duplex WebRTC, voice interruption, face states, and sliding assistant caption with the least setup. | Runs in a local browser through the repository's session broker. It does not satisfy the on-device caption, acoustic, hardware-control, or privacy-circuit gates. |
+| V1-A — laptop proof | Prove the live conversation, one-action start/stop contract, full-duplex WebRTC, voice interruption, layered eye expressions, curious idle motion, a server-rendered companion prompt, and sliding assistant caption with the least setup. | Runs in a local browser through the repository's session broker. It does not satisfy the on-device caption, acoustic, hardware-control, authenticated-context, or privacy-circuit gates. |
 | V1-B — CoreS3 mule | Put the same state, layout, response-identity, and interruption contract on the K128, replace the browser's visual caption heuristic with rendered-audio pacing, then measure its simultaneous microphone/speaker path and AEC over Wi-Fi. | Runs on the 2-inch device with the camera disabled. Its touchscreen and built-in power control are temporary development substitutes, not proof of the final two physical controls. |
 
 This split carries forward the existing architecture and Claude/user purchase log while removing BLE, cellular, custom-PCB, and account-system work from the beginner's first success path.
@@ -23,12 +23,15 @@ This split carries forward the existing architecture and Claude/user purchase lo
 5. Assistant transcript deltas produce a sliding caption directly below the face. The laptop proves only the browser's fixed-speed visual queue and interruption behavior; V1-B must replace that heuristic with rendered-audio pacing on the K128 and pass PR-07's identifier, timing, playback-cursor, interruption-trim, and legibility checks before PR-07 may be claimed.
 6. The standard OpenAI API key exists only in the local server process, never in browser assets or device firmware.
 7. Basic failures are safe and understandable: missing configuration prevents startup, microphone denial or loss fails closed, setup has a bounded readiness deadline, failed session setup closes local media, and Stop immediately closes tracks and playback.
+8. Two large round eyes periodically look up, roll around, or look down while idle. Conversation activity, battery state, validated affect, and ambient mood compose through a deterministic local priority rule; speech or reduced-motion preference cancels random movement.
+9. The gateway builds Realtime instructions from a versioned `prompt/*.ftl` companion template. The renderer reconstructs only allowlisted server-selected user, history, retrieval/search, and device context; browser SDP cannot supply prompt text. Production context selection, not the generic renderer, proves that a history record is finalized and authorized.
 
 ## What is deliberately deferred
 
 - BLE provisioning and the React Native companion app
 - account claiming, recovery, ownership transfer, and multi-device synchronization
 - durable history, cloud memory, exports, and deletion workflows
+- authenticated production context retrieval and its consent/account services (V1 renders truthful empty defaults and test fixtures only)
 - the SIM7600 order, physical-SIM/APN configuration, LTE failover, eSIM, Direct to Cell, and GNSS
 - tools or actions with side effects
 - custom PCB, external illuminated button, latching hard-power circuit, final battery, and enclosure
@@ -66,27 +69,32 @@ The final product still has exactly two physical controls: an illuminated conver
 ```mermaid
 flowchart LR
     B[Browser device simulator<br/>face, caption, mic, speaker] -->|SDP only| G[Local session broker<br/>standard API key]
+    C[Server-owned prompt template<br/>authorized context or empty defaults] --> G
     G -->|unified session setup| O[OpenAI Realtime API]
     B <-->|WebRTC audio and events| O
 ```
 
-The browser uses WebRTC because the official OpenAI documentation recommends it for browser/mobile Realtime clients and it automatically manages audio transport. The local broker forwards the initial SDP and session configuration to `POST /v1/realtime/calls`; it never serves the standard key to the browser. This is the simplest current V1 transport, not a reversal of [ADR 0003](../decisions/0003_use_secure_realtime_gateway.md): the product gateway remains the long-term policy, device-identity, tool, quota, history, and observability boundary.
+The browser uses WebRTC because the official OpenAI documentation recommends it for browser/mobile Realtime clients and it automatically manages audio transport. The local broker forwards the initial SDP and server-owned session configuration to `POST /v1/realtime/calls`; its HTTP response contains only SDP and never the standard key. The provider may echo session instructions in `session.created` to the connected client, so rendered context must still contain no server secrets. Realtime `instructions` become the default system guidance for the session, but they are not an authorization mechanism and model compliance is not guaranteed. This is the simplest current V1 transport, not a reversal of [ADR 0003](../decisions/0003_use_secure_realtime_gateway.md): the product gateway remains the long-term policy, device-identity, tool, quota, history, context-consent, and observability boundary.
 
 Relevant official documentation:
 
 - [Realtime API with WebRTC](https://developers.openai.com/api/docs/guides/realtime-webrtc)
 - [Voice activity detection](https://developers.openai.com/api/docs/guides/realtime-vad)
 - [Realtime interruption and truncation](https://developers.openai.com/api/docs/guides/realtime-conversations#interruption-and-truncation)
+- [Realtime call/session configuration](https://developers.openai.com/api/reference/python/resources/realtime/subresources/calls/methods/accept)
 
 ### Runtime components
 
 | Component | Responsibility |
 |---|---|
-| `tools/prototype-server/server.js` | Load local configuration, serve only the simulator assets, validate an SDP request, add the server-owned Realtime session configuration, forward it to OpenAI, and return the SDP answer. This local harness is not the product gateway. |
+| `prompt/mochi-realtime.ftl` | Hold the versioned companion identity, spoken-style rules, context trust rules, and scalar slots for user, server-selected history, retrieval/search, and device context. |
+| `tools/prototype-server/prompt-builder.js` | Validate the constrained FreeMarker-compatible scalar template, rebuild allowlisted context objects, enforce category/final-size budgets, escape JSON boundaries, reject several obvious credential patterns, and deterministically render Realtime instructions. It never evaluates directives or recursively renders inserted text; production selection/redaction remains responsible for classifying arbitrary secrets and finalized records. |
+| `tools/prototype-server/server.js` | Load local configuration, serve only the simulator assets, validate an SDP request, obtain context from a server-only provider, render the server-owned Realtime session configuration, forward it to OpenAI, and return the SDP answer. This local harness is not the product gateway. |
 | `tools/device-simulator/app.js` | Own the WebRTC connection, microphone track, returned audio track, provider event handling, local start/stop lifecycle, and DOM rendering. |
 | `tools/device-simulator/state.js` | Keep session, input, and output states independent so user and assistant speech can overlap truthfully. Reject stale session events. |
 | `tools/device-simulator/caption-pacer.js` | Queue active-response transcript additions, reveal them behind playback onset into a response-scoped buffer, and discard queued, unrendered text on interruption. The browser retains the complete active response so its slower visual track cannot lose an unseen prefix. |
 | `tools/device-simulator/caption-motion.js` | Keep the active browser caption moving left at one fixed visual speed without per-word retargeting, and snap resets or reduced-motion updates. |
+| `tools/device-simulator/expression-director.js` | Derive a face pose from independent activity, affect, battery, and mood channels; schedule bounded idle curiosity; and cancel it deterministically when a higher-priority fact arrives. |
 | `tools/device-simulator/media.js` | Disable and stop every local media track, including a track whose permission request resolves after the user has already pressed Stop. |
 
 ### State model
@@ -99,7 +107,19 @@ The implementation uses parallel regions rather than a turn-based `LISTENING`/`S
 | Input | `gated`, `quiet`, `user_speaking` | Input can be `user_speaking` while output is `playing`. |
 | Output | `idle`, `generating`, `playing` | Output state never disables the microphone track. |
 
-The face is a projection of these facts using only two large round eyes: amber while connecting, cyan while live, raised eyes for user speech, a subtle eye pulse for assistant playback, and a private neutral face while inactive. No mouth or lips are rendered. The caption remains spatially separate below the eyes, but its idle state has no placeholder text, border, or tinted background.
+The face is a projection of these facts using only two large round eyes: amber while connecting, cyan while live, attentive eyes for user speech, a subtle eye pulse for assistant playback, and a curious private face while inactive. No mouth or lips are rendered. The caption remains spatially separate below the eyes, but its idle state has no placeholder text, border, or tinted background.
+
+### Expression behavior
+
+The safety/session reducer above remains authoritative and contains no randomness. A separate expression director computes activity, expression, battery energy plus charging, mood, and gaze data attributes. The channels compose: activity owns conversation rig motion; capacity owns openness/energy while charging adds a glow; expression geometry selects fault/low capacity before validated affect before an activity default before mood; and active conversation gaze outranks idle motion. The browser optionally maps its host Battery Status API into capacity/charging signals; absence of that API leaves a normal prototype default, while V1-B must use the board's PMIC/fuel-gauge reading.
+
+During eligible idle time, an injectable random source chooses a 5–9 second pause, a calm/curious/playful/pensive mood, and a 1.7–2.2 second look-up, circular roll, or look-down gesture. Speech, response generation, connection/fault state, low battery, hidden-page state, or reduced-motion preference cancels the timer and pupil animation immediately. Animation ownership is layered so transforms do not fight: the eye rig moves for conversation activity, the round shell blinks and changes openness/glow, and the pupil alone owns gaze. `setEmotion()` is the validated, expiring seam for a future constrained model tool; V1 does not infer emotion from arbitrary response text and never lets affect alter the listening indicator.
+
+### Prompt construction
+
+`prompt/mochi-realtime.ftl` begins with `You are a companion` and contains explicit sections for user context, reconstructed past conversation history, other retrieved/search context, and device/session context. The gateway renderer accepts only the five known `${name}` scalar placeholders, performs one non-recursive substitution pass, serializes dynamic records as bounded escaped JSON, rejects unknown schemas, unsupported syntax, and several recognizable credential shapes, sanitizes search URL userinfo/query/fragment data, and caps the final instructions at 24 KiB. This is a deliberately constrained FreeMarker-compatible subset, not a full FreeMarker runtime. It is defense in depth, not a comprehensive secret classifier; the production context selector/redactor must enforce MP-06 and finalization before rendering.
+
+The localhost harness truthfully renders history/user context as unavailable and retrieval as not requested. Tests can inject server-side fixtures to prove the seam, but the browser cannot add context to its SDP. Production must authenticate `(account_id, device_id, binding_generation)` and check separate history-retention, history-for-context, structured-memory, and retrieval permissions before selecting records. Deleted or prior-owner data and its derived indexes/caches are ineligible. Rendered prompts are provider-processed data and are not routine log payloads. See [ADR 0009](../decisions/0009_use_server_owned_contextual_prompt_assembly.md).
 
 ### Caption behavior
 
@@ -121,6 +141,6 @@ The fixed-speed browser track is an interaction and motion heuristic, not the fi
 
 ## Acceptance and non-claims
 
-V1-A passes when the repository setup works, one Start action creates a continuous live session, several exchanges require no further presses, speech interrupts playback, and every assistant caption enters from beyond the right edge at a fixed 60 CSS px/s without easing or per-word speed changes while additions queue ahead. Interruption freezes that visual track, a reset snaps it to zero, reduced-motion mode snaps position changes, Stop closes local media, and browser assets contain no standard key.
+V1-A passes when the repository setup works, one Start action creates a continuous live session, several exchanges require no further presses, speech interrupts playback, and every assistant caption enters from beyond the right edge at a fixed 60 CSS px/s without easing or per-word speed changes while additions queue ahead. Interruption freezes that visual track, a reset snaps it to zero, reduced-motion mode snaps position changes, Stop closes local media, and browser assets contain no standard key. While idle, the pupils demonstrate each bounded curiosity path; active conversation, low battery, hidden state, and reduced motion suppress or cancel it. Automated tests prove expression priority/timer invalidation and that the gateway—not browser SDP—renders the versioned companion prompt with truthful empty defaults or injected allowlisted fixtures.
 
 V1-B passes its first interaction gate when the session, face, and interruption behaviors run on the K128 over Wi-Fi, the basic simultaneous-audio/AEC measurements are recorded, and the on-device caption replaces V1-A's motion heuristic with a trace demonstrating active response/output identifiers, rendered-cursor pacing, no more than one segment of lead, first text within 500 ms of first rendered audio, heard-boundary trim on interruption, late-delta rejection, and arm's-length legibility. That is the evidence needed to claim the PR-07 gate; V1-B still does not claim compliance with the final latching-power, illuminated-button, hardware capture-gate, enclosure-acoustic, battery, BLE, cellular, cloud-history, or full EVT test requirements.

@@ -15,17 +15,26 @@
         data-session="inactive"
         data-input="gated"
         data-output="idle"
+        data-face-activity="idle"
+        data-expression="curious"
+        data-mood="curious"
+        data-energy="normal"
+        data-charging="false"
+        data-rest-gaze="up"
+        data-gaze-motion="up"
+        data-roll-direction="none"
         aria-label="Mochi Pager screen simulator"
       >
         <header class="status-row">
           <span id="indicator" class="indicator" data-color="off" aria-hidden="true"></span>
           <span id="status" class="status-text">Private · not listening</span>
+          <span id="battery-status" class="visually-hidden" role="status" aria-live="polite">Battery normal</span>
         </header>
 
         <div class="face" aria-hidden="true">
           <div class="listening-halo"></div>
-          <div class="eye eye-left"><span></span></div>
-          <div class="eye eye-right"><span></span></div>
+          <div class="eye-rig eye-left"><div class="eye"><span class="pupil"></span></div></div>
+          <div class="eye-rig eye-right"><div class="eye"><span class="pupil"></span></div></div>
         </div>
 
         <div id="caption-viewport" class="caption-viewport" aria-live="polite" aria-label="Assistant caption">

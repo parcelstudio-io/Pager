@@ -21,5 +21,7 @@ Architecture decision records (ADRs) preserve why a choice was made, its costs, 
 6. [Use button-started full-duplex conversation sessions](0006_use_button_started_full_duplex_sessions.md)
 7. [Use a companion app with BLE provisioning and opt-in cloud history sync](0007_use_companion_app_and_cloud_history_sync.md)
 8. [Use exactly two physical controls](0008_use_exactly_two_physical_controls.md)
+9. [Use server-owned contextual prompt assembly](0009_use_server_owned_contextual_prompt_assembly.md)
+10. [Use local hierarchical expression arbitration](0010_use_local_hierarchical_expression_arbitration.md)
 
-The implementation contract shared by ADRs 0002, 0003, 0007, and 0008 is consolidated in [Companion app and synchronization architecture](../design/0002_companion_app_and_sync_architecture.md).
+The implementation contract shared by ADRs 0002, 0003, 0007, 0008, and 0009 is consolidated in [Companion app and synchronization architecture](../design/0002_companion_app_and_sync_architecture.md).

@@ -1,6 +1,6 @@
 # Mochi Pager
 
-Mochi Pager is a pager-sized, expressive voice AI companion. The first product target is a rounded handheld device with a face, a sliding live caption, microphone, speaker, Wi-Fi, BLE, and optional standalone 4G LTE — and exactly two physical controls: the top conversation button and a power slide switch. The conversation button deliberately opens or closes a visibly live session; while it is open, the user and assistant can speak in a full-duplex, voice-interruptible conversation without pressing for each turn, while the assistant's words slide through the caption below its face. A companion mobile app onboards the device over BLE (Wi-Fi credentials, cellular APN, account claiming) and shows an encrypted local cache of opt-in cloud conversation history. The pager connects through a private gateway to the OpenAI Realtime API; it does not run the language model on the device.
+Mochi Pager is a pager-sized, expressive voice AI companion. The first product target is a rounded handheld device with two large round eyes, curious idle gaze, a sliding live caption, microphone, speaker, Wi-Fi, BLE, and optional standalone 4G LTE—and exactly two physical controls: the top conversation button and a power slide switch. The conversation button deliberately opens or closes a visibly live session; while it is open, the user and assistant can speak in a full-duplex, voice-interruptible conversation without pressing for each turn, while the assistant's words slide through the caption below its face. A companion mobile app onboards the device over BLE (Wi-Fi credentials, cellular APN, account claiming) and shows an encrypted local cache of opt-in cloud conversation history. The pager connects through a private gateway to the OpenAI Realtime API; it does not run the language model on the device.
 
 The current phase is V1 interaction implementation plus EVT (engineering validation) planning. A zero-dependency local session broker and browser device simulator now provide the first runnable full-duplex slice; embedded firmware, the mobile app, cloud history, and cellular work remain staged behind it.
 
@@ -37,7 +37,7 @@ npm test
 npm start
 ```
 
-Then open `http://localhost:3000`. No `npm install` is required because V1-A has no runtime package dependencies. API use may incur charges; set a conservative project budget before testing. The [beginner build guide](docs/prototype/0002_v1_beginner_build_guide.md) contains the complete safety, setup, acceptance, and CoreS3 bring-up sequence.
+Then open `http://localhost:3000`. No `npm install` is required because V1-A has no runtime package dependencies. While idle, the eyes periodically glance up, roll around, or look down; actual conversation and battery state take priority. The gateway renders the versioned [`prompt/mochi-realtime.ftl`](prompt/mochi-realtime.ftl) on the server, so the browser cannot inject history or system instructions. The localhost default has no real account/history service and truthfully marks that context unavailable. API use may incur charges; set a conservative project budget before testing. The [beginner build guide](docs/prototype/0002_v1_beginner_build_guide.md) contains the complete safety, setup, acceptance, and CoreS3 bring-up sequence.
 
 ## Repository organization
 
@@ -48,6 +48,7 @@ docs/
   requirements/    measurable product requirements
   research/        source audits, comparisons, and BOMs
 edu/               short concept primers, each capped near three pages
+prompt/            version-controlled server-side Realtime instruction templates
 scrum/
   YYYYMMDD/
     task_NNNN/      task brief, daily plan, evidence, and retrospective

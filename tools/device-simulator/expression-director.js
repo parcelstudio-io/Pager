@@ -1,0 +1,320 @@
+const SESSION_VALUES = new Set(["inactive", "connecting", "live", "error"]);
+const INPUT_VALUES = new Set(["gated", "quiet", "user_speaking"]);
+const OUTPUT_VALUES = new Set(["idle", "generating", "playing"]);
+
+export const EMOTIONS = Object.freeze([
+  "neutral",
+  "curious",
+  "delighted",
+  "confused",
+  "concerned",
+  "sleepy",
+]);
+
+export const MOODS = Object.freeze([
+  "auto",
+  "calm",
+  "curious",
+  "playful",
+  "pensive",
+  "tired",
+]);
+
+const EMOTION_VALUES = new Set(EMOTIONS);
+const MOOD_VALUES = new Set(MOODS);
+const IDLE_MOODS = Object.freeze(["calm", "curious", "playful", "pensive"]);
+const IDLE_DELAY_MIN_MS = 5_000;
+const IDLE_DELAY_RANGE_MS = 4_000;
+const GESTURE_DURATION_MS = Object.freeze({
+  "look-up": 1_700,
+  "roll-around": 2_200,
+  "look-down": 1_700,
+});
+
+const DEFAULT_CONTEXT = Object.freeze({
+  session: "inactive",
+  input: "gated",
+  output: "idle",
+  emotion: "neutral",
+  batteryPercent: 100,
+  charging: false,
+  mood: "auto",
+  visible: true,
+  reducedMotion: false,
+});
+
+function finitePercent(value, fallback = 100) {
+  if (typeof value !== "number" || !Number.isFinite(value)) return fallback;
+  return Math.min(100, Math.max(0, value));
+}
+
+function booleanOr(value, fallback) {
+  return typeof value === "boolean" ? value : fallback;
+}
+
+function normalizeContext(context = {}, previous = DEFAULT_CONTEXT) {
+  return {
+    session: SESSION_VALUES.has(context.session) ? context.session : previous.session,
+    input: INPUT_VALUES.has(context.input) ? context.input : previous.input,
+    output: OUTPUT_VALUES.has(context.output) ? context.output : previous.output,
+    emotion: EMOTION_VALUES.has(context.emotion) ? context.emotion : previous.emotion,
+    batteryPercent: context.batteryPercent === undefined
+      ? previous.batteryPercent
+      : finitePercent(context.batteryPercent, previous.batteryPercent),
+    charging: booleanOr(context.charging, previous.charging),
+    mood: MOOD_VALUES.has(context.mood) ? context.mood : previous.mood,
+    visible: booleanOr(context.visible, previous.visible),
+    reducedMotion: booleanOr(context.reducedMotion, previous.reducedMotion),
+  };
+}
+
+function contextsMatch(left, right) {
+  return Object.keys(DEFAULT_CONTEXT).every((key) => left[key] === right[key]);
+}
+
+function deriveActivity({ session, input, output }) {
+  if (session === "error") return "fault";
+  if (session === "connecting") return "connecting";
+  if (session !== "live") return "idle";
+  if (input === "user_speaking" && output === "playing") return "duplex";
+  if (input === "user_speaking") return "listening";
+  if (output === "playing") return "speaking";
+  if (output === "generating") return "thinking";
+  return "idle";
+}
+
+export function batteryEnergy(batteryPercent) {
+  if (finitePercent(batteryPercent) <= 10) return "critical";
+  if (finitePercent(batteryPercent) <= 25) return "low";
+  return "normal";
+}
+
+function moodExpression(mood) {
+  if (mood === "curious") return "curious";
+  if (mood === "playful") return "delighted";
+  if (mood === "pensive") return "confused";
+  if (mood === "tired") return "sleepy";
+  return "neutral";
+}
+
+function deriveExpression(context, activity, energy) {
+  if (activity === "fault") return "concerned";
+  if (energy === "critical") return "sleepy";
+  if (energy === "low") return "concerned";
+  if (context.emotion !== "neutral") return context.emotion;
+  if (activity === "duplex" || activity === "listening") return "curious";
+  if (activity === "speaking") return "delighted";
+  if (activity === "thinking") return "confused";
+  return moodExpression(context.mood);
+}
+
+function staticGazeFor(expression) {
+  if (expression === "curious") return "up";
+  if (expression === "concerned" || expression === "sleepy") return "down";
+  if (expression === "confused") return "side";
+  return "center";
+}
+
+export function deriveFacePose(context = {}, idleGesture = null) {
+  const normalized = normalizeContext(context);
+  const activity = deriveActivity(normalized);
+  const energy = batteryEnergy(normalized.batteryPercent);
+  const expression = deriveExpression(normalized, activity, energy);
+
+  const restGaze = staticGazeFor(expression);
+  let gazeMotion = restGaze;
+  let rollDirection = "none";
+
+  if (!normalized.reducedMotion) {
+    if (activity === "duplex" || activity === "listening") {
+      gazeMotion = "attentive";
+    } else if (activity === "thinking") {
+      gazeMotion = "thinking-scan";
+    } else if (activity === "speaking" || activity === "connecting") {
+      gazeMotion = "center";
+    } else if (activity === "idle" && idleGesture) {
+      gazeMotion = idleGesture.motion;
+      rollDirection = idleGesture.direction || "clockwise";
+    }
+  }
+
+  return Object.freeze({
+    activity,
+    expression,
+    mood: normalized.mood,
+    energy,
+    charging: normalized.charging,
+    restGaze,
+    gazeMotion,
+    rollDirection,
+  });
+}
+
+function idleEligible(context, pose) {
+  return (
+    context.visible &&
+    !context.reducedMotion &&
+    context.emotion === "neutral" &&
+    pose.activity === "idle" &&
+    pose.energy === "normal"
+  );
+}
+
+function clampRandom(value) {
+  if (!Number.isFinite(value)) return 0.5;
+  return Math.min(0.999999, Math.max(0, value));
+}
+
+function chooseIdleGesture(random) {
+  const gestureRoll = clampRandom(random());
+  let motion = "look-down";
+  if (gestureRoll < 0.34) motion = "look-up";
+  else if (gestureRoll < 0.72) motion = "roll-around";
+
+  return {
+    motion,
+    direction: clampRandom(random()) < 0.5 ? "clockwise" : "counterclockwise",
+  };
+}
+
+export class ExpressionDirector {
+  constructor({
+    onPose = () => {},
+    random = Math.random,
+    schedule = setTimeout,
+    cancel = clearTimeout,
+    context = {},
+  } = {}) {
+    this.onPose = onPose;
+    this.random = random;
+    this.schedule = schedule;
+    this.cancel = cancel;
+    // Affect is transient by contract; setEmotion() is its only ingress.
+    this.context = normalizeContext({ ...context, emotion: "neutral" });
+    this.ambientMood = this.context.mood === "auto" ? "curious" : this.context.mood;
+    this.idleGesture = null;
+    this.idleTimer = null;
+    this.gestureTimer = null;
+    this.emotionTimer = null;
+    this.generation = 0;
+    this.emotionGeneration = 0;
+    this.disposed = false;
+    this.pose = null;
+
+    this.reconcile();
+  }
+
+  effectiveContext() {
+    return {
+      ...this.context,
+      mood: this.context.mood === "auto" ? this.ambientMood : this.context.mood,
+    };
+  }
+
+  emitPose() {
+    this.pose = deriveFacePose(this.effectiveContext(), this.idleGesture);
+    this.onPose(this.pose);
+    return this.pose;
+  }
+
+  clearMotionTimers() {
+    if (this.idleTimer !== null) this.cancel(this.idleTimer);
+    if (this.gestureTimer !== null) this.cancel(this.gestureTimer);
+    this.idleTimer = null;
+    this.gestureTimer = null;
+  }
+
+  scheduleIdleGesture() {
+    const pose = this.pose || this.emitPose();
+    if (!idleEligible(this.context, pose) || this.disposed) return;
+
+    const token = this.generation;
+    const delay = IDLE_DELAY_MIN_MS + clampRandom(this.random()) * IDLE_DELAY_RANGE_MS;
+    this.idleTimer = this.schedule(() => {
+      this.idleTimer = null;
+      if (this.disposed || token !== this.generation) return;
+      if (!idleEligible(this.context, this.pose)) return;
+
+      this.idleGesture = chooseIdleGesture(this.random);
+      this.emitPose();
+      const duration = GESTURE_DURATION_MS[this.idleGesture.motion];
+      this.gestureTimer = this.schedule(() => {
+        this.gestureTimer = null;
+        if (this.disposed || token !== this.generation) return;
+        this.idleGesture = null;
+        if (this.context.mood === "auto") {
+          const moodIndex = Math.floor(clampRandom(this.random()) * IDLE_MOODS.length);
+          this.ambientMood = IDLE_MOODS[moodIndex];
+        }
+        this.emitPose();
+        this.scheduleIdleGesture();
+      }, duration);
+    }, delay);
+  }
+
+  reconcile() {
+    this.clearMotionTimers();
+    this.idleGesture = null;
+    this.emitPose();
+    this.scheduleIdleGesture();
+    return this.pose;
+  }
+
+  #applyContextPatch(patch = {}, { acceptEmotion = false } = {}) {
+    if (this.disposed) return this.pose;
+    const acceptedPatch = { ...patch };
+    if (!acceptEmotion) delete acceptedPatch.emotion;
+
+    if (
+      acceptEmotion &&
+      Object.hasOwn(acceptedPatch, "emotion") &&
+      EMOTION_VALUES.has(acceptedPatch.emotion)
+    ) {
+      if (this.emotionTimer !== null) this.cancel(this.emotionTimer);
+      this.emotionTimer = null;
+      this.emotionGeneration += 1;
+    }
+    const next = normalizeContext({ ...this.context, ...acceptedPatch }, this.context);
+    if (contextsMatch(next, this.context)) return this.pose;
+
+    if (
+      acceptedPatch.mood !== undefined &&
+      next.mood !== this.context.mood &&
+      next.mood !== "auto"
+    ) {
+      this.ambientMood = next.mood;
+    }
+    this.context = next;
+    this.generation += 1;
+    return this.reconcile();
+  }
+
+  update(patch = {}) {
+    return this.#applyContextPatch(patch);
+  }
+
+  setEmotion(emotion, { durationMs = 6_000 } = {}) {
+    if (!EMOTION_VALUES.has(emotion)) return this.pose;
+    this.#applyContextPatch({ emotion }, { acceptEmotion: true });
+    if (emotion === "neutral" || this.disposed) return this.pose;
+
+    const token = this.emotionGeneration;
+    const duration = Math.min(30_000, Math.max(500, Number(durationMs) || 6_000));
+    this.emotionTimer = this.schedule(() => {
+      this.emotionTimer = null;
+      if (this.disposed || token !== this.emotionGeneration) return;
+      this.#applyContextPatch({ emotion: "neutral" }, { acceptEmotion: true });
+    }, duration);
+    return this.pose;
+  }
+
+  dispose() {
+    if (this.disposed) return;
+    this.disposed = true;
+    this.generation += 1;
+    this.emotionGeneration += 1;
+    this.clearMotionTimers();
+    if (this.emotionTimer !== null) this.cancel(this.emotionTimer);
+    this.emotionTimer = null;
+  }
+}
