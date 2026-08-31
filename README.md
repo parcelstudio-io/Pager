@@ -2,11 +2,13 @@
 
 Mochi Pager is a pager-sized, expressive voice AI companion. The first product target is a rounded handheld device with a face, a sliding live caption, microphone, speaker, Wi-Fi, BLE, and optional standalone 4G LTE — and exactly two physical controls: the top conversation button and a power slide switch. The conversation button deliberately opens or closes a visibly live session; while it is open, the user and assistant can speak in a full-duplex, voice-interruptible conversation without pressing for each turn, while the assistant's words slide through the caption below its face. A companion mobile app onboards the device over BLE (Wi-Fi credentials, cellular APN, account claiming) and shows an encrypted local cache of opt-in cloud conversation history. The pager connects through a private gateway to the OpenAI Realtime API; it does not run the language model on the device.
 
-The current phase is architecture and EVT (engineering validation) planning. No production firmware or service code exists yet, so `src/` is intentionally empty rather than filled with planning files or placeholders.
+The current phase is V1 interaction implementation plus EVT (engineering validation) planning. A zero-dependency local session broker and browser device simulator now provide the first runnable full-duplex slice; embedded firmware, the mobile app, cloud history, and cellular work remain staged behind it.
 
 ## Start here
 
 - [Product concept](docs/design/0001_mochi_pager_product_concept.md)
+- [V1 prototype high-level design](docs/prototype/0001_v1_high_level_design.md)
+- [V1 beginner build guide and exact materials](docs/prototype/0002_v1_beginner_build_guide.md)
 - [Companion app and synchronization architecture](docs/design/0002_companion_app_and_sync_architecture.md)
 - [MVP requirements](docs/requirements/0001_mvp_requirements.md)
 - [Component sources and staged BOM](docs/research/0001_component_sources_and_bom.md)
@@ -18,11 +20,24 @@ The current phase is architecture and EVT (engineering validation) planning. No 
 
 ## Current verdict
 
-Buy only the interaction mule now: one M5Stack CoreS3 Lite and a known-good data-capable USB-C cable. Use its documented full-duplex audio path to measure simultaneous capture/playback, AEC feasibility, voice barge-in, and truthful session indication before adding radio complexity. Use Wi-Fi and then a phone hotspot to prove the end-to-end voice/face experience over cellular-backed Wi-Fi. Buy the separate SIM7600G-H cellular mule only after the Wi-Fi full-duplex vertical slice passes its gate. Do not buy a final battery, custom display, bare cellular module, or 5G hardware yet.
+The interaction mule is already ordered: one full M5Stack CoreS3 K128, recorded in the [daily log](scrum/20260830/task_0001/daily_log.md). Confirm only a known-good data-capable USB-C cable now; do not buy a second CoreS3. First run the laptop V1-A slice, then use the K128's documented full-duplex audio path to measure simultaneous capture/playback, AEC feasibility, voice barge-in, on-device captions, and truthful session indication. Use Wi-Fi and then a phone hotspot before adding radio complexity. Buy the separate SIM7600G-H cellular mule only after the Wi-Fi full-duplex vertical slice passes its gate. Do not buy a final battery, custom display, bare cellular module, or 5G hardware yet.
 
 This ordering protects the project from three expensive early mistakes: choosing an enclosure before measuring the parts, choosing a battery before measuring modem peaks, and integrating RF onto the first PCB.
 
 The major load-bearing claims reviewed in the 2026-08-30/31 verification pass, its corrections, and its explicitly unverifiable items are logged in [research 0003](docs/research/0003_independent_verification_and_corrections.md). That pass also added requirements the first draft missed: the sliding caption, companion app, and two-control constraint.
+
+## Run V1-A now
+
+Node.js 20 or newer and an OpenAI API project are required. The standard API key stays in the local server process.
+
+```bash
+cp .env.example .env
+# Edit .env and replace OPENAI_API_KEY=replace_me
+npm test
+npm start
+```
+
+Then open `http://localhost:3000`. No `npm install` is required because V1-A has no runtime package dependencies. API use may incur charges; set a conservative project budget before testing. The [beginner build guide](docs/prototype/0002_v1_beginner_build_guide.md) contains the complete safety, setup, acceptance, and CoreS3 bring-up sequence.
 
 ## Repository organization
 

@@ -31,7 +31,7 @@ Each successful claim, transfer, release, recovery, or revocation advances the g
 
 The dedicated microphone-kill slider is removed from the product target. Its software-command coupling is preserved differently: on the custom carrier, one capture-enable net is hardware-biased inactive through reset/boot/crash/watchdog/recovery/OTA, gates the microphone path (rail or data), **and** drives the cyan capture indicator, so firmware cannot command the light and gate independently. Component, open/short, and stuck faults can still disagree and must be tested; only the verified hard-off power switch is hardware-certain. Requirements PR-04 and MP-05 are rewritten around this scheme: capture leaves the device only while the command/indicator is asserted, power-off kills everything, and an ordinary power-on never resumes capture without a fresh conversation-button press.
 
-On the EVT mule, the CoreS3 Lite keeps its own side power button (a 6-second hold invokes PMIC shutdown; do not repurpose it). The Day-12 switched-microphone rig ordered for the acoustic mule is retained **as bench instrumentation** for measuring gate behavior and fault injection — it is test equipment, not a product control, and no longer appears in the industrial design.
+On the EVT mule, the purchased full CoreS3 K128 keeps its own side power button (do not repurpose it); it is a development substitute, not the final latching hard-off switch. The K128 shares the CoreS3 family audio path that motivated the original Lite selection. The Day-12 switched-microphone rig ordered for the acoustic mule is retained **as bench instrumentation** for measuring gate behavior and fault injection — it is test equipment, not a product control, and no longer appears in the industrial design.
 
 ## Why
 

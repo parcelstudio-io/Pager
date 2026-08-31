@@ -1,7 +1,7 @@
 # Task 0001 — Design and validate the Mochi Pager EVT path
 
 Start date: 2026-08-30  
-Status: Planned  
+Status: In progress — Day 1 purchase made 2026-08-31, see [daily log](daily_log.md)
 Owner: Project team
 
 ## Outcome
@@ -33,7 +33,7 @@ Produce an evidence-backed EVT that demonstrates a cute local face with a slidin
 
 ## Purchase ceilings before re-approval
 
-- Gate A: one CoreS3 Lite ($44.90 observed), cable ($5–10), tax/shipping.
+- Gate A actual board purchase: one full CoreS3 K128 ($77.90 paid on 2026-08-31), plus a known-good cable ($5–10 observed if none is already available), tax/shipping. See the [daily log](daily_log.md).
 - Acoustic mule, only after Day 8's concurrent local audio baseline: one compatible discrete digital mic ($8.95 observed), I²S amp ($5.95), speaker ($1.95), illuminated conversation control, latching power switch, and safe prototyping board/connectors; target $20–40 plus shipping after pin/power/reference-path review.
 - Gate B, only after Day 13: one SIM7600G-H HAT ($97.99 observed), one compatible AUX/diversity LTE antenna (live quote), and **one** SIM/service path. Order a low-cost SIM first, read/check the received IMEI, then activate one month of suitable 5–10 GB-equivalent data. Soracom and direct-carrier plans are alternatives, not combined purchases.
 - Instrumentation: a $15–30 USB meter may be bought for average energy only. Gate C peak evidence requires access to a bandwidth-appropriate oscilloscope/current probe or shunt/power analyzer and an adequate documented 5 V HAT supply; quote, borrow, or rent before purchase if these are not already available.

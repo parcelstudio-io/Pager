@@ -1,0 +1,15 @@
+{
+  "name": "mochi-pager",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Beginner-friendly Mochi Pager full-duplex interaction prototype",
+  "scripts": {
+    "start": "node tools/prototype-server/server.js",
+    "test": "node --test",
+    "check": "node --check tools/prototype-server/server.js && node --check tools/device-simulator/app.js && node --check tools/device-simulator/state.js && node --check tools/device-simulator/caption-pacer.js && node --check tools/device-simulator/media.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

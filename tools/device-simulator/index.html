@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#15120f">
+    <title>Mochi Pager V1</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="prototype">
+      <section
+        id="screen"
+        class="pager-screen"
+        data-session="inactive"
+        data-input="gated"
+        data-output="idle"
+        aria-label="Mochi Pager screen simulator"
+      >
+        <header class="status-row">
+          <span id="indicator" class="indicator" data-color="off" aria-hidden="true"></span>
+          <span id="status" class="status-text">Private · not listening</span>
+        </header>
+
+        <div class="face" aria-hidden="true">
+          <div class="listening-halo"></div>
+          <div class="eye eye-left"><span></span></div>
+          <div class="eye eye-right"><span></span></div>
+          <div class="mouth"><span></span></div>
+        </div>
+
+        <div id="caption-viewport" class="caption-viewport" aria-live="polite" aria-label="Assistant caption">
+          <span id="caption" class="caption caption-empty">Assistant captions appear here</span>
+        </div>
+      </section>
+
+      <button id="conversation-button" class="conversation-button" type="button">
+        Start listening
+      </button>
+      <p class="prototype-note">V1-A simulator · this one button stands in for the future physical conversation button.</p>
+      <audio id="remote-audio" autoplay playsinline></audio>
+    </main>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

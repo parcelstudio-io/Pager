@@ -2,6 +2,8 @@
 
 This is a 35-project-day main sequence plus a four-session parallel companion-app track (B1–B4, inserted 2026-08-31 per [ADR 0007](../../../docs/decisions/0007_use_companion_app_and_cloud_history_sync.md) and the [companion app and synchronization architecture](../../../docs/design/0002_companion_app_and_sync_architecture.md)). One project day is a focused session; it need not equal a calendar day, and shipping pauses do not consume days. Record actual dates, orders, measurements, links, and deviations in a `daily_log.md` when execution starts. A failed exit condition pauses downstream purchases.
 
+Execution note (2026-08-31): Day 1's recorded purchase deviated from this plan—the full CoreS3 K128 was bought instead of the Lite. The plan remains as the historical intent; use the [daily log](daily_log.md) and [ADR 0001 amendment](../../../docs/decisions/0001_use_esp32s3_interaction_mule.md) as the actual record. Later generic “CoreS3 Lite” bring-up steps apply to the purchased K128 unless a variant-specific difference is explicitly noted.
+
 ## Milestone 1 — Prove the experience before hardware complexity
 
 ### Day 1 — Freeze the experiment and place the only immediate order
@@ -13,7 +15,9 @@ This is a 35-project-day main sequence plus a four-session parallel companion-ap
 
 ### Day 2 — Make a desktop full-duplex voice slice
 
-- **Build/test:** Implement the smallest desktop/browser path that continuously captures while returned audio plays. Use independent bounded input/output streams through the gateway's server-to-server Realtime WebSocket; keep the standard API key there. Configure semantic VAD and exercise speech-driven interruption plus playback-head-based truncation. Subscribe to `response.output_audio_transcript.delta`/`.done` and render a first sliding caption in the desktop client, trimming it on interruption (PR-07).
+Implementation note (2026-08-31): V1-A starts with the current unified browser-WebRTC flow and a localhost session broker because it is the shortest beginner path and still keeps the standard key server-side. It is an interaction reference harness, not a change to ADR 0003's product gateway. The server-to-server WebSocket adapter remains the embedded/product transport work after the browser behavior is proven.
+
+- **Build/test:** Implement the smallest desktop/browser path that continuously captures while returned audio plays. For V1-A, let WebRTC carry the independent input/output media and let a localhost session broker combine the browser's SDP with server-owned configuration at `/v1/realtime/calls`; keep the standard API key only in that broker. Configure semantic VAD and exercise WebRTC-managed speech interruption/truncation. Subscribe to `response.output_audio_transcript.delta`/`.done` and render a first sliding caption in the desktop client, trimming its queued unheard tail on interruption. This desktop caption stages PR-07 but does not pass its on-device gate. Build and compare the product gateway's server-to-server WebSocket adapter after this interaction reference works.
 - **Purchase/decision:** Buy nothing. Select `gpt-realtime-2.1-mini` as the configurable development baseline and `gpt-realtime-2.1` as the quality comparator.
 - **Why:** It proves credentials, provider events, audio format, and model behavior without embedded debugging. A configurable comparison avoids confusing model quality with device quality.
 - **Exit evidence:** One recorded button-opened live session with speech during assistant output, a cancellation/truncation trace, timing breakdown, and proof the client bundle/logs contain no standard provider key.
