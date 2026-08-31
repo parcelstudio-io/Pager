@@ -225,6 +225,10 @@ test("broker aborts upstream session setup when its browser disconnects", async 
 
 test("static server exposes only the simulator allowlist", async () => {
   assert.deepEqual(staticAssetForPath("/"), ["index.html", "text/html; charset=utf-8"]);
+  assert.deepEqual(staticAssetForPath("/caption-motion.js"), [
+    "caption-motion.js",
+    "text/javascript; charset=utf-8",
+  ]);
   assert.equal(staticAssetForPath("/.env"), null);
   assert.equal(staticAssetForPath("/../.env"), null);
 
@@ -250,6 +254,7 @@ test("browser assets contain one control and no provider credential name", async
     "app.js",
     "state.js",
     "caption-pacer.js",
+    "caption-motion.js",
     "media.js",
     "styles.css",
   ];
@@ -266,6 +271,12 @@ test("browser assets contain one control and no provider credential name", async
   assert.equal(styles.includes(".mouth"), false);
   assert.equal(styles.includes("--caption-height: 58px"), true);
   assert.equal(styles.includes("--caption-font-size: clamp(20px, 5vw, 24px)"), true);
+  assert.equal(styles.includes("--caption-slide-duration: 250ms"), true);
+  assert.match(
+    styles,
+    /transition: transform var\(--caption-slide-duration\) cubic-bezier\(0\.22, 0\.61, 0\.36, 1\)/,
+  );
+  assert.equal(styles.includes("will-change: transform"), true);
   assert.equal(app.includes("button.dataset.indicator = view.indicator"), true);
   assert.match(app, /pagehide[\s\S]*stopSession\(\)/);
   assert.equal(styles.includes('[data-indicator="amber"]'), true);

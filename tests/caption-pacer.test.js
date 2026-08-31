@@ -47,3 +47,34 @@ test("caption text stays bounded to the display budget", () => {
 
   assert.equal(boundCaption("alpha beta gamma", 10), "beta gamma");
 });
+
+test("a stale response delta cannot replace the active caption", () => {
+  const pacer = new CaptionPacer({ autoStart: false });
+  pacer.begin("response-old");
+  pacer.push("response-old", "Old answer");
+
+  pacer.begin("response-current");
+  pacer.push("response-current", "Current answer");
+  pacer.push("response-old", " stale suffix");
+
+  assert.equal(pacer.activeResponseId, "response-current");
+  assert.equal(pacer.pending.join(""), "Current answer");
+  assert.equal(pacer.visible, "");
+});
+
+test("playback-end flush emits one complete caption update", () => {
+  const updates = [];
+  const pacer = new CaptionPacer({
+    autoStart: false,
+    onUpdate: (text) => updates.push(text),
+  });
+  pacer.begin("response-1");
+  pacer.push("response-1", "One two three four");
+  const updatesBeforeFlush = updates.length;
+
+  pacer.flush("response-1");
+
+  assert.equal(updates.length, updatesBeforeFlush + 1);
+  assert.equal(updates.at(-1), "One two three four");
+  assert.equal(pacer.pending.length, 0);
+});

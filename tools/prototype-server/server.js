@@ -15,6 +15,7 @@ const STATIC_ASSETS = Object.freeze({
   "/app.js": ["app.js", "text/javascript; charset=utf-8"],
   "/state.js": ["state.js", "text/javascript; charset=utf-8"],
   "/caption-pacer.js": ["caption-pacer.js", "text/javascript; charset=utf-8"],
+  "/caption-motion.js": ["caption-motion.js", "text/javascript; charset=utf-8"],
   "/media.js": ["media.js", "text/javascript; charset=utf-8"],
   "/styles.css": ["styles.css", "text/css; charset=utf-8"],
 });

@@ -102,7 +102,7 @@ The face is a projection of these facts using only two large round eyes: amber w
 
 ### Caption behavior
 
-`response.output_audio_transcript.delta` text is keyed to the active response and placed in a pacing queue. Small pieces are revealed into a bounded, single-line track below the face; as the line grows, the track slides left. On `input_audio_buffer.speech_started`, WebRTC handles response cancellation and audio truncation while the simulator immediately discards queued, not-yet-shown caption text and rejects late deltas from the interrupted response.
+`response.output_audio_transcript.delta` text is keyed to the active response and placed in a pacing queue. Small pieces are revealed into a bounded, single-line track below the face. As each spoken piece arrives, the track retargets from its current rendered position and eases left over most of the 280 ms pacing step, so words enter from the right without snapping. Superseded animation frames are cancelled, reset returns directly to the centered placeholder, and reduced-motion preferences disable the transition. On `input_audio_buffer.speech_started`, WebRTC handles response cancellation and audio truncation while the simulator immediately discards queued, not-yet-shown caption text and rejects late deltas from the interrupted response.
 
 This is an interaction proof, not the final PR-07 alignment algorithm. Browser WebRTC owns the render buffer, so V1-A cannot calculate the K128's exact rendered-sample boundary. V1-B/product firmware must pace against its own playback cursor and trim to the measured heard boundary as the existing requirements specify.
 

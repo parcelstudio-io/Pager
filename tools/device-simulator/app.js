@@ -1,4 +1,5 @@
 import { CaptionPacer } from "./caption-pacer.js";
+import { CaptionMotion } from "./caption-motion.js";
 import { closeMediaSession, watchAudioTrackEnds } from "./media.js";
 import {
   SESSION,
@@ -20,18 +21,10 @@ let state = initialState();
 let nextEpoch = 0;
 let activeSession = null;
 
-function renderCaption(text) {
-  const shown = text || "Captions appear here";
-  caption.textContent = shown;
-  caption.classList.toggle("caption-empty", !text);
-
-  requestAnimationFrame(() => {
-    const overflow = Math.max(0, caption.scrollWidth - captionViewport.clientWidth);
-    caption.style.transform = `translateX(-${overflow}px)`;
-  });
-}
-
-const captionPacer = new CaptionPacer({ onUpdate: renderCaption });
+const captionMotion = new CaptionMotion({ caption, viewport: captionViewport });
+const captionPacer = new CaptionPacer({
+  onUpdate: (text) => captionMotion.render(text),
+});
 
 function render() {
   const view = deriveView(state);
@@ -97,6 +90,10 @@ function responseIdFor(event) {
   return event.response_id || event.response?.id || null;
 }
 
+function activeResponseIdFor(session, event) {
+  return responseIdFor(event) || session.currentResponseId;
+}
+
 function maybeOpenCapture(session) {
   if (!isCurrent(session) || !session.dataChannelOpen || !session.sessionCreated) return;
   if (state.session !== SESSION.CONNECTING) return;
@@ -144,7 +141,7 @@ function handleRealtimeEvent(session, event) {
     }
 
     case "response.output_audio_transcript.delta": {
-      const responseId = responseIdFor(event);
+      const responseId = activeResponseIdFor(session, event);
       captionPacer.push(responseId, event.delta || "");
       break;
     }
@@ -153,7 +150,7 @@ function handleRealtimeEvent(session, event) {
       break;
 
     case "output_audio_buffer.started":
-      captionPacer.start(responseIdFor(event));
+      captionPacer.start(activeResponseIdFor(session, event));
       dispatch({ type: "output_started", epoch });
       break;
 
@@ -163,7 +160,7 @@ function handleRealtimeEvent(session, event) {
       break;
 
     case "output_audio_buffer.stopped":
-      captionPacer.flush(responseIdFor(event));
+      captionPacer.flush(activeResponseIdFor(session, event));
       dispatch({ type: "output_stopped", epoch });
       break;
 
@@ -314,6 +311,7 @@ button.addEventListener("click", () => {
 window.addEventListener("pagehide", () => {
   stopSession();
   captionPacer.dispose();
+  captionMotion.dispose();
 });
 
 render();

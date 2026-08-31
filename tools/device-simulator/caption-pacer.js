@@ -46,7 +46,7 @@ export class CaptionPacer {
 
   push(responseId, delta) {
     if (!responseId || !delta || this.blockedResponseIds.has(responseId)) return;
-    if (this.activeResponseId !== responseId) this.begin(responseId);
+    if (this.activeResponseId !== responseId) return;
 
     this.pending.push(...captionPieces(delta));
     if (this.autoStart && this.playbackStarted) this.startTimer();
@@ -55,7 +55,7 @@ export class CaptionPacer {
   start(responseId = this.activeResponseId) {
     responseId ||= this.activeResponseId;
     if (!responseId || this.blockedResponseIds.has(responseId)) return;
-    if (this.activeResponseId !== responseId) this.begin(responseId);
+    if (this.activeResponseId !== responseId) return;
     this.playbackStarted = true;
     if (this.autoStart) this.startTimer();
   }
@@ -91,8 +91,14 @@ export class CaptionPacer {
   flush(responseId = this.activeResponseId) {
     responseId ||= this.activeResponseId;
     if (responseId !== this.activeResponseId || this.blockedResponseIds.has(responseId)) return;
-    while (this.tick()) {
-      // Playback has drained, so every remaining transcript piece can be shown.
+    this.stopTimer();
+    if (this.pending.length > 0) {
+      this.visible = boundCaption(
+        `${this.visible}${this.pending.join("")}`,
+        this.maxCharacters,
+      );
+      this.pending = [];
+      this.onUpdate(this.visible);
     }
     this.playbackStarted = false;
   }
