@@ -152,7 +152,7 @@ Use `localhost`; do not open the HTML file directly with a `file://` URL. The fi
 2. Allow microphone access when the browser asks.
 3. Check that the UI shows a connecting state before a live state. Microphone capture must not be presented as live while connection setup is incomplete.
 4. Say a short sentence, then stop speaking naturally.
-5. Listen for the assistant response and watch a long caption move left at one steady, deliberately slow speed once it overflows. The visual caption may trail audio/token arrival and queue new text ahead, but arriving words must not restart, ease, or change the track's speed.
+5. Listen for the assistant response and watch its first words slide in from beyond the right edge at one steady, deliberately slow speed. Short and long captions use the same entrance. The visual caption may trail audio/token arrival and queue new text ahead, but arriving words must not restart, ease, or change the track's speed.
 6. Continue for at least ten short exchanges without pressing once per utterance.
 
 The microphone remains available while assistant audio plays. That simultaneous input/output behavior—not alternating turns—is the experiment.
@@ -265,7 +265,7 @@ BLE onboarding, the mobile app, cloud history sync, physical SIM/APN configurati
 - [ ] At least ten exchanges work without another button press.
 - [ ] The user can speak while assistant audio is playing.
 - [ ] Clear near-end speech interrupts assistant playback and cancelled audio does not resume.
-- [ ] A sliding assistant caption is directly below the face; once it overflows it moves left at a fixed 60 CSS px/s without easing or per-word speed changes, and transcript additions queue ahead without retargeting that motion.
+- [ ] A sliding assistant caption is directly below the face; its first text enters from beyond the right edge and moves left at a fixed 60 CSS px/s without easing or per-word speed changes, and transcript additions queue ahead without retargeting that motion.
 - [ ] Interruption freezes the active caption track; caption reset snaps to its zero position; with the browser/OS reduced-motion preference enabled, position changes snap rather than animate; and the caption does not continue with obviously unheard cancelled text.
 - [ ] Stop during idle and stop during playback both return locally to private/idle.
 - [ ] Talking after stop creates no response.

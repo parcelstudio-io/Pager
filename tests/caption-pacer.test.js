@@ -21,7 +21,11 @@ test("caption deltas wait for playback before becoming visible", () => {
 });
 
 test("interruption discards pending text and rejects late deltas", () => {
-  const pacer = new CaptionPacer({ autoStart: false });
+  const updates = [];
+  const pacer = new CaptionPacer({
+    autoStart: false,
+    onUpdate: (text) => updates.push(text),
+  });
   pacer.begin("response-1");
   pacer.push("response-1", "One two three four");
   pacer.start("response-1");
@@ -29,7 +33,10 @@ test("interruption discards pending text and rejects late deltas", () => {
   assert.equal(pacer.visible, "One ");
 
   pacer.interrupt("response-1");
+  const updatesAfterInterrupt = updates.length;
+  pacer.interrupt("response-1");
   pacer.push("response-1", "five six");
+  assert.equal(updates.length, updatesAfterInterrupt);
   assert.equal(pacer.pending.length, 0);
   assert.equal(pacer.visible, "One");
 

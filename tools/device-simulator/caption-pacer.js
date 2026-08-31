@@ -77,7 +77,7 @@ export class CaptionPacer {
   }
 
   interrupt(responseId = this.activeResponseId) {
-    if (!responseId) return;
+    if (!responseId || this.blockedResponseIds.has(responseId)) return;
     this.blockedResponseIds.add(responseId);
     if (responseId !== this.activeResponseId) return;
 

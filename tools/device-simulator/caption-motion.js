@@ -14,8 +14,8 @@ export function advanceCaptionOffset(
   speedPxPerSecond = DEFAULT_CAPTION_SPEED_PX_PER_SECOND,
   maxFrameDeltaMs = DEFAULT_MAX_FRAME_DELTA_MS,
 ) {
-  const current = Number.isFinite(currentOffset) ? Math.max(0, currentOffset) : 0;
-  const target = Number.isFinite(targetOffset) ? Math.max(0, targetOffset) : 0;
+  const current = Number.isFinite(currentOffset) ? currentOffset : 0;
+  const target = Number.isFinite(targetOffset) ? targetOffset : 0;
   const elapsed = Number.isFinite(elapsedMs) ? Math.max(0, elapsedMs) : 0;
   const speed = Number.isFinite(speedPxPerSecond) && speedPxPerSecond > 0
     ? speedPxPerSecond
@@ -28,8 +28,8 @@ export function advanceCaptionOffset(
   const frameElapsed = elapsed <= frameLimit ? elapsed : 0;
   const travel = speed * frameElapsed / 1000;
 
-  if (target <= current) return target;
-  return Math.min(target, current + travel);
+  if (target >= current) return target;
+  return Math.max(target, current - travel);
 }
 
 export class CaptionMotion {
@@ -64,21 +64,31 @@ export class CaptionMotion {
     this.lastTimestamp = null;
     this.needsMeasure = false;
     this.hasCaption = false;
+    this.isFrozen = false;
     this.resizeObserver = resizeObserverFactory?.(() => this.remeasure()) ?? null;
     this.resizeObserver?.observe(this.viewport);
   }
 
   render(text) {
     const hasCaption = Boolean(text);
+    const startsNewCaption = hasCaption && !this.hasCaption;
     this.caption.textContent = hasCaption ? text : "";
     this.caption.dataset.motion = hasCaption ? "active" : "idle";
-    this.hasCaption = hasCaption;
 
     if (!hasCaption) {
       this.resetMotion();
       return;
     }
 
+    if (startsNewCaption) {
+      this.currentOffset = Math.max(0, this.viewport.clientWidth);
+      this.targetOffset = this.currentOffset;
+      this.lastTimestamp = null;
+      this.applyOffset();
+    }
+
+    this.hasCaption = true;
+    this.isFrozen = false;
     this.needsMeasure = true;
     this.ensureFrame();
   }
@@ -96,14 +106,14 @@ export class CaptionMotion {
 
   onFrame(timestamp) {
     if (this.needsMeasure) {
-      const measuredTarget = captionOffset(
+      const measuredTarget = -captionOffset(
         this.caption.scrollWidth,
         this.viewport.clientWidth,
       );
       this.targetOffset = measuredTarget;
       this.needsMeasure = false;
 
-      if (this.currentOffset > this.targetOffset) {
+      if (this.currentOffset < this.targetOffset) {
         this.currentOffset = this.targetOffset;
         this.lastTimestamp = null;
         this.applyOffset();
@@ -117,7 +127,7 @@ export class CaptionMotion {
       return;
     }
 
-    if (this.currentOffset >= this.targetOffset) {
+    if (this.currentOffset <= this.targetOffset) {
       this.currentOffset = this.targetOffset;
       this.lastTimestamp = null;
       this.applyOffset();
@@ -138,7 +148,7 @@ export class CaptionMotion {
       this.applyOffset();
     }
 
-    if (this.currentOffset < this.targetOffset) {
+    if (this.currentOffset > this.targetOffset) {
       this.ensureFrame();
     } else {
       this.lastTimestamp = null;
@@ -146,29 +156,25 @@ export class CaptionMotion {
   }
 
   applyOffset() {
-    const roundedOffset = Number(this.currentOffset.toFixed(3));
+    const translateX = Number(this.currentOffset.toFixed(3));
     this.caption.style.setProperty(
       "--caption-offset",
-      roundedOffset === 0 ? "0px" : `-${roundedOffset}px`,
+      translateX === 0 ? "0px" : `${translateX}px`,
     );
   }
 
   freeze() {
     this.generation += 1;
     this.cancelPendingFrame();
-    this.targetOffset = Math.min(
-      this.currentOffset,
-      captionOffset(this.caption.scrollWidth, this.viewport.clientWidth),
-    );
-    this.currentOffset = this.targetOffset;
+    this.targetOffset = this.currentOffset;
     this.lastTimestamp = null;
     this.needsMeasure = false;
-    this.hasCaption = false;
+    this.isFrozen = true;
     this.applyOffset();
   }
 
   remeasure() {
-    if (!this.hasCaption) return;
+    if (!this.hasCaption || this.isFrozen) return;
     this.needsMeasure = true;
     this.ensureFrame();
   }
@@ -181,6 +187,7 @@ export class CaptionMotion {
     this.lastTimestamp = null;
     this.needsMeasure = false;
     this.hasCaption = false;
+    this.isFrozen = false;
     this.applyOffset();
   }
 
@@ -196,6 +203,7 @@ export class CaptionMotion {
     this.lastTimestamp = null;
     this.needsMeasure = false;
     this.hasCaption = false;
+    this.isFrozen = true;
     this.resizeObserver?.disconnect();
   }
 }
