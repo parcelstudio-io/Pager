@@ -265,6 +265,9 @@ test("browser assets contain one control and no provider credential name", async
   const app = contents[1];
   const styles = contents.at(-1);
   const captionRule = styles.match(/\.caption \{([\s\S]*?)\n\}/)?.[1] || "";
+  const captionViewportRule = styles.match(
+    /\.caption-viewport \{([\s\S]*?)\n\}/,
+  )?.[1] || "";
 
   assert.equal((html.match(/<button\b/g) || []).length, 1);
   assert.ok(html.indexOf('class="face"') < html.indexOf('id="caption-viewport"'));
@@ -274,7 +277,10 @@ test("browser assets contain one control and no provider credential name", async
   assert.equal(styles.includes("--caption-font-size: clamp(20px, 5vw, 24px)"), true);
   assert.equal(captionRule.includes("transition"), false);
   assert.equal(captionRule.includes("text-align: left"), true);
-  assert.match(styles, /\.caption-empty \{[\s\S]*?text-align: center;/);
+  assert.equal(captionViewportRule.includes("background:"), false);
+  assert.equal(captionViewportRule.includes("border:"), false);
+  assert.equal(html.includes("Captions appear here"), false);
+  assert.equal(styles.includes(".caption-empty"), false);
   assert.equal(styles.includes("will-change: transform"), true);
   assert.equal(contents[4].includes("DEFAULT_CAPTION_SPEED_PX_PER_SECOND = 60"), true);
   assert.match(app, /function interruptCaption\(\)[\s\S]*?captionMotion\.freeze\(\)/);

@@ -161,9 +161,6 @@ body {
   display: flex;
   align-items: center;
   overflow: hidden;
-  border: 1px solid rgba(255, 244, 218, 0.12);
-  border-radius: 17px;
-  background: rgba(0, 0, 0, 0.26);
   -webkit-mask-image: linear-gradient(to right, transparent, black 7%, black 93%, transparent);
   mask-image: linear-gradient(to right, transparent, black 7%, black 93%, transparent);
 }
@@ -182,12 +179,6 @@ body {
   transform: translate3d(var(--caption-offset), 0, 0);
   backface-visibility: hidden;
   will-change: transform;
-}
-
-.caption-empty {
-  color: rgba(255, 249, 236, 0.38);
-  font-weight: 500;
-  text-align: center;
 }
 
 .conversation-button {

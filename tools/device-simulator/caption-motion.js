@@ -36,7 +36,6 @@ export class CaptionMotion {
   constructor({
     caption,
     viewport,
-    placeholder = "Captions appear here",
     speedPxPerSecond = DEFAULT_CAPTION_SPEED_PX_PER_SECOND,
     maxFrameDeltaMs = DEFAULT_MAX_FRAME_DELTA_MS,
     reducedMotion = () => globalThis.matchMedia?.(
@@ -51,7 +50,6 @@ export class CaptionMotion {
   }) {
     this.caption = caption;
     this.viewport = viewport;
-    this.placeholder = placeholder;
     this.speedPxPerSecond = speedPxPerSecond;
     this.maxFrameDeltaMs = maxFrameDeltaMs;
     this.reducedMotion = typeof reducedMotion === "function"
@@ -72,8 +70,7 @@ export class CaptionMotion {
 
   render(text) {
     const hasCaption = Boolean(text);
-    this.caption.textContent = hasCaption ? text : this.placeholder;
-    this.caption.classList.toggle("caption-empty", !hasCaption);
+    this.caption.textContent = hasCaption ? text : "";
     this.caption.dataset.motion = hasCaption ? "active" : "idle";
     this.hasCaption = hasCaption;
 

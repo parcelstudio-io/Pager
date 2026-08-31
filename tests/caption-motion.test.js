@@ -131,7 +131,7 @@ test("caption reset cancels motion and rejects a stale frame", () => {
 
   assert.deepEqual(frames.cancelled, [1]);
   assert.equal(caption.dataset.motion, "idle");
-  assert.equal(caption.textContent, "Captions appear here");
+  assert.equal(caption.textContent, "");
   assert.equal(caption.properties.get("--caption-offset"), "0px");
 
   staleCallback(1_000);

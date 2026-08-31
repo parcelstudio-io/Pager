@@ -144,7 +144,7 @@ Leave that terminal open. Open this exact address in a current browser:
 http://localhost:3000
 ```
 
-Use `localhost`; do not open the HTML file directly with a `file://` URL. The first page should show the Mochi face, a caption area directly below it, one conversation start/stop control, and a private/idle state.
+Use `localhost`; do not open the HTML file directly with a `file://` URL. The first page should show the Mochi face, one conversation start/stop control, and a private/idle state. The caption position below the eyes is intentionally invisible while empty: there is no “Captions appear here” prompt, border, or tinted panel.
 
 ### Step 6: start one live session
 
@@ -259,6 +259,7 @@ BLE onboarding, the mobile app, cloud history sync, physical SIM/APN configurati
 - [ ] `npm test` passes on Node.js 20 or newer.
 - [ ] `npm start` serves `http://localhost:3000` without exposing the standard API key to browser source or logs.
 - [ ] The first screen is private/idle and does not capture automatically.
+- [ ] The empty caption position is transparent, with no placeholder text, border, or colored panel.
 - [ ] There is one visible conversation start/stop control, not per-turn push-to-talk.
 - [ ] Start visibly moves through connecting to live.
 - [ ] At least ten exchanges work without another button press.
