@@ -10,7 +10,7 @@ V1 is the smallest useful proof of Mochi's interaction, followed by a direct por
 | Increment | Purpose | Completion boundary |
 |---|---|---|
 | V1-A — laptop proof | Prove the live conversation, one-action start/stop contract, full-duplex WebRTC, voice interruption, face states, and sliding assistant caption with the least setup. | Runs in a local browser through the repository's session broker. It does not satisfy the on-device caption, acoustic, hardware-control, or privacy-circuit gates. |
-| V1-B — CoreS3 mule | Put the same state/caption contract on the K128, then measure its simultaneous microphone/speaker path and AEC over Wi-Fi. | Runs on the 2-inch device with the camera disabled. Its touchscreen and built-in power control are temporary development substitutes, not proof of the final two physical controls. |
+| V1-B — CoreS3 mule | Put the same state, layout, response-identity, and interruption contract on the K128, replace the browser's visual caption heuristic with rendered-audio pacing, then measure its simultaneous microphone/speaker path and AEC over Wi-Fi. | Runs on the 2-inch device with the camera disabled. Its touchscreen and built-in power control are temporary development substitutes, not proof of the final two physical controls. |
 
 This split carries forward the existing architecture and Claude/user purchase log while removing BLE, cellular, custom-PCB, and account-system work from the beginner's first success path.
 
@@ -20,7 +20,7 @@ This split carries forward the existing architecture and Claude/user purchase lo
 2. Amber means connecting and not yet listening. Cyan means the microphone is live. Private idle has no capture.
 3. While live, microphone capture and assistant playback remain active at the same time. No per-turn press is required.
 4. Speech during assistant playback interrupts the assistant through semantic VAD and WebRTC's managed playback/truncation path.
-5. Assistant transcript deltas produce a sliding caption directly below the face. The laptop caption proves the behavior; V1-B must repeat it on the K128 and pass PR-07's identifier, timing, playback-cursor, interruption-trim, and legibility checks before PR-07 may be claimed.
+5. Assistant transcript deltas produce a sliding caption directly below the face. The laptop proves only the browser's fixed-speed visual queue and interruption behavior; V1-B must replace that heuristic with rendered-audio pacing on the K128 and pass PR-07's identifier, timing, playback-cursor, interruption-trim, and legibility checks before PR-07 may be claimed.
 6. The standard OpenAI API key exists only in the local server process, never in browser assets or device firmware.
 7. Basic failures are safe and understandable: missing configuration prevents startup, microphone denial or loss fails closed, setup has a bounded readiness deadline, failed session setup closes local media, and Stop immediately closes tracks and playback.
 
@@ -85,7 +85,8 @@ Relevant official documentation:
 | `tools/prototype-server/server.js` | Load local configuration, serve only the simulator assets, validate an SDP request, add the server-owned Realtime session configuration, forward it to OpenAI, and return the SDP answer. This local harness is not the product gateway. |
 | `tools/device-simulator/app.js` | Own the WebRTC connection, microphone track, returned audio track, provider event handling, local start/stop lifecycle, and DOM rendering. |
 | `tools/device-simulator/state.js` | Keep session, input, and output states independent so user and assistant speech can overlap truthfully. Reject stale session events. |
-| `tools/device-simulator/caption-pacer.js` | Queue transcript deltas, reveal them behind live audio, bound display text, and discard unrendered text on interruption. |
+| `tools/device-simulator/caption-pacer.js` | Queue active-response transcript additions, reveal them behind playback onset into a response-scoped buffer, and discard queued, unrendered text on interruption. The browser retains the complete active response so its slower visual track cannot lose an unseen prefix. |
+| `tools/device-simulator/caption-motion.js` | Keep the active browser caption moving left at one fixed visual speed without per-word retargeting, and snap resets or reduced-motion updates. |
 | `tools/device-simulator/media.js` | Disable and stop every local media track, including a track whose permission request resolves after the user has already pressed Stop. |
 
 ### State model
@@ -102,9 +103,9 @@ The face is a projection of these facts using only two large round eyes: amber w
 
 ### Caption behavior
 
-`response.output_audio_transcript.delta` text is keyed to the active response and placed in a pacing queue. Small pieces are revealed into a bounded, single-line track below the face. As each spoken piece arrives, the track retargets from its current rendered position and eases left over most of the 280 ms pacing step, so words enter from the right without snapping. Superseded animation frames are cancelled, reset returns directly to the centered placeholder, and reduced-motion preferences disable the transition. On `input_audio_buffer.speech_started`, WebRTC handles response cancellation and audio truncation while the simulator immediately discards queued, not-yet-shown caption text and rejects late deltas from the interrupted response.
+`response.output_audio_transcript.delta` text is keyed to the active response and placed in a playback-onset-gated reveal queue. Small pieces extend one response-scoped line below the face. Once that line overflows its viewport, the browser track moves left linearly at a fixed **60 CSS px/s**. This intentionally slow browser presentation may trail audio and token arrival; its visual rate is independent of audio cadence, token cadence, word length, and transcript arrival. New text extends the line ahead without restarting, easing, accelerating, or decelerating the track. A caption reset snaps its offset to zero instead of sliding back; with `prefers-reduced-motion`, position updates snap rather than animate. On `input_audio_buffer.speech_started`, WebRTC handles response cancellation and audio truncation while the simulator immediately discards queued, not-yet-revealed transcript pieces, freezes the visual track at its current offset, and rejects late deltas from the interrupted response.
 
-This is an interaction proof, not the final PR-07 alignment algorithm. Browser WebRTC owns the render buffer, so V1-A cannot calculate the K128's exact rendered-sample boundary. V1-B/product firmware must pace against its own playback cursor and trim to the measured heard boundary as the existing requirements specify.
+The fixed-speed browser track is an interaction and motion heuristic, not the final PR-07 alignment algorithm. Its speed is intentionally independent of what has been heard, and browser WebRTC owns the render buffer, so V1-A cannot calculate the K128's exact rendered-sample boundary. V1-B/product firmware must instead schedule caption presentation from its own playback cursor and trim to the measured heard boundary as the existing requirements specify; the browser's `60 CSS px/s` value is not an on-device timing target.
 
 ## V1-B port plan
 
@@ -120,6 +121,6 @@ This is an interaction proof, not the final PR-07 alignment algorithm. Browser W
 
 ## Acceptance and non-claims
 
-V1-A passes when the repository setup works, one Start action creates a continuous live session, several exchanges require no further presses, speech interrupts playback, assistant text slides below the face, Stop closes local media, and browser assets contain no standard key.
+V1-A passes when the repository setup works, one Start action creates a continuous live session, several exchanges require no further presses, speech interrupts playback, and overflowing assistant text slides below the face at a fixed 60 CSS px/s without easing or per-word speed changes while additions queue ahead. Interruption freezes that visual track, a reset snaps it to zero, reduced-motion mode snaps position changes, Stop closes local media, and browser assets contain no standard key.
 
-V1-B passes its first interaction gate when those behaviors run on the K128 over Wi-Fi, the basic simultaneous-audio/AEC measurements are recorded, and the on-device caption trace demonstrates the active response/output identifiers, rendered-cursor pacing, no more than one segment of lead, first text within 500 ms of first rendered audio, heard-boundary trim on interruption, late-delta rejection, and arm's-length legibility. That is the evidence needed to claim the PR-07 gate; V1-B still does not claim compliance with the final latching-power, illuminated-button, hardware capture-gate, enclosure-acoustic, battery, BLE, cellular, cloud-history, or full EVT test requirements.
+V1-B passes its first interaction gate when the session, face, and interruption behaviors run on the K128 over Wi-Fi, the basic simultaneous-audio/AEC measurements are recorded, and the on-device caption replaces V1-A's motion heuristic with a trace demonstrating active response/output identifiers, rendered-cursor pacing, no more than one segment of lead, first text within 500 ms of first rendered audio, heard-boundary trim on interruption, late-delta rejection, and arm's-length legibility. That is the evidence needed to claim the PR-07 gate; V1-B still does not claim compliance with the final latching-power, illuminated-button, hardware capture-gate, enclosure-acoustic, battery, BLE, cellular, cloud-history, or full EVT test requirements.

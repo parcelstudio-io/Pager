@@ -152,7 +152,7 @@ Use `localhost`; do not open the HTML file directly with a `file://` URL. The fi
 2. Allow microphone access when the browser asks.
 3. Check that the UI shows a connecting state before a live state. Microphone capture must not be presented as live while connection setup is incomplete.
 4. Say a short sentence, then stop speaking naturally.
-5. Listen for the assistant response and watch the assistant words slide through the caption below the face.
+5. Listen for the assistant response and watch a long caption move left at one steady, deliberately slow speed once it overflows. The visual caption may trail audio/token arrival and queue new text ahead, but arriving words must not restart, ease, or change the track's speed.
 6. Continue for at least ten short exchanges without pressing once per utterance.
 
 The microphone remains available while assistant audio plays. That simultaneous input/output behavior—not alternating turns—is the experiment.
@@ -161,7 +161,7 @@ The microphone remains available while assistant audio plays. That simultaneous 
 
 While the assistant is speaking, say a clear new sentence such as “Wait—let me correct that.” The audible assistant output should stop promptly, should not resume from the cancelled response, and the caption should not continue presenting unheard words. Continue speaking without pressing the button again.
 
-This first pass is an observation, not the final 250 ms p95 barge-in measurement. Record whether it felt immediate, whether the laptop heard its own speaker, and whether any old audio or caption text returned.
+This first pass is an observation, not the final 250 ms p95 barge-in measurement. The cancelled caption should freeze immediately rather than continuing its slow crawl. Record whether interruption felt immediate, whether the laptop heard its own speaker, and whether any old audio or caption text returned.
 
 ### Step 8: stop locally
 
@@ -264,7 +264,8 @@ BLE onboarding, the mobile app, cloud history sync, physical SIM/APN configurati
 - [ ] At least ten exchanges work without another button press.
 - [ ] The user can speak while assistant audio is playing.
 - [ ] Clear near-end speech interrupts assistant playback and cancelled audio does not resume.
-- [ ] A sliding assistant caption is directly below the face and does not continue with obviously unheard cancelled text.
+- [ ] A sliding assistant caption is directly below the face; once it overflows it moves left at a fixed 60 CSS px/s without easing or per-word speed changes, and transcript additions queue ahead without retargeting that motion.
+- [ ] Interruption freezes the active caption track; caption reset snaps to its zero position; with the browser/OS reduced-motion preference enabled, position changes snap rather than animate; and the caption does not continue with obviously unheard cancelled text.
 - [ ] Stop during idle and stop during playback both return locally to private/idle.
 - [ ] Talking after stop creates no response.
 - [ ] Refresh/restart does not auto-start capture.

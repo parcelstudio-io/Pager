@@ -10,7 +10,6 @@
   --red: #ff716a;
   --caption-height: 58px;
   --caption-font-size: clamp(20px, 5vw, 24px);
-  --caption-slide-duration: 250ms;
 }
 
 * {
@@ -179,9 +178,8 @@ body {
   font-size: var(--caption-font-size);
   font-weight: 700;
   letter-spacing: 0.015em;
-  text-align: center;
+  text-align: left;
   transform: translate3d(var(--caption-offset), 0, 0);
-  transition: transform var(--caption-slide-duration) cubic-bezier(0.22, 0.61, 0.36, 1);
   backface-visibility: hidden;
   will-change: transform;
 }
@@ -189,16 +187,7 @@ body {
 .caption-empty {
   color: rgba(255, 249, 236, 0.38);
   font-weight: 500;
-}
-
-.caption[data-motion="idle"] {
-  transition: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .caption {
-    transition: none;
-  }
+  text-align: center;
 }
 
 .conversation-button {

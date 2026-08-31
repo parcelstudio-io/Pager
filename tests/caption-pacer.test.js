@@ -48,6 +48,18 @@ test("caption text stays bounded to the display budget", () => {
   assert.equal(boundCaption("alpha beta gamma", 10), "beta gamma");
 });
 
+test("the default caption buffer preserves a complete response for slow scrolling", () => {
+  const pacer = new CaptionPacer({ autoStart: false });
+  const response = "A deliberately long response segment. ".repeat(150).trim();
+
+  pacer.begin("response-1");
+  pacer.push("response-1", response);
+  pacer.flush("response-1");
+
+  assert.equal(pacer.visible, response);
+  assert.ok(pacer.visible.length > 4_096);
+});
+
 test("a stale response delta cannot replace the active caption", () => {
   const pacer = new CaptionPacer({ autoStart: false });
   pacer.begin("response-old");

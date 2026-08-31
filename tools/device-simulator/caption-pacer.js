@@ -1,4 +1,4 @@
-const DEFAULT_MAX_CHARACTERS = 220;
+const DEFAULT_MAX_CHARACTERS = Number.POSITIVE_INFINITY;
 
 export function boundCaption(text, maxCharacters = DEFAULT_MAX_CHARACTERS) {
   if (text.length <= maxCharacters) return text;

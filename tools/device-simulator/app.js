@@ -94,6 +94,11 @@ function activeResponseIdFor(session, event) {
   return responseIdFor(event) || session.currentResponseId;
 }
 
+function interruptCaption() {
+  captionPacer.interrupt();
+  captionMotion.freeze();
+}
+
 function maybeOpenCapture(session) {
   if (!isCurrent(session) || !session.dataChannelOpen || !session.sessionCreated) return;
   if (state.session !== SESSION.CONNECTING) return;
@@ -122,7 +127,7 @@ function handleRealtimeEvent(session, event) {
       break;
 
     case "input_audio_buffer.speech_started":
-      captionPacer.interrupt();
+      interruptCaption();
       dispatch({ type: "user_speech_started", epoch });
       break;
 
@@ -155,7 +160,7 @@ function handleRealtimeEvent(session, event) {
       break;
 
     case "output_audio_buffer.cleared":
-      captionPacer.interrupt();
+      interruptCaption();
       dispatch({ type: "output_stopped", epoch });
       break;
 
