@@ -21,7 +21,7 @@ let nextEpoch = 0;
 let activeSession = null;
 
 function renderCaption(text) {
-  const shown = text || "Assistant captions appear here";
+  const shown = text || "Captions appear here";
   caption.textContent = shown;
   caption.classList.toggle("caption-empty", !text);
 

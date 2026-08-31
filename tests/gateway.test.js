@@ -262,6 +262,10 @@ test("browser assets contain one control and no provider credential name", async
 
   assert.equal((html.match(/<button\b/g) || []).length, 1);
   assert.ok(html.indexOf('class="face"') < html.indexOf('id="caption-viewport"'));
+  assert.equal(html.includes('class="mouth"'), false);
+  assert.equal(styles.includes(".mouth"), false);
+  assert.equal(styles.includes("--caption-height: 58px"), true);
+  assert.equal(styles.includes("--caption-font-size: clamp(20px, 5vw, 24px)"), true);
   assert.equal(app.includes("button.dataset.indicator = view.indicator"), true);
   assert.match(app, /pagehide[\s\S]*stopSession\(\)/);
   assert.equal(styles.includes('[data-indicator="amber"]'), true);

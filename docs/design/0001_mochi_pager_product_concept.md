@@ -15,7 +15,7 @@ The reference prototype gets one thing exactly right: two luminous eyes and a li
 ## Physical language
 
 - Rounded pebble/pager body with a matte cream, mint, coral, or lavender shell and an optional replaceable silicone bumper.
-- Black approximately 1.7–2.0-inch display window occupies most of the front, pending product geometry. The CoreS3 mule fixes only its EVT screen at 2 inches. The normal view has two high-contrast eyes, a small mouth only when it adds expression, and a sliding caption line beneath the face that renders the assistant's words as it speaks (PR-07) — the accessibility and honesty channel the reference prototype's scrolling status line hinted at. The caption is paced against rendered audio (never more than one caption segment ahead) and is trimmed to the words actually heard when the user barges in.
+- Black approximately 1.7–2.0-inch display window occupies most of the front, pending product geometry. The CoreS3 mule fixes only its EVT screen at 2 inches. The normal view has only two large, round, high-contrast eyes—no mouth or lips—and a large-type sliding caption band beneath them that renders the assistant's words as it speaks (PR-07). The caption is paced against rendered audio (never more than one caption segment ahead) and is trimmed to the words actually heard when the user barges in.
 - Two microphone ports sit away from the speaker path. A lower-front or lower-side speaker grille points toward the user without hiding behind a hand.
 - The product has exactly two physical controls ([ADR 0008](../decisions/0008_use_exactly_two_physical_controls.md)). First, a large illuminated top conversation button: one press requests a session, amber shows connection with capture gated, cyan shows listening, and another press stops from any session state. Gate A uses a touchscreen toggle because the purchased CoreS3 K128's side power button must not be repurposed; a product-like external GPIO button with a visible session indicator is added on the acoustic mule before ergonomic judgment. Second, a latching power slide switch: off de-energizes the system and microphone rails even with charger, debug, or modem paths attached, so verified power-off is the ultimate microphone kill. There are no volume buttons and no separate mute slider; volume lives on the touchscreen and in the companion app.
 - On the custom carrier, one capture-enable command net is hardware-biased inactive through reset/boot/crash/watchdog/recovery/OTA, gates the microphone path, and drives the cyan indicator, so firmware cannot command them independently. Component and wiring faults are still tested; only verified hard power-off is hardware-certain.
@@ -24,11 +24,11 @@ The reference prototype gets one thing exactly right: two luminous eyes and a li
 
 The public shared answer proposes 95 × 60 × 30 mm; Mochi adopts that as a maximum rather than attributing “maximum” to the source. The EVT stretch target is approximately 80 × 56 × 26 mm, subject to real component, antenna, acoustic-cavity, and battery measurements. Comfort and RF performance take precedence over hitting the stretch dimensions.
 
-The reference footage does not show a discernible mouth or smile. Mochi's mouth, cheek, and smile states are original additions.
+The reference footage does not show a discernible mouth or smile. Mochi keeps that restraint: expression comes from the two eyes, their motion, color/light, and the caption—not from a mouth, lips, cheeks, or smile graphic.
 
 ## Character and expression system
 
-The face must never wait on the network to acknowledge a physical action. A local state machine drives 30 fps animation and receives optional emotional accents from the assistant. Session, microphone, output, connectivity, and safety are composable signals rather than one exclusive `LISTENING → THINKING → SPEAKING` sequence; Mochi can visibly hear the user while its mouth is still playing assistant audio.
+The face must never wait on the network to acknowledge a physical action. A local state machine drives 30 fps animation and receives optional emotional accents from the assistant. Session, microphone, output, connectivity, and safety are composable signals rather than one exclusive `LISTENING → THINKING → SPEAKING` sequence; Mochi can visibly hear the user while its eye animation still reflects assistant playback.
 
 | Signal/state | Immediate visual behavior | Source of truth |
 |---|---|---|
@@ -38,8 +38,8 @@ The face must never wait on the network to acknowledge a physical action. A loca
 | Live session | Persistent cyan halo/status mark; conversation-button light on | Local capture/session state |
 | User speech | Eyes widen and lean toward a tiny post-AEC input meter | Local VAD |
 | Thinking | Three subtle dots travel only while input is quiet and output is idle | Response state |
-| Assistant speech | Mouth/cheeks respond to local audio amplitude; live halo remains visible | Audio output |
-| Delighted | Crescent eyes and a brief smile/bounce | Assistant accent |
+| Assistant speech | Large round eyes subtly pulse with local audio; live halo remains visible | Audio output |
+| Delighted | Bright crescent eyes and a brief bounce | Assistant accent |
 | Confused | One eye tilts; question mark appears briefly | Assistant accent/error |
 | Caption | Sliding text line beneath the eyes renders assistant speech, paced against rendered audio (at most one segment ahead); trimmed on barge-in | Gateway transcript deltas + playback cursor |
 | Offline | Cloud breaks into two pieces; face remains usable | Network manager |

@@ -8,6 +8,8 @@
   --amber: #ffb43b;
   --cyan: #59e6ea;
   --red: #ff716a;
+  --caption-height: 58px;
+  --caption-font-size: clamp(20px, 5vw, 24px);
 }
 
 * {
@@ -86,11 +88,11 @@ body {
 
 .face {
   position: absolute;
-  inset: 56px 36px 70px;
+  inset: 55px 28px 88px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   place-items: center;
-  column-gap: 58px;
+  column-gap: 50px;
 }
 
 .listening-halo {
@@ -111,57 +113,38 @@ body {
 
 .eye {
   position: relative;
-  width: 48px;
-  height: 62px;
+  width: 78px;
+  height: 78px;
   overflow: hidden;
-  border-radius: 48% 48% 46% 46%;
+  border-radius: 50%;
   background: var(--cream);
-  box-shadow: 0 0 22px rgba(255, 244, 218, 0.15);
+  box-shadow: 0 0 28px rgba(255, 244, 218, 0.2);
   transform-origin: center;
   animation: blink 5.8s infinite;
-  transition: transform 150ms ease, height 150ms ease;
+  transition: transform 150ms ease;
 }
 
 .eye span {
   position: absolute;
-  width: 14px;
-  height: 19px;
+  width: 20px;
+  height: 20px;
   left: 50%;
-  top: 53%;
+  top: 52%;
   border-radius: 50%;
   background: var(--ink);
   transform: translate(-50%, -50%);
 }
 
 .pager-screen[data-input="user_speaking"] .eye {
-  height: 68px;
-  transform: translateY(-3px) scaleX(1.06);
+  transform: translateY(-3px) scale(1.06);
 }
 
 .pager-screen[data-output="generating"] .eye span {
   animation: think 1.15s ease-in-out infinite alternate;
 }
 
-.mouth {
-  position: absolute;
-  left: 50%;
-  bottom: 4px;
-  width: 43px;
-  height: 22px;
-  overflow: hidden;
-  border: 4px solid var(--cream);
-  border-top: 0;
-  border-radius: 0 0 30px 30px;
-  transform: translateX(-50%);
-  opacity: 0.88;
-}
-
-.pager-screen[data-output="playing"] .mouth {
-  height: 32px;
-  border: 0;
-  border-radius: 48%;
-  background: var(--cream);
-  animation: talk 180ms ease-in-out infinite alternate;
+.pager-screen[data-output="playing"] .eye {
+  animation: speak-eyes 420ms ease-in-out infinite alternate;
 }
 
 .pager-screen[data-input="user_speaking"] .listening-halo {
@@ -171,15 +154,15 @@ body {
 
 .caption-viewport {
   position: absolute;
-  left: 22px;
-  right: 22px;
-  bottom: 22px;
-  height: 37px;
+  left: 16px;
+  right: 16px;
+  bottom: 15px;
+  height: var(--caption-height);
   display: flex;
   align-items: center;
   overflow: hidden;
   border: 1px solid rgba(255, 244, 218, 0.12);
-  border-radius: 13px;
+  border-radius: 17px;
   background: rgba(0, 0, 0, 0.26);
   mask-image: linear-gradient(to right, transparent, black 7%, black 93%, transparent);
 }
@@ -187,11 +170,11 @@ body {
 .caption {
   display: inline-block;
   min-width: 100%;
-  padding: 0 14px;
+  padding: 0 16px;
   white-space: nowrap;
   color: #fff9ec;
-  font-size: clamp(13px, 3.6vw, 17px);
-  font-weight: 650;
+  font-size: var(--caption-font-size);
+  font-weight: 700;
   letter-spacing: 0.015em;
   text-align: center;
   transform: translateX(0);
@@ -271,9 +254,9 @@ audio {
   to { transform: scale(0.96); }
 }
 
-@keyframes talk {
-  from { transform: translateX(-50%) scaleY(0.55) scaleX(0.9); }
-  to { transform: translateX(-50%) scaleY(1.05) scaleX(1.06); }
+@keyframes speak-eyes {
+  from { transform: translateY(1px) scale(0.97); }
+  to { transform: translateY(-2px) scale(1.04); }
 }
 
 @keyframes think {

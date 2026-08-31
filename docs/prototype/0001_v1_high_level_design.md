@@ -98,7 +98,7 @@ The implementation uses parallel regions rather than a turn-based `LISTENING`/`S
 | Input | `gated`, `quiet`, `user_speaking` | Input can be `user_speaking` while output is `playing`. |
 | Output | `idle`, `generating`, `playing` | Output state never disables the microphone track. |
 
-The face is a projection of these facts: amber while connecting, cyan while live, raised/speaking eyes for user speech, mouth motion for assistant playback, and a private neutral face while inactive.
+The face is a projection of these facts using only two large round eyes: amber while connecting, cyan while live, raised eyes for user speech, a subtle eye pulse for assistant playback, and a private neutral face while inactive. No mouth or lips are rendered. The large caption band remains visually separate below the eyes.
 
 ### Caption behavior
 
