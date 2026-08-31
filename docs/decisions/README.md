@@ -16,6 +16,10 @@ Architecture decision records (ADRs) preserve why a choice was made, its costs, 
 1. [Use an ESP32-S3 integrated interaction mule](0001_use_esp32s3_interaction_mule.md)
 2. [Use Wi-Fi first and 4G LTE failover](0002_use_wifi_first_and_4g_lte_failover.md)
 3. [Use a secure Realtime gateway](0003_use_secure_realtime_gateway.md)
-4. [Start with push-to-talk and BLE](0004_start_with_push_to_talk_and_ble.md)
+4. [Start with push-to-talk and BLE — superseded](0004_start_with_push_to_talk_and_ble.md)
 5. [Build a modular carrier before integrated RF](0005_build_modular_carrier_before_integrated_rf.md)
+6. [Use button-started full-duplex conversation sessions](0006_use_button_started_full_duplex_sessions.md)
+7. [Use a companion app with BLE provisioning and opt-in cloud history sync](0007_use_companion_app_and_cloud_history_sync.md)
+8. [Use exactly two physical controls](0008_use_exactly_two_physical_controls.md)
 
+The implementation contract shared by ADRs 0002, 0003, 0007, and 0008 is consolidated in [Companion app and synchronization architecture](../design/0002_companion_app_and_sync_architecture.md).

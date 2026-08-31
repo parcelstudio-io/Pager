@@ -52,7 +52,7 @@ A modular carrier keeps an evaluated cellular breakout replaceable. The board st
 - actual connector and cable stack;
 - charger, regulator, battery gauge, protection, and power sequencing;
 - audio/display/control placement;
-- mute implementation;
+- the capture-enable command that is hardware-biased inactive from reset and couples the microphone gate to the cyan indicator, plus a power-switch/power-path design that prevents USB, debug, or modem back-power ([ADR 0008](../docs/decisions/0008_use_exactly_two_physical_controls.md));
 - mechanical fit and assembly order;
 - firmware flashing and production test.
 
@@ -63,7 +63,7 @@ Expect a second spin. A first PCB that yields measurements and an unambiguous fi
 1. Freeze interfaces from measured prototypes, not aspiration.
 2. Draw the power tree and calculate typical/peak current and heat.
 3. Capture schematic with exact manufacturer part numbers and alternates.
-4. Run ERC and manually review every connector, polarity, boot pin, and voltage domain.
+4. Run ERC and manually review every connector, polarity, boot pin, voltage domain, fail-low capture-gate default, and unpowered back-power path.
 5. Import manufacturer-approved footprints/3D models; verify pin 1 and real dimensions against datasheets.
 6. Bench-validate the selected charger, power-path controller, regulator, gauge, and protection behavior against representative load steps before committing that circuit.
 7. Place from mechanics and current/RF/acoustic constraints, then route.
@@ -74,7 +74,7 @@ Expect a second spin. A first PCB that yields measurements and an unambiguous fi
 
 ## Bring-up
 
-Do not plug in everything and hope. Inspect under magnification; check for shorts from every rail to ground; power from a current-limited source; validate one rail at a time; confirm clocks/reset; flash a minimal diagnostic; then attach display, audio, and modem incrementally. Log board serial, rework, measurements, and failures.
+Do not plug in everything and hope. Inspect under magnification; check for shorts from every rail to ground; power from a current-limited source; validate one rail at a time; confirm clocks/reset; flash a minimal diagnostic; then attach display, audio, and modem incrementally. With the latching switch off, attach battery/charger, USB, debug, and modem paths one at a time and prove that neither the system nor microphone rail rises. Exercise reset, bootloader, watchdog, failed OTA, and crash paths and prove the capture command remains inactive. Log board serial, rework, measurements, and failures.
 
 EVT validates engineering. DVT validates a design close to the product across environment, mechanics, RF, compliance pre-scan, and reliability. PVT validates the manufacturing process and yield. Names vary, but separating those questions prevents a polished prototype from being mistaken for a manufacturable product.
 

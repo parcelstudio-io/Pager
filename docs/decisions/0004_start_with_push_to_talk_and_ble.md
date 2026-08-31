@@ -1,7 +1,12 @@
 # ADR 0004 — Start with push-to-talk and BLE
 
-Status: Accepted for EVT  
+Status: Superseded
+
 Date: 2026-08-30
+
+Superseded by: [ADR 0006](0006_use_button_started_full_duplex_sessions.md) (interaction model) and [ADR 0008](0008_use_exactly_two_physical_controls.md) (microphone-kill slider)
+
+The interaction decision in this record is superseded, and the microphone-kill slider it introduced was later removed from the product target by ADR 0008. Its BLE provisioning direction is now made concrete by [ADR 0007](0007_use_companion_app_and_cloud_history_sync.md); the original low-bandwidth-accessory scope is deferred from MVP. The evidence that motivated the original half-duplex plan remains part of project history.
 
 ## Context
 

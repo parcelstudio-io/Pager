@@ -28,6 +28,10 @@ The device performs local UI, input, audio capture/playback, buffering, connecti
 - ESP32-S3 supports BLE, not Bluetooth Classic/A2DP.
 - We may later choose XIAO ESP32-S3 or a module-on-carrier design after pin, memory, thermal, and mechanical needs settle.
 
+## Amendment — 2026-08-30: full-duplex validation load
+
+[ADR 0006](0006_use_button_started_full_duplex_sessions.md) changes the interaction target without changing this mule selection. The CoreS3 must now be measured under simultaneous capture/playback, local AEC/VAD, codec, encrypted transport, UI, and barge-in load. Its feature list is not proof of product capability. Failure to retain the defined CPU, memory, audio-deadline, power, and acoustic margins triggers this record's compute/AEC revisit condition.
+
 ## Revisit when
 
 Revisit if the MCU cannot sustain display animation plus audio transport, required codecs do not fit, secure OTA is untenable, AEC needs unavailable acceleration, or Bluetooth Classic becomes a non-negotiable product requirement.

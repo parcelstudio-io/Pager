@@ -42,7 +42,7 @@ Capacitors help at different frequencies, but they do not compensate for an unde
 
 Brownouts can masquerade as firmware bugs: modem detach, USB reset, audio click, MCU reboot, or corrupt storage. Measure the rail at the modem pins with an oscilloscope while forcing weak-signal uplink traffic. A slow USB meter is useful for energy averages but may miss the damaging peak.
 
-Heat follows power loss in the modem, regulator, battery, and RF power amplifier. Test simultaneous conversation, poor signal, charging, Wi-Fi/BLE coexistence, and a closed enclosure. The user's hand changes both heat rejection and antenna tuning.
+Heat follows power loss in the modem, regulator, battery, and RF power amplifier. Test simultaneous microphone uplink, speaker downlink, AEC, display animation, poor signal, charging, Wi-Fi/BLE coexistence, and a closed enclosure. The user's hand changes both heat rejection and antenna tuning.
 
 ## Antennas are part of the enclosure
 
@@ -71,8 +71,8 @@ Requirements depend on geography and product classification. Engage an accredite
 
 1. Use a phone hotspot to screen experience over that phone's mobile backhaul, recording its carrier and radio technology when available; this does not validate the target modem.
 2. Use SIM7600G-H by USB on a Linux host to test activation, network, signal, data, GNSS, and operator behavior.
-3. Power and thermally instrument the modem separately.
-4. Prove one exact connection from the intended ESP32-S3 path to the modem, including host/device role, flow control, compression/throughput, CPU/RAM, reset/reconnect, power sequencing, and simultaneous face/audio load. If it fails, reopen compute architecture before PCB freeze.
+3. Power and thermally instrument the modem separately. With the pager's latching switch off, prove that modem power/data/control pins cannot back-power the system or microphone rails.
+4. Prove one exact connection from the intended ESP32-S3 path to the modem, including host/device role, flow control, compression/throughput, CPU/RAM, reset/reconnect, power sequencing, and simultaneous face and sliding-caption rendering, AEC, I²S receive/transmit, and encrypted uplink/downlink. Measure provisioning-time BLE load separately while capture is gated; the companion BLE link is shut down before live audio. If the modem path fails, reopen compute architecture before PCB freeze.
 5. Treat the large SIM7600 HAT as an external bench mule. Select an exact compact modular board before enclosure/carrier commitment and test its documented antenna positions in mock-ups.
 6. Select a regional production module and compliance plan only with evidence.
 
@@ -85,4 +85,4 @@ This order is why [ADR 0002](../docs/decisions/0002_use_wifi_first_and_4g_lte_fa
 - [FCC KDB 447498 RF exposure guidance](https://apps.fcc.gov/oetcf/kdb/forms/FTSSearchResultPage.cfm?id=20676&switch=P)
 - [PTCRB integrated-device process](https://www.ptcrb.com/get-certified/)
 - [ISED RSS-102 radiofrequency exposure compliance](https://ised-isde.canada.ca/site/spectrum-management-telecommunications/en/devices-and-equipment/radio-equipment-standards/radio-standards-specifications-rss/rss-102-radio-frequency-rf-exposure-compliance-radiocommunication-apparatus-all-frequency-bands)
-- [UN Manual of Tests and Criteria, lithium battery subsection 38.3](https://unece.org/transport/dangerous-goods/manual-tests-and-criteria)
+- [UN Manual of Tests and Criteria Rev.8 (2023) and Amendment 1 to Rev.8 (2025), lithium battery subsection 38.3](https://unece.org/transport/standards/transport/dangerous-goods/un-manual-tests-and-criteria-rev8-2023)

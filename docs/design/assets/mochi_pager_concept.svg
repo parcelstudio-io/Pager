@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
   <title id="title">Mochi Pager concept</title>
-  <desc id="desc">Front and side industrial-design concept with expressive face states and annotated controls.</desc>
+  <desc id="desc">Front and side industrial-design concept with expressive face states, a cyan-lit start/stop conversation button, and annotated privacy controls.</desc>
   <defs>
     <linearGradient id="shell" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#fff4df"/>
@@ -31,32 +31,35 @@
     <rect x="211" y="286" width="84" height="54" rx="26" fill="#78eff2"/>
     <rect x="345" y="286" width="84" height="54" rx="26" fill="#78eff2"/>
     <path d="M280 386 Q320 414 360 386" fill="none" stroke="#78eff2" stroke-width="10" stroke-linecap="round"/>
-    <text x="320" y="442" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" fill="#b8c7cf">Listening…</text>
+    <text x="320" y="442" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" fill="#b8c7cf">…sunny in Seoul today!</text>
     <g fill="#9a8668">
       <circle cx="244" cy="508" r="5"/><circle cx="264" cy="508" r="5"/><circle cx="284" cy="508" r="5"/>
       <circle cx="304" cy="508" r="5"/><circle cx="324" cy="508" r="5"/><circle cx="344" cy="508" r="5"/>
       <circle cx="364" cy="508" r="5"/><circle cx="384" cy="508" r="5"/>
     </g>
     <rect x="268" y="133" width="104" height="22" rx="11" fill="#fa8f78" stroke="#cb6655" stroke-width="3"/>
+    <rect x="282" y="139" width="76" height="8" rx="4" fill="#78eff2"/>
     <rect x="513" y="270" width="14" height="92" rx="7" fill="#ef9a72" stroke="#b9634c" stroke-width="3"/>
-    <rect x="513" y="392" width="12" height="46" rx="6" fill="#c9b291"/>
-  </g>
+      </g>
 
   <text x="320" y="608" text-anchor="middle" class="label">Front · stretch target ≈ 80 × 56 mm</text>
   <line x1="120" y1="633" x2="520" y2="633" class="dim"/>
   <text x="320" y="660" text-anchor="middle" class="small">maximum product envelope: 95 × 60 × 30 mm</text>
 
   <path d="M370 143 C470 104, 605 111, 656 142" class="callout"/>
-  <text x="672" y="149" class="label">Top action / push-to-talk button</text>
+  <text x="672" y="143" class="label">Conversation button — press to start / stop</text>
+  <text x="672" y="168" class="small">amber = connecting · cyan = listening · off = private</text>
   <path d="M525 316 C610 290, 657 271, 730 266" class="callout"/>
-  <text x="746" y="272" class="label">Latching microphone-kill slider</text>
-  <text x="746" y="296" class="small">paired with a hardware-driven indicator</text>
-  <path d="M384 509 C555 515, 634 512, 730 500" class="callout"/>
-  <text x="746" y="507" class="label">Speaker grille and tuned cavity</text>
+  <text x="746" y="272" class="label">Latching power slide switch</text>
+  <text x="746" y="296" class="small">off physically de-energizes the device</text>
+  <path d="M384 509 C458 517, 493 507, 528 490" class="callout"/>
+  <text x="544" y="488" class="label">Speaker grille</text>
+  <text x="544" y="512" class="small">with a tuned cavity</text>
 
   <g transform="translate(720 340)" filter="url(#shadow)">
     <path d="M30 0 H142 Q176 0 183 34 V212 Q178 246 142 246 H30 Q5 241 0 212 V34 Q5 5 30 0Z" fill="url(#shell)" stroke="#d2bea1" stroke-width="4"/>
     <rect x="66" y="-12" width="58" height="15" rx="7" fill="#fa8f78"/>
+    <rect x="75" y="-8" width="40" height="6" rx="3" fill="#78eff2"/>
     <rect x="172" y="79" width="18" height="62" rx="8" fill="#ef9a72"/>
     <rect x="50" y="235" width="84" height="17" rx="8" fill="#bcc5ca"/>
   </g>
@@ -64,7 +67,7 @@
   <line x1="720" y1="650" x2="903" y2="650" class="dim"/>
   <text x="812" y="682" text-anchor="middle" class="small">rounded back, removable clip, USB-C bottom</text>
 
-  <g transform="translate(950 344)">
+  <g transform="translate(925 344)">
     <text x="0" y="0" class="label">Local face grammar</text>
     <g transform="translate(0 28)">
       <rect width="180" height="58" rx="16" fill="#101820"/>
@@ -88,4 +91,3 @@
 
   <text x="65" y="724" class="small">Concept sketch, not a dimensioned mechanical drawing. Antenna, battery, speaker cavity, microphone path, and fastener stack must drive the CAD.</text>
 </svg>
-

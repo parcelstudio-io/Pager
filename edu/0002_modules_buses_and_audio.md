@@ -18,7 +18,7 @@ Never infer safe battery charging from “the connector fits.” A lithium cell 
 
 | Interface | Mental model | Typical Mochi use | Important constraints |
 |---|---|---|---|
-| GPIO | One software-controlled wire | Button, mute, LED, interrupt | Voltage, pull-up/down, debounce, boot-strapping pins |
+| GPIO | One software-controlled wire | Conversation button, capture-enable/indicator net, interrupt | Voltage, pull-up/down, debounce, boot-strapping pins |
 | I²C | Addressed shared two-wire control bus | Sensors, fuel gauge, small OLED | Pull-ups, address collisions, capacitance, modest speed |
 | SPI | Clocked bus with separate select per device | Fast display, external flash | More wires, routing, chip selects, mode/timing |
 | I²S | Continuous synchronous digital audio stream | Microphone, codec, amplifier | Master clocking, sample format/rate, DMA, jitter |
@@ -39,7 +39,11 @@ Before wiring, make an interface table:
 | `MIC_DATA` | microphone | MCU | 3.3 V | in | high-Z | DMA input |
 | `MODEM_TX` | modem | MCU | verify datasheet | in | varies | “TX” is named from modem perspective |
 
-Then check every board's schematic, not only the shop listing. Confirm whether a pin is raw-cell voltage, regulated 3.3 V, USB 5 V, or an input that cannot back-power the board. Join grounds intentionally. Add decoupling close to the load and keep noisy speaker/modem current away from microphone/reference paths.
+The shipping enclosure exposes exactly two physical controls: the debounced conversation button and a latching power switch that physically de-energizes the system in `OFF`. Volume, setup status, and confirmations may use the touchscreen, but they do not add switches. The conversation button always means start/stop in normal operation. Its only setup overload is the boot-only recovery chord: hold it while sliding power on for eight seconds; firmware enters a capture-gated provisioning state rather than a conversation.
+
+Two electrical properties make those controls truthful. First, the capture-enable command must be pulled to the inactive state before GPIO initialization and remain fail-low through reset, boot, watchdog/crash, recovery, and OTA; firmware asserts the coupled gate/indicator only after authenticated live readiness. Second, `OFF` must isolate the system and microphone rails even with USB charging, a debug probe, or the modem attached. Load switches, ideal-diode/power-path parts, level isolation, and I/O current-limit choices must prevent both supply-rail and signal-pin back-power.
+
+Then check every board's schematic, not only the shop listing. Confirm whether a pin is raw-cell voltage, regulated 3.3 V, USB 5 V, or an input that cannot back-power the board. Trace unpowered-state current paths through USB/debug connectors and modem UART/USB/GPIO pins rather than assuming a disabled regulator is enough. Join grounds intentionally. Add decoupling close to the load and keep noisy speaker/modem current away from microphone/reference paths.
 
 Power the system in stages with a current-limited bench supply when possible. Verify rails before inserting expensive modules. A cheap continuity check catches many reversed connectors.
 
@@ -50,10 +54,10 @@ A microphone converts pressure to samples. Key terms are:
 - **Sample rate:** samples per second, such as 16 or 24 kHz for speech.
 - **Bit depth:** bits per sample; PCM16 uses 16.
 - **Channels:** mono is usually adequate for uplink; two mics may support beamforming/noise processing.
-- **Codec:** representation that compresses audio. Raw mono PCM16 at 24 kHz is 384 kbit/s before overhead, about 173 MB/hour in one direction. Opus can be far smaller at voice settings.
+- **Codec:** representation that compresses audio. Raw mono PCM16 at 24 kHz is 384 kbit/s before overhead, about 173 MB/hour in one direction. Opus is far smaller at voice settings: Espressif's ESP32-S3-optimized encoder (`esp_audio_codec` v2.6.2) supports 8–48 kHz at CBR 20–510 kbps, and a 16 kHz mono voice stream at ~20–24 kbps is roughly 9–11 MB/hour per direction — a ~16–19× reduction that changes both UART feasibility and cellular data-plan math. (The registry's 24.9% CPU / 29.4 KB figure was measured at 48 kHz stereo, 90 kbps, complexity 0; 16 kHz mono is substantially cheaper, and higher complexity costs more.)
 - **Frame:** a small time slice, often tens of milliseconds, processed as one unit.
 
-On an MCU, I²S DMA moves samples without interrupting the CPU for every bit. Software consumes blocks from DMA buffers, filters/resamples, and encodes or transmits them. Playback reverses this path through a codec or I²S digital amplifier.
+On an MCU, I²S DMA moves samples without interrupting the CPU for every bit. Software consumes blocks from DMA buffers, filters/resamples, and encodes or transmits them. Playback reverses this path through a codec or I²S digital amplifier. Full duplex requires RX and TX to remain scheduled concurrently with bounded queues and a shared or explicitly calibrated timebase.
 
 The MAX98357A reference is a bridge-tied class-D I²S amplifier: it accepts digital samples and switches power efficiently into a speaker. Neither speaker output is ground, so neither may be connected to ground or treated as a ground-referenced headphone output. At a 5 V supply it can also overdrive a 1 W speaker; enforce an amplitude/volume ceiling or choose a suitably rated driver and validate heat/distortion. It is not an acoustic echo canceller. A microphone hearing that speaker creates an echo path through air, enclosure, desk, and chassis vibration.
 
@@ -61,7 +65,7 @@ The MAX98357A reference is a bridge-tied class-D I²S amplifier: it accepts digi
 
 When Mochi speaks and listens simultaneously, its own output may be orders of magnitude louder at the microphone than the user's voice. Acoustic echo cancellation (AEC) needs a clean copy of the playback signal, adaptive modeling of the changing acoustic path, consistent clocks/delay, and enough processing. Noise suppression and automatic gain control solve different problems and can interact badly.
 
-Start with push-to-talk so capture and playback are separated. Build an enclosed acoustic mule before evaluating AEC because port shape, speaker cavity, gasket leakage, and hand position change the echo. A good algorithm cannot fully rescue clipping or a rattling enclosure.
+Mochi therefore builds simultaneous capture/playback and a synchronized render-reference path from the first audio slice. On the CoreS3 mule that reference is the codec's speaker-feedback lane; a later carrier may use post-amplifier analog feedback, rendered digital PCM, or both, but it must document and measure the choice. A developer fixture may force a push-to-talk-style gated capture comparison to isolate echo processing from microphone, network, and model failures, but shipping firmware exposes no user-facing push-to-talk or fallback mode: the conversation button always starts or stops a full-duplex session. Build an enclosed acoustic mule before accepting AEC because port shape, speaker cavity, gasket leakage, hand/table position, volume, nonlinear amplifier/speaker behavior, and capture/render clock drift change the echo. Test residual echo and near-end intelligibility during double-talk; a good algorithm cannot fully rescue clipping or a rattling enclosure.
 
 ## Debugging order
 
@@ -74,4 +78,4 @@ For each subsystem, test from physical layer upward:
 5. Driver behavior under load and failure.
 6. Integrated user behavior.
 
-This is the hardware equivalent of checking DNS and TCP before debugging application JSON. See [ADR 0004](../docs/decisions/0004_start_with_push_to_talk_and_ble.md).
+This is the hardware equivalent of checking DNS and TCP before debugging application JSON. See the superseded [ADR 0004](../docs/decisions/0004_start_with_push_to_talk_and_ble.md), current [ADR 0006](../docs/decisions/0006_use_button_started_full_duplex_sessions.md), and [ADR 0008](../docs/decisions/0008_use_exactly_two_physical_controls.md).
