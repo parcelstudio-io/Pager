@@ -4,6 +4,18 @@ This folder is a small course for a software engineer who is new to electronics,
 
 Start with lesson `0000`. Do not skip it because its concepts are the vocabulary used by every later lesson.
 
+## If your goal is to design a PCB in KiCad
+
+Follow the [PCB design path](PCB_DESIGN_PATH.md). It turns the general course into staged work with evidence gates:
+
+1. learn the electrical foundations in lesson `0000`;
+2. learn the [core circuit patterns used in real schematics](CORE_CIRCUITS_FOR_PCB_DESIGN.md);
+3. design, fabricate, and measure the [LED and button board](labs/0001_led_button_board.md);
+4. design and bring up the [compute-module carrier](labs/0002_module_carrier_board.md); and
+5. only then capture and review a modular Mochi carrier.
+
+The goal is not merely to operate KiCad. It is to make a board whose circuit was calculated, whose exact parts and footprints were verified, whose manufacturing files were inspected, and whose physical behavior was measured safely.
+
 ## How these lessons teach
 
 Each lesson should:
@@ -27,6 +39,8 @@ Hardware ultimately follows physics and component datasheets, not an analogy. Ex
 6. [Companion apps, Bluetooth setup, and synchronization](0006_companion_app_provisioning_and_sync.md) — provisioning, claiming, Bluetooth Low Energy, secret paths, authoritative revisions, history cursors, and deletion tombstones.
 
 Use the [plain-language glossary](GLOSSARY.md) whenever a later document introduces an unfamiliar term. The lesson must still explain important terms inline; the glossary is a backup, not required pre-reading.
+
+The [KiCad lab index](labs/README.md) links the hands-on exercises. These are fabrication exercises, so each has a completion gate; do not treat a clean screenshot, ERC, or DRC as a passing result.
 
 ## A practical first pass
 

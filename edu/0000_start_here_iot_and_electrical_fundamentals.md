@@ -389,4 +389,9 @@ Try these without looking back, then compare with the answers.
 9. Device: sensing, rendering, local safety, or timing. Network: carrying authenticated data despite variable connectivity. Service: identity, coordination, model access, history, or updates.
 10. Cellular has different radio, carrier, antenna, latency, and peak-power behavior; a final battery has its own energy and safety constraints; cloud operation adds identity, security, lifecycle, and failure cases.
 
-If those answers make sense, continue to [system architecture](0001_system_architecture.md). When a later chapter uses a term that still feels abstract, return here and identify the voltage, current path, state owner, and measurement that would make it concrete.
+If those answers make sense, choose the next path:
+
+- To understand the complete product, continue to [system architecture](0001_system_architecture.md).
+- To design a real schematic and PCB, continue to [core circuits for PCB design](CORE_CIRCUITS_FOR_PCB_DESIGN.md), then follow the [PCB design path](PCB_DESIGN_PATH.md).
+
+When a later chapter uses a term that still feels abstract, return here and identify the voltage, current path, state owner, and measurement that would make it concrete.

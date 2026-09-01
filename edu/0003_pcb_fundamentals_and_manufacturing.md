@@ -348,6 +348,31 @@ Do not put them under an installed battery or another module. Do not add ordinar
 
 ## 12. Beginner pre-order workflow
 
+### The current KiCad project workflow
+
+In current KiCad projects, the `.kicad_pro` file stores project settings, `.kicad_sch` stores the schematic, and `.kicad_pcb` stores the physical board. Keep them together in version control.
+
+Use this tool sequence:
+
+```text
+Create project
+  → draw and annotate schematic
+  → select and verify exact footprints
+  → run ERC and manually review the circuit
+  → update PCB from schematic
+  → configure stack-up and fabricator design rules
+  → define outline and place components
+  → route traces and fill copper zones
+  → run DRC and manually inspect return/power paths
+  → inspect 3D and print at 1:1
+  → generate Gerbers, drills, BOM, and required placement data
+  → inspect manufacturing outputs independently
+```
+
+ERC is the **electrical rules check** for declared schematic relationships. DRC is the **design rules check** for configured board geometry. Neither determines whether a resistor value is sensible, a regulator handles a transient, a connector is viewed from the correct side, or a chosen footprint matches the ordered part.
+
+Configure board clearances, widths, holes, vias, annular rings, copper-to-edge limits, and stack-up from the selected fabricator before routing. Defaults are not a manufacturing contract. For practice, follow [Lab 1](labs/0001_led_button_board.md) and [Lab 2](labs/0002_module_carrier_board.md) rather than beginning with the complete Mochi board.
+
 Perform this workflow before paying for assembly:
 
 1. **Freeze measured interfaces.** Record the exact module, connector, cable, voltage, current, pinout, and host/device role used on the bench.

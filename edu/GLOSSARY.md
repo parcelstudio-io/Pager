@@ -7,6 +7,11 @@ Use this as a lookup table, not as a substitute for the lessons. Each primer sho
 | Term | Plain-language meaning |
 |---|---|
 | Circuit | A complete path through which electric current can leave a source, pass through components, and return to the source. |
+| Node | Conductors intentionally connected together and treated as sharing one voltage in the basic circuit model. |
+| Branch | One current path between two circuit nodes. |
+| Loop | A closed circuit path that returns to its source. |
+| Kirchhoff's current law (KCL) | Conservation of charge stated for a node: total current entering equals total current leaving. |
+| Kirchhoff's voltage law (KVL) | Around a closed loop, voltage rises and drops sum to zero. |
 | Voltage (V) | The electrical potential difference between two points. Software analogy: the pressure available to cause work, although the analogy is imperfect. |
 | Current (A) | The rate of electric charge flow. One ampere is a large amount for a small logic circuit; values are often written in milliamperes (`mA`). |
 | Resistance (Ω) | Opposition to current flow, measured in ohms. For simple direct-current cases, `V = I × R`. |
@@ -19,6 +24,13 @@ Use this as a lookup table, not as a substitute for the lessons. Each primer sho
 | Capacitor | A component that temporarily stores electric charge. Near a chip it can supply short current bursts and reduce power-rail noise. |
 | Decoupling capacitor | A small capacitor placed close to a chip's power pin to handle fast local current changes. |
 | Resistor | A component with a chosen resistance, used to limit current, divide voltage, bias a signal, or set timing/gain. |
+| Voltage divider | Two or more series impedances used to create a fraction of an input voltage; a connected load can change that fraction. |
+| RC time constant | The product of resistance and capacitance, `τ = R × C`, describing the characteristic charging or discharging time of a simple resistor-capacitor network. |
+| MOSFET | Metal-oxide-semiconductor field-effect transistor; commonly used as a voltage-controlled electronic switch so a logic signal can control a larger load current. |
+| Dropout voltage | Minimum input-to-output headroom a regulator needs to maintain its specified output under stated conditions. |
+| Tolerance | The permitted difference between a component's nominal value and its actual value. |
+| Thermal resistance | A measure of temperature rise per watt along a heat-flow path, used with power dissipation to estimate component temperature. |
+| ESD | Electrostatic discharge: a fast high-voltage transient caused by accumulated charge, often entering through user-accessible conductors. |
 | Inductance | A property of a current path that resists rapid changes in current. It can turn a fast current change into an unwanted voltage disturbance. |
 | Electromagnetic coupling | Unwanted energy transferred from one conductor or circuit to another through changing electric or magnetic fields. Distance, geometry, current, and switching speed affect it. |
 | LED | Light-emitting diode. It emits light when current flows in the allowed direction and normally needs current limiting. |
@@ -68,6 +80,8 @@ Use this as a lookup table, not as a substitute for the lessons. Each primer sho
 | Net | All PCB pins and copper intended to be electrically connected, similar to one named signal in a schematic. |
 | Footprint | The physical copper-pad and outline pattern for mounting one component package. |
 | Layout | The physical placement of footprints and routing of copper on a PCB. |
+| Stack-up | The ordered construction of copper and insulating layers in a PCB, including their thicknesses and materials. |
+| Net class | A group of nets assigned common routing constraints such as trace width, clearance, and via size. |
 | Trace | A narrow copper path carrying a signal or power. |
 | Plane | A broad copper area, often used for ground or power to reduce impedance and provide return paths. |
 | Via | A plated hole that connects copper between PCB layers. |
@@ -77,6 +91,10 @@ Use this as a lookup table, not as a substitute for the lessons. Each primer sho
 | DFA | Design for assembly: checking whether parts can be placed, soldered, inspected, and reworked reliably. |
 | DFT | Design for test: providing safe ways to measure, program, and diagnose an assembled board. |
 | Bring-up | The first controlled power-on and subsystem-by-subsystem validation of a new board. |
+| ERC | Electrical rules check: automated schematic checking against declared pin and connection rules; it does not prove the circuit is functional. |
+| DRC | Design rules check: automated PCB geometry checking against configured manufacturing constraints; it does not prove electrical performance. |
+| Gerber | A common set of manufacturing plot files describing PCB artwork layers; drill data is normally exported separately. |
+| CPL | Component placement list: assembly coordinates, side, and rotation for placed components; its exact format depends on the assembler. |
 | EVT / DVT / PVT | Engineering, design, and production validation stages. They ask respectively whether the engineering works, the product-like design survives its requirements, and manufacturing can build it repeatedly. |
 
 ## IoT and networking
