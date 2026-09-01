@@ -1,0 +1,24 @@
+gpio,net,purpose
+1,CAM_CS,DNP Arducam chip select
+2,AMBER_LED,Conversation-button session LED
+4,PDM_CLK_MCU,I2S0 PDM clock through U13
+5,PDM_DATA_MCU,I2S0 PDM data through U13
+6,I2S_BCLK,I2S1 speaker bit clock
+7,I2S_LRCLK,I2S1 speaker word clock
+8,I2C_SDA,Shared I2C
+9,I2C_SCL,Shared I2C
+10,LCD_CS,Display chip select
+11,SPI_MOSI,Shared display and camera SPI
+12,SPI_SCK,Shared display and camera SPI
+13,SPI_MISO,Camera option only
+15,I2S_DOUT,Rendered speaker PCM
+16,TOUCH_IRQ,Touch interrupt
+17,CAM_EN,DNP camera rail gate
+18,UI_RST_N,Shared LCD and touch reset
+38,LCD_DC,Display data and command
+39,LCD_BL,Backlight PWM
+40,BTN_CONV,"Conversation button, active low"
+41,CAPTURE_EN,"Mic rail, isolation, and cyan LED"
+42,AMP_SD,Speaker shutdown and enable
+43,DBG_TX,Factory UART TX
+44,DBG_RX,Factory UART RX

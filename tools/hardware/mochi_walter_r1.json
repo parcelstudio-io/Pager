@@ -1,0 +1,275 @@
+{
+  "schema_version": 1,
+  "design": "Mochi R1 Walter modular carrier electrical reference",
+  "date": "2026-09-01",
+  "board_mm": { "width": 60, "height": 82, "thickness": 1.2, "layers": 4 },
+  "components": [
+    {
+      "ref": "J1", "value": "USB4105-GF-A", "maker": "GCT",
+      "role": "User USB-C charge-only receptacle", "footprint": "USB-C-16P",
+      "datasheet": "https://gct.co/connector/usb4105",
+      "pins": [{"name":"VBUS","net":"VBUS_CONN"},{"name":"GND","net":"GND"},{"name":"CC1","net":"USB_CC1"},{"name":"CC2","net":"USB_CC2"},{"name":"SHIELD","net":"GND"}],
+      "pcb": {"x":112,"y":128.5,"w":9,"h":7}
+    },
+    {
+      "ref": "U1", "value": "TPD2EUSB30", "maker": "Texas Instruments",
+      "role": "USB-C CC1/CC2 ESD protection", "footprint": "SOT23-3",
+      "datasheet": "https://www.ti.com/product/TPD2EUSB30",
+      "pins": [{"name":"IO1","net":"USB_CC1"},{"name":"IO2","net":"USB_CC2"},{"name":"GND","net":"GND"}],
+      "pcb": {"x":106,"y":123.5,"w":3,"h":2.8}
+    },
+    {
+      "ref": "D4", "value": "ESDA7P60-1U1M", "maker": "STMicroelectronics",
+      "role": "USB VBUS TVS", "footprint": "QFN-2",
+      "datasheet": "https://www.st.com/en/protections-and-emi-filters/esda7p60-1u1m.html",
+      "pins": [{"name":"K","net":"VBUS_CONN"},{"name":"A","net":"GND"}],
+      "pcb": {"x":106,"y":127,"w":1,"h":0.6}
+    },
+    {
+      "ref": "F1", "value": "1206L075/24", "maker": "Littelfuse",
+      "role": "Resettable USB input fuse", "footprint": "F1206",
+      "datasheet": "https://www.littelfuse.com/products/polyswitch-resettable-pptcs/surface-mount/1206l",
+      "pins": [{"name":"1","net":"VBUS_CONN"},{"name":"2","net":"VBUS_5V"}],
+      "pcb": {"x":109,"y":124.5,"w":3.2,"h":1.6}
+    },
+    {
+      "ref": "R1", "value": "5.1k 1%", "maker": "Generic", "role": "USB-C CC1 Rd",
+      "footprint": "R0402", "datasheet": "",
+      "pins": [{"name":"1","net":"USB_CC1"},{"name":"2","net":"GND"}],
+      "pcb": {"x":104,"y":121,"w":1,"h":0.6}
+    },
+    {
+      "ref": "R2", "value": "5.1k 1%", "maker": "Generic", "role": "USB-C CC2 Rd",
+      "footprint": "R0402", "datasheet": "",
+      "pins": [{"name":"1","net":"USB_CC2"},{"name":"2","net":"GND"}],
+      "pcb": {"x":104,"y":119.5,"w":1,"h":0.6}
+    },
+    {
+      "ref": "U3", "value": "BQ25628E", "maker": "Texas Instruments",
+      "role": "1-cell 2A NVDC charger and power path", "footprint": "WQFN-18-2.5x3",
+      "datasheet": "https://www.ti.com/lit/ds/symlink/bq25628e.pdf",
+      "pins": [
+        {"name":"VBUS","net":"VBUS_5V"},{"name":"PMID","net":"BQ_PMID"},{"name":"SW","net":"BQ_SW"},{"name":"BTST","net":"BQ_BTST"},
+        {"name":"REGN","net":"BQ_REGN"},{"name":"BAT","net":"PACK_P"},{"name":"SYS","net":"SYS_ALWAYS"},{"name":"GND","net":"GND"},
+        {"name":"ILIM","net":"USB_ILIM_500MA"},{"name":"TS_BIAS","net":"TS_BIAS"},{"name":"TS","net":"BAT_NTC"},
+        {"name":"SDA","net":"I2C_SDA"},{"name":"SCL","net":"I2C_SCL"},{"name":"INT_N","net":"BQ_INT_N_TP"},
+        {"name":"PG_N","net":"BQ_PG_N_TP"},{"name":"CE_N","net":"GND"}
+      ],
+      "pcb": {"x":115,"y":119,"w":3,"h":2.5}
+    },
+    {
+      "ref": "L1", "value": "1uH XGL4020-102", "maker": "Coilcraft",
+      "role": "BQ25628E power-path inductor", "footprint": "L4x4",
+      "datasheet": "https://www.coilcraft.com/en-us/products/power/shielded-inductors/xgl/xgl4020/",
+      "pins": [{"name":"1","net":"BQ_SW"},{"name":"2","net":"SYS_ALWAYS"}],
+      "pcb": {"x":120,"y":119,"w":4,"h":4}
+    },
+    {"ref":"C1","value":"1uF 25V X7R","maker":"Generic","role":"BQ VBUS bypass","footprint":"C0603","datasheet":"","pins":[{"name":"1","net":"VBUS_5V"},{"name":"2","net":"GND"}],"pcb":{"x":111,"y":117,"w":1.6,"h":0.8}},
+    {"ref":"C2","value":"10uF 25V X7R","maker":"Generic","role":"BQ PMID bulk","footprint":"C0805","datasheet":"","pins":[{"name":"1","net":"BQ_PMID"},{"name":"2","net":"GND"}],"pcb":{"x":111,"y":115,"w":2,"h":1.25}},
+    {"ref":"C3","value":"100nF 25V X7R","maker":"Generic","role":"BQ PMID high-frequency bypass","footprint":"C0402","datasheet":"","pins":[{"name":"1","net":"BQ_PMID"},{"name":"2","net":"GND"}],"pcb":{"x":115,"y":114,"w":1,"h":0.6}},
+    {"ref":"C4","value":"47nF 25V X7R","maker":"Generic","role":"BQ bootstrap capacitor","footprint":"C0402","datasheet":"","pins":[{"name":"1","net":"BQ_BTST"},{"name":"2","net":"BQ_SW"}],"pcb":{"x":118,"y":116,"w":1,"h":0.6}},
+    {"ref":"C5","value":"4.7uF 10V X7R","maker":"Generic","role":"BQ REGN bypass","footprint":"C0603","datasheet":"","pins":[{"name":"1","net":"BQ_REGN"},{"name":"2","net":"GND"}],"pcb":{"x":113,"y":122,"w":1.6,"h":0.8}},
+    {"ref":"C6","value":"10uF 10V X7R","maker":"Generic","role":"BQ SYS bulk 1 of 2","footprint":"C0805","datasheet":"","pins":[{"name":"1","net":"SYS_ALWAYS"},{"name":"2","net":"GND"}],"pcb":{"x":122,"y":116,"w":2,"h":1.25}},
+    {"ref":"C7","value":"10uF 10V X7R","maker":"Generic","role":"BQ SYS bulk 2 of 2","footprint":"C0805","datasheet":"","pins":[{"name":"1","net":"SYS_ALWAYS"},{"name":"2","net":"GND"}],"pcb":{"x":125,"y":116,"w":2,"h":1.25}},
+    {"ref":"C8","value":"10uF 10V X7R","maker":"Generic","role":"BQ BAT bypass","footprint":"C0805","datasheet":"","pins":[{"name":"1","net":"PACK_P"},{"name":"2","net":"GND"}],"pcb":{"x":118,"y":122,"w":2,"h":1.25}},
+    {
+      "ref":"R3","value":"4.99k 1%","maker":"Generic","role":"BQ input-current limit, about 500mA","footprint":"R0402",
+      "datasheet":"https://www.ti.com/lit/ds/symlink/bq25628e.pdf","pins":[{"name":"1","net":"USB_ILIM_500MA"},{"name":"2","net":"GND"}],"pcb":{"x":112,"y":120,"w":1,"h":0.6}
+    },
+    {
+      "ref":"R4","value":"5.23k 1%","maker":"Generic","role":"BQ TS upper resistor for 103AT-class NTC","footprint":"R0402",
+      "datasheet":"https://www.ti.com/lit/ds/symlink/bq25628e.pdf","pins":[{"name":"1","net":"TS_BIAS"},{"name":"2","net":"BAT_NTC"}],"pcb":{"x":116,"y":124,"w":1,"h":0.6}
+    },
+    {
+      "ref":"R5","value":"30.1k 1%","maker":"Generic","role":"BQ TS lower resistor for 103AT-class NTC","footprint":"R0402",
+      "datasheet":"https://www.ti.com/lit/ds/symlink/bq25628e.pdf","pins":[{"name":"1","net":"BAT_NTC"},{"name":"2","net":"GND"}],"pcb":{"x":118,"y":124,"w":1,"h":0.6}
+    },
+    {
+      "ref":"J2","value":"Molex 5023520300","maker":"Molex","role":"Protected pack connector","footprint":"DuraClik-3P-RA",
+      "datasheet":"https://www.molex.com/en-us/products/part-detail/5023520300","pins":[{"name":"PACK+","net":"PACK_P"},{"name":"NTC","net":"BAT_NTC"},{"name":"PACK-","net":"PACK_N"}],"pcb":{"x":127,"y":128.5,"w":8,"h":6}
+    },
+    {
+      "ref":"RS1","value":"10m 1% Kelvin","maker":"Vishay or equivalent","role":"Fuel-gauge low-side shunt","footprint":"R1206-Kelvin","datasheet":"",
+      "pins":[{"name":"PACK","net":"PACK_N"},{"name":"SYSTEM","net":"GND"}],"pcb":{"x":124,"y":124,"w":3.2,"h":1.6}
+    },
+    {
+      "ref":"U4","value":"MAX17055ETB+T","maker":"Analog Devices","role":"Fuel gauge with current and time estimation","footprint":"TDFN-10-2x2.5",
+      "datasheet":"https://www.analog.com/en/products/MAX17055.html","pins":[{"name":"BATT","net":"PACK_P"},{"name":"CSP","net":"PACK_N"},{"name":"CSN","net":"GND"},{"name":"SDA","net":"I2C_SDA"},{"name":"SCL","net":"I2C_SCL"},{"name":"ALRT_N","net":"GAUGE_ALRT_N"}],"pcb":{"x":128,"y":119,"w":2.5,"h":2}
+    },
+    {"ref":"C9","value":"100nF 10V X7R","maker":"Generic","role":"Fuel-gauge bypass","footprint":"C0402","datasheet":"","pins":[{"name":"1","net":"PACK_P"},{"name":"2","net":"GND"}],"pcb":{"x":129,"y":114,"w":1,"h":0.6}},
+    {
+      "ref":"SW1","value":"LATCHING POWER SLIDE","maker":"C&K or Alps TBD","role":"Only latching hardware power control","footprint":"Slide-SPST-RA-TBD","datasheet":"",
+      "pins":[{"name":"COMMON","net":"SYS_ALWAYS"},{"name":"ON","net":"PWR_SW_ON"}],"pcb":{"x":155.5,"y":105,"w":7,"h":3}
+    },
+    {"ref":"R6","value":"100k 1%","maker":"Generic","role":"Power-enable fail-safe pull-down","footprint":"R0402","datasheet":"","pins":[{"name":"1","net":"PWR_SW_ON"},{"name":"2","net":"GND"}],"pcb":{"x":132,"y":124,"w":1,"h":0.6}},
+    {
+      "ref":"U5","value":"TPS22950","maker":"Texas Instruments","role":"Reverse-blocking adjustable-current-limit master load switch","footprint":"SOT23-6",
+      "datasheet":"https://www.ti.com/lit/ds/symlink/tps22950.pdf","pins":[{"name":"VIN","net":"SYS_ALWAYS"},{"name":"ON","net":"PWR_SW_ON"},{"name":"VOUT","net":"SYS_SW"},{"name":"ILIM","net":"MAIN_ILIM"},{"name":"FLT_N","net":"MAIN_FLT_N"},{"name":"GND","net":"GND"}],"pcb":{"x":132,"y":120,"w":3,"h":3}
+    },
+    {"ref":"R7","value":"523R 1%","maker":"Generic","role":"TPS22950 nominal about 2.4A current limit","footprint":"R0402","datasheet":"https://www.ti.com/lit/ds/symlink/tps22950.pdf","pins":[{"name":"1","net":"MAIN_ILIM"},{"name":"2","net":"GND"}],"pcb":{"x":134,"y":123,"w":1,"h":0.6}},
+    {"ref":"C10","value":"1uF 10V X7R","maker":"Generic","role":"Master-switch input bypass","footprint":"C0603","datasheet":"","pins":[{"name":"1","net":"SYS_ALWAYS"},{"name":"2","net":"GND"}],"pcb":{"x":130,"y":122,"w":1.6,"h":0.8}},
+    {"ref":"C11","value":"10uF 10V X7R","maker":"Generic","role":"Master-switch output bulk","footprint":"C0805","datasheet":"","pins":[{"name":"1","net":"SYS_SW"},{"name":"2","net":"GND"}],"pcb":{"x":136,"y":120,"w":2,"h":1.25}},
+    {
+      "ref":"U6","value":"TPS63802","maker":"Texas Instruments","role":"2A 3.3V peripheral buck-boost","footprint":"VSON-10-3x2",
+      "datasheet":"https://www.ti.com/lit/ds/symlink/tps63802.pdf","pins":[{"name":"VIN","net":"SYS_SW"},{"name":"EN","net":"SYS_SW"},{"name":"L1","net":"BB_L1"},{"name":"L2","net":"BB_L2"},{"name":"VOUT","net":"3V3_PERIPH"},{"name":"FB","net":"BB_FB"},{"name":"PG","net":"3V3_PG_TP"},{"name":"GND","net":"GND"}],"pcb":{"x":124,"y":109,"w":3,"h":2}
+    },
+    {
+      "ref":"L2","value":"0.47uH XFL4015-471","maker":"Coilcraft","role":"TPS63802 buck-boost inductor","footprint":"L4x4",
+      "datasheet":"https://www.coilcraft.com/en-us/products/power/shielded-inductors/xfl/xfl4015/","pins":[{"name":"1","net":"BB_L1"},{"name":"2","net":"BB_L2"}],"pcb":{"x":130,"y":109,"w":4,"h":4}
+    },
+    {"ref":"R8","value":"511k 1%","maker":"Generic","role":"TPS63802 3.3V feedback upper","footprint":"R0402","datasheet":"","pins":[{"name":"1","net":"3V3_PERIPH"},{"name":"2","net":"BB_FB"}],"pcb":{"x":122,"y":106,"w":1,"h":0.6}},
+    {"ref":"R9","value":"91k 1%","maker":"Generic","role":"TPS63802 3.3V feedback lower","footprint":"R0402","datasheet":"","pins":[{"name":"1","net":"BB_FB"},{"name":"2","net":"GND"}],"pcb":{"x":124,"y":106,"w":1,"h":0.6}},
+    {"ref":"C12","value":"10uF 10V X7R","maker":"Generic","role":"TPS63802 input bulk","footprint":"C0805","datasheet":"","pins":[{"name":"1","net":"SYS_SW"},{"name":"2","net":"GND"}],"pcb":{"x":120,"y":109,"w":2,"h":1.25}},
+    {"ref":"C13","value":"22uF 6.3V X7R","maker":"Generic","role":"TPS63802 output bulk","footprint":"C0805","datasheet":"","pins":[{"name":"1","net":"3V3_PERIPH"},{"name":"2","net":"GND"}],"pcb":{"x":124,"y":113,"w":2,"h":1.25}},
+    {"ref":"R10","value":"4.7k 1%","maker":"Generic","role":"I2C SDA pull-up","footprint":"R0402","datasheet":"","pins":[{"name":"1","net":"I2C_SDA"},{"name":"2","net":"3V3_PERIPH"}],"pcb":{"x":119,"y":105,"w":1,"h":0.6}},
+    {"ref":"R11","value":"4.7k 1%","maker":"Generic","role":"I2C SCL pull-up","footprint":"R0402","datasheet":"","pins":[{"name":"1","net":"I2C_SCL"},{"name":"2","net":"3V3_PERIPH"}],"pcb":{"x":121,"y":105,"w":1,"h":0.6}},
+    {
+      "ref":"U10","value":"WALTER P000000100 N16R2","maker":"QuickSpot/DPTechnics","role":"ESP32-S3 Wi-Fi/BLE plus Sequans GM02SP LTE-M/NB-IoT/GNSS SoM","footprint":"WALTER-28-REF",
+      "datasheet":"https://quickspot.io/datasheet/walter_datasheet.pdf",
+      "pins":[
+        {"name":"RESET/EN","net":"WALTER_RESET_N"},{"name":"IO44/RX0","net":"DBG_RX"},{"name":"IO43/TX0","net":"DBG_TX"},{"name":"IO0/DFU/3V3_EN","net":"WALTER_DFU_N"},
+        {"name":"IO12","net":"SPI_SCK"},{"name":"IO11","net":"SPI_MOSI"},{"name":"IO13","net":"SPI_MISO"},{"name":"IO38","net":"LCD_DC"},
+        {"name":"IO39","net":"LCD_BL"},{"name":"IO40","net":"BTN_CONV"},{"name":"IO41","net":"CAPTURE_EN"},{"name":"IO42","net":"AMP_SD"},
+        {"name":"IO2","net":"AMBER_LED"},{"name":"IO1","net":"CAM_CS"},{"name":"IO4","net":"PDM_CLK_MCU"},{"name":"IO5","net":"PDM_DATA_MCU"},
+        {"name":"IO6","net":"I2S_BCLK"},{"name":"IO7","net":"I2S_LRCLK"},{"name":"IO15","net":"I2S_DOUT"},{"name":"IO16","net":"TOUCH_IRQ"},
+        {"name":"IO17","net":"CAM_EN"},{"name":"IO18","net":"UI_RST_N"},{"name":"IO8","net":"I2C_SDA"},{"name":"IO9","net":"I2C_SCL"},
+        {"name":"IO10","net":"LCD_CS"},{"name":"3V3_OUT","net":"WALTER_3V3_TP"},{"name":"GND","net":"GND"},{"name":"VIN","net":"SYS_SW"}
+      ],
+      "pcb":{"x":146.5,"y":101.5,"w":24.8,"h":55,"side":"B","pitch":2.54,"padX":8.89,"throughHole":true,"reverseRight":true}
+    },
+    {"ref":"C14","value":"100uF 6.3V low-ESR","maker":"Panasonic or equivalent","role":"Walter VIN EVT reservoir 1 of 2","footprint":"C1210","datasheet":"","pins":[{"name":"1","net":"SYS_SW"},{"name":"2","net":"GND"}],"pcb":{"x":149,"y":88,"w":3.2,"h":2.5}},
+    {"ref":"C15","value":"100uF 6.3V low-ESR","maker":"Panasonic or equivalent","role":"Walter VIN EVT reservoir 2 of 2","footprint":"C1210","datasheet":"","pins":[{"name":"1","net":"SYS_SW"},{"name":"2","net":"GND"}],"pcb":{"x":149,"y":92,"w":3.2,"h":2.5}},
+    {"ref":"C16","value":"10uF 10V X7R","maker":"Generic","role":"Walter VIN local bypass","footprint":"C0805","datasheet":"","pins":[{"name":"1","net":"SYS_SW"},{"name":"2","net":"GND"}],"pcb":{"x":154,"y":88,"w":2,"h":1.25}},
+    {"ref":"C17","value":"100nF 10V X7R","maker":"Generic","role":"Walter VIN high-frequency bypass","footprint":"C0402","datasheet":"","pins":[{"name":"1","net":"SYS_SW"},{"name":"2","net":"GND"}],"pcb":{"x":152,"y":95,"w":1,"h":0.6}},
+    {
+      "ref":"SW2","value":"ILLUMINATED CONVERSATION BUTTON","maker":"TBD","role":"Only momentary user control; amber LED is D2","footprint":"Top-Button-TBD","datasheet":"",
+      "pins":[{"name":"SIGNAL","net":"BTN_CONV"},{"name":"GND","net":"GND"}],"pcb":{"x":128,"y":57,"w":7,"h":7}
+    },
+    {"ref":"R12","value":"10k 1%","maker":"Generic","role":"Conversation-button pull-up","footprint":"R0402","datasheet":"","pins":[{"name":"1","net":"BTN_CONV"},{"name":"2","net":"3V3_PERIPH"}],"pcb":{"x":136,"y":57,"w":1,"h":0.6}},
+    {"ref":"D2","value":"AMBER BUTTON LED","maker":"TBD","role":"Connecting and session-intent indicator inside SW2","footprint":"LED0402","datasheet":"","pins":[{"name":"A","net":"AMBER_LED"},{"name":"K","net":"AMBER_LED_K"}],"pcb":{"x":132,"y":59,"w":1,"h":0.6}},
+    {"ref":"R13","value":"1.5k 1%","maker":"Generic","role":"Amber LED current limit","footprint":"R0402","datasheet":"","pins":[{"name":"1","net":"AMBER_LED_K"},{"name":"2","net":"GND"}],"pcb":{"x":134,"y":59,"w":1,"h":0.6}},
+    {
+      "ref":"U12","value":"TPS22918","maker":"Texas Instruments","role":"Hardware microphone rail gate","footprint":"SOT23-6","datasheet":"https://www.ti.com/lit/ds/symlink/tps22918.pdf",
+      "pins":[{"name":"VIN","net":"3V3_PERIPH"},{"name":"EN","net":"CAPTURE_EN"},{"name":"VOUT","net":"MIC_3V3"},{"name":"GND","net":"GND"}],"pcb":{"x":111,"y":57,"w":3,"h":3}
+    },
+    {"ref":"R14","value":"100k 1%","maker":"Generic","role":"Capture-enable fail-safe pull-down","footprint":"R0402","datasheet":"","pins":[{"name":"1","net":"CAPTURE_EN"},{"name":"2","net":"GND"}],"pcb":{"x":108,"y":57,"w":1,"h":0.6}},
+    {"ref":"C18","value":"1uF 6.3V X7R","maker":"Generic","role":"Switched microphone-rail bypass","footprint":"C0603","datasheet":"","pins":[{"name":"1","net":"MIC_3V3"},{"name":"2","net":"GND"}],"pcb":{"x":114,"y":57,"w":1.6,"h":0.8}},
+    {
+      "ref":"U13","value":"SN74LVC2G125","maker":"Texas Instruments","role":"PDM clock and data isolation with Ioff","footprint":"VSSOP-8","datasheet":"https://www.ti.com/lit/ds/symlink/sn74lvc2g125.pdf",
+      "pins":[{"name":"VCC","net":"MIC_3V3"},{"name":"GND","net":"GND"},{"name":"OE1_N","net":"GND"},{"name":"A1","net":"PDM_CLK_MCU"},{"name":"Y1","net":"PDM_CLK_MIC"},{"name":"OE2_N","net":"GND"},{"name":"A2","net":"PDM_DATA_MIC"},{"name":"Y2","net":"PDM_DATA_MCU"}],"pcb":{"x":116,"y":55,"w":3,"h":2}
+    },
+    {
+      "ref":"MK1","value":"IM69D129F","maker":"Infineon","role":"Bottom-port PDM microphone","footprint":"MEMS-5-3.5x2.65-BOTTOM-PORT","datasheet":"https://www.infineon.com/part/IM69D129F",
+      "pins":[{"name":"VDD","net":"MIC_3V3"},{"name":"GND","net":"GND"},{"name":"CLK","net":"PDM_CLK_MIC"},{"name":"DATA","net":"PDM_DATA_MIC"},{"name":"L/R","net":"GND"}],"pcb":{"x":122,"y":53.5,"w":3.5,"h":2.65}
+    },
+    {"ref":"D1","value":"CYAN CAPTURE LED","maker":"TBD","role":"Hardware-coupled capture truth indicator","footprint":"LED0402","datasheet":"","pins":[{"name":"A","net":"MIC_3V3"},{"name":"K","net":"CYAN_LED_K"}],"pcb":{"x":109,"y":61,"w":1,"h":0.6}},
+    {"ref":"R15","value":"1.5k 1%","maker":"Generic","role":"Cyan LED current limit","footprint":"R0402","datasheet":"","pins":[{"name":"1","net":"CYAN_LED_K"},{"name":"2","net":"GND"}],"pcb":{"x":111,"y":61,"w":1,"h":0.6}},
+    {
+      "ref":"U14","value":"MAX98357AETE+T","maker":"Analog Devices","role":"I2S mono class-D amplifier","footprint":"TQFN-16-3x3","datasheet":"https://www.analog.com/en/products/max98357a.html",
+      "pins":[{"name":"VDD","net":"3V3_PERIPH"},{"name":"GND","net":"GND"},{"name":"BCLK","net":"I2S_BCLK"},{"name":"LRCLK","net":"I2S_LRCLK"},{"name":"DIN","net":"I2S_DOUT"},{"name":"SD_MODE","net":"AMP_SD"},{"name":"OUTP","net":"SPK_P"},{"name":"OUTN","net":"SPK_N"}],"pcb":{"x":139,"y":59,"w":3,"h":3}
+    },
+    {"ref":"R16","value":"100k 1%","maker":"Generic","role":"Amplifier shutdown pull-down","footprint":"R0402","datasheet":"","pins":[{"name":"1","net":"AMP_SD"},{"name":"2","net":"GND"}],"pcb":{"x":136,"y":61,"w":1,"h":0.6}},
+    {"ref":"C19","value":"10uF 6.3V X7R","maker":"Generic","role":"Amplifier local bulk","footprint":"C0805","datasheet":"","pins":[{"name":"1","net":"3V3_PERIPH"},{"name":"2","net":"GND"}],"pcb":{"x":139,"y":63,"w":2,"h":1.25}},
+    {"ref":"C20","value":"100nF 6.3V X7R","maker":"Generic","role":"Amplifier high-frequency bypass","footprint":"C0402","datasheet":"","pins":[{"name":"1","net":"3V3_PERIPH"},{"name":"2","net":"GND"}],"pcb":{"x":143,"y":63,"w":1,"h":0.6}},
+    {
+      "ref":"J4","value":"AS01808AO-SC18-WP-R","maker":"PUI Audio","role":"8ohm 1W spring-contact speaker","footprint":"Speaker-18x13-Spring","datasheet":"https://puiaudio.com/file/specs-AS01808AO-SC18-WP-R.pdf",
+      "pins":[{"name":"+","net":"SPK_P"},{"name":"-","net":"SPK_N"}],"pcb":{"x":151,"y":63,"w":13,"h":18}
+    },
+    {
+      "ref":"J5","value":"WAVESHARE 1.69IN TOUCH LCD 27057","maker":"Waveshare","role":"GH1.25 12-pin 240x280 ST7789V2 LCD and CST816S touch module","footprint":"GH1.25-12P-RA-VERIFY","datasheet":"https://www.waveshare.com/wiki/1.69inch_Touch_LCD_Module",
+      "pins":[{"name":"VCC","net":"3V3_PERIPH"},{"name":"GND","net":"GND"},{"name":"LCD_DIN","net":"SPI_MOSI"},{"name":"LCD_CLK","net":"SPI_SCK"},{"name":"LCD_CS","net":"LCD_CS"},{"name":"LCD_DC","net":"LCD_DC"},{"name":"LCD_RST","net":"UI_RST_N"},{"name":"LCD_BL","net":"LCD_BL"},{"name":"TP_SDA","net":"I2C_SDA"},{"name":"TP_SCL","net":"I2C_SCL"},{"name":"TP_RST","net":"UI_RST_N"},{"name":"TP_IRQ","net":"TOUCH_IRQ"}],"pcb":{"x":104,"y":84,"w":3,"h":29}
+    },
+    {
+      "ref":"U15","value":"TPS22918 DNP CAMERA","maker":"Texas Instruments","role":"Optional camera rail gate","footprint":"SOT23-6","datasheet":"https://www.ti.com/lit/ds/symlink/tps22918.pdf","dnp":true,
+      "pins":[{"name":"VIN","net":"3V3_PERIPH"},{"name":"EN","net":"CAM_EN"},{"name":"VOUT","net":"CAM_3V3"},{"name":"GND","net":"GND"}],"pcb":{"x":112,"y":77,"w":3,"h":3}
+    },
+    {"ref":"R17","value":"100k 1% DNP","maker":"Generic","role":"Camera-enable fail-safe pull-down","footprint":"R0402","datasheet":"","dnp":true,"pins":[{"name":"1","net":"CAM_EN"},{"name":"2","net":"GND"}],"pcb":{"x":109,"y":77,"w":1,"h":0.6}},
+    {
+      "ref":"J6","value":"ARDUCAM MEGA 3MP B0400 DNP","maker":"Arducam","role":"Six-wire SPI still-camera experiment; too large for baseline enclosure","footprint":"XH2.54-1x6-RA","datasheet":"https://docs.arducam.com/Arduino-SPI-camera/MEGA-SPI/MEGA-SPI-Camera/","dnp":true,
+      "pins":[{"name":"VCC","net":"CAM_3V3"},{"name":"GND","net":"GND"},{"name":"SCK","net":"SPI_SCK"},{"name":"MISO","net":"SPI_MISO"},{"name":"MOSI","net":"SPI_MOSI"},{"name":"CS","net":"CAM_CS"}],"pcb":{"x":113,"y":84,"w":3,"h":15}
+    },
+    {"ref":"D3","value":"WHITE CAMERA POWER LED DNP","maker":"TBD","role":"Hardware-coupled camera-power indicator","footprint":"LED0402","datasheet":"","dnp":true,"pins":[{"name":"A","net":"CAM_3V3"},{"name":"K","net":"CAM_LED_K"}],"pcb":{"x":109,"y":81,"w":1,"h":0.6}},
+    {"ref":"R18","value":"1.5k 1% DNP","maker":"Generic","role":"Camera indicator current limit","footprint":"R0402","datasheet":"","dnp":true,"pins":[{"name":"1","net":"CAM_LED_K"},{"name":"2","net":"GND"}],"pcb":{"x":109,"y":83,"w":1,"h":0.6}},
+    {"ref":"TP1","value":"DEBUG_TX","maker":"Generic","role":"Factory UART TX pad; never supply power","footprint":"TestPoint-1mm","datasheet":"","pins":[{"name":"1","net":"DBG_TX"}],"pcb":{"x":106,"y":102,"w":1.5,"h":1.5}},
+    {"ref":"TP2","value":"DEBUG_RX","maker":"Generic","role":"Factory UART RX pad; verify no off-state injection","footprint":"TestPoint-1mm","datasheet":"","pins":[{"name":"1","net":"DBG_RX"}],"pcb":{"x":109,"y":102,"w":1.5,"h":1.5}},
+    {"ref":"TP3","value":"WALTER_DFU_N","maker":"Generic","role":"Factory boot and DFU pad","footprint":"TestPoint-1mm","datasheet":"","pins":[{"name":"1","net":"WALTER_DFU_N"}],"pcb":{"x":112,"y":102,"w":1.5,"h":1.5}},
+    {"ref":"TP4","value":"WALTER_RESET_N","maker":"Generic","role":"Factory reset pad","footprint":"TestPoint-1mm","datasheet":"","pins":[{"name":"1","net":"WALTER_RESET_N"}],"pcb":{"x":115,"y":102,"w":1.5,"h":1.5}},
+    {"ref":"TP5","value":"MAIN_FAULT_N","maker":"Generic","role":"Master-switch fault pad","footprint":"TestPoint-1mm","datasheet":"","pins":[{"name":"1","net":"MAIN_FLT_N"}],"pcb":{"x":132,"y":116,"w":1.5,"h":1.5}},
+    {"ref":"TP6","value":"3V3_POWER_GOOD","maker":"Generic","role":"Peripheral-rail validation pad","footprint":"TestPoint-1mm","datasheet":"","pins":[{"name":"1","net":"3V3_PG_TP"}],"pcb":{"x":127,"y":105,"w":1.5,"h":1.5}},
+    {"ref":"TP7","value":"BQ_INTERRUPT","maker":"Generic","role":"Charger-interrupt validation pad","footprint":"TestPoint-1mm","datasheet":"","pins":[{"name":"1","net":"BQ_INT_N_TP"}],"pcb":{"x":109,"y":114,"w":1.5,"h":1.5}},
+    {"ref":"TP8","value":"GROUND","maker":"Generic","role":"Factory measurement ground","footprint":"TestPoint-1mm","datasheet":"","pins":[{"name":"1","net":"GND"}],"pcb":{"x":106,"y":105,"w":1.5,"h":1.5}},
+    {"ref":"TP9","value":"WALTER_3V3_OUT","maker":"Generic","role":"Walter switched 3.3V output measurement only; never tie to 3V3_PERIPH","footprint":"TestPoint-1mm","datasheet":"","pins":[{"name":"1","net":"WALTER_3V3_TP"}],"pcb":{"x":106,"y":108,"w":1.5,"h":1.5}},
+    {"ref":"TP10","value":"GAUGE_ALERT","maker":"Generic","role":"Fuel-gauge alert validation pad","footprint":"TestPoint-1mm","datasheet":"","pins":[{"name":"1","net":"GAUGE_ALRT_N"}],"pcb":{"x":109,"y":108,"w":1.5,"h":1.5}},
+    {"ref":"TP11","value":"BQ_POWER_GOOD","maker":"Generic","role":"Charger power-good validation pad","footprint":"TestPoint-1mm","datasheet":"","pins":[{"name":"1","net":"BQ_PG_N_TP"}],"pcb":{"x":112,"y":108,"w":1.5,"h":1.5}}
+  ],
+  "gpio": [
+    [1,"CAM_CS","DNP Arducam chip select"],[2,"AMBER_LED","Conversation-button session LED"],
+    [4,"PDM_CLK_MCU","I2S0 PDM clock through U13"],[5,"PDM_DATA_MCU","I2S0 PDM data through U13"],
+    [6,"I2S_BCLK","I2S1 speaker bit clock"],[7,"I2S_LRCLK","I2S1 speaker word clock"],
+    [8,"I2C_SDA","Shared I2C"],[9,"I2C_SCL","Shared I2C"],[10,"LCD_CS","Display chip select"],
+    [11,"SPI_MOSI","Shared display and camera SPI"],[12,"SPI_SCK","Shared display and camera SPI"],[13,"SPI_MISO","Camera option only"],
+    [15,"I2S_DOUT","Rendered speaker PCM"],[16,"TOUCH_IRQ","Touch interrupt"],[17,"CAM_EN","DNP camera rail gate"],
+    [18,"UI_RST_N","Shared LCD and touch reset"],[38,"LCD_DC","Display data and command"],[39,"LCD_BL","Backlight PWM"],
+    [40,"BTN_CONV","Conversation button, active low"],[41,"CAPTURE_EN","Mic rail, isolation, and cyan LED"],
+    [42,"AMP_SD","Speaker shutdown and enable"],[43,"DBG_TX","Factory UART TX"],[44,"DBG_RX","Factory UART RX"]
+  ],
+  "configurations": {
+    "walter_ltem_evt": {
+      "fitted": "Walter P000000100 and all FIT carrier parts; U15/R17/J6/D3/R18 DNP",
+      "status": "Purchasable desk-verified EVT baseline",
+      "notes": "Wi-Fi is primary. LTE-M is failover and must pass measured latency and jitter gates before conversational use."
+    },
+    "walter_n16r8": {
+      "fitted": "Walter P000000118 if QuickSpot confirms supply",
+      "status": "Preferred memory option, not stock-proven in this review",
+      "notes": "8MB PSRAM materially improves AEC, display, TLS, and camera buffer margin."
+    },
+    "walter_cat1bis_future": {
+      "fitted": "Announced pin, form-factor, and software-compatible Walter Cat 1 bis",
+      "status": "NOT RELEASED; vendor says Q4 2026",
+      "notes": "Do not freeze procurement, power, firmware, carrier, or FCC claims until production data and samples exist."
+    },
+    "camera_experiment": {
+      "fitted": "U15, R17, J6, D3, R18 and Arducam Mega B0400",
+      "status": "DNP; prohibited by MVP requirement PR-06",
+      "notes": "Still images only. The 33x33x17mm module requires new enclosure CAD."
+    }
+  },
+  "architecture": {
+    "compute_and_radios": "Walter P000000100: ESP32-S3 N16R2, Wi-Fi/BLE, GM02SP LTE-M/NB-IoT/GNSS, nano-SIM, cellular and GNSS U.FL",
+    "cellular_policy": "Wi-Fi primary; LTE-M measured fallback; announced Cat 1 bis is a future configuration, not a released dependency",
+    "charger": "USB-C charge-only -> BQ25628E NVDC -> SYS_ALWAYS",
+    "switched_power": "SYS_ALWAYS -> SW1/TPS22950 -> SYS_SW -> Walter VIN; SYS_SW -> TPS63802 -> 3V3_PERIPH",
+    "microphone": "CAPTURE_EN -> TPS22918; MIC_3V3 powers mic, Ioff buffer, and cyan LED",
+    "playback": "Walter I2S -> MAX98357A at 3.3V -> differential 8ohm speaker",
+    "display": "Waveshare SKU 27057 over SPI plus I2C touch",
+    "camera": "DNP Arducam Mega B0400 SPI option with gated rail and rail-powered white LED"
+  },
+  "hard_off": {
+    "switch": "SW1 is the single latching exterior power control",
+    "rails_off": ["SYS_SW","3V3_PERIPH","MIC_3V3","CAM_3V3"],
+    "always_alive": ["BQ25628E charger and power path","MAX17055 fuel gauge"],
+    "backpower_controls": ["TPS22950 reverse-current blocking while disabled","user USB-C is charge-only","Walter USB is hidden and must use a VBUS-cut debug cable while carrier-powered","factory pads never source power"],
+    "claim_limit": "Must be verified from battery, user USB, Walter USB, antenna shields, and every fixture pad"
+  },
+  "electrical_limits": {
+    "pack": "BatterySpace CU-J450-V3, 1S 1500mAh, protected 3A, 10k NTC, 1.4A maximum charge",
+    "charger_programmed_charge_a_initial": 0.5,
+    "usb_default_input_a": 0.5,
+    "master_switch_current_limit_a_typical": 2.4,
+    "walter_vin_v": {"minimum":3.0,"maximum":5.5},
+    "firmware_low_battery_shutdown_v": 3.2,
+    "walter_max_current_a_at_3v3": 1.5,
+    "walter_3v3_output_a_max": 0.25,
+    "tps63802_peripheral_rating_a": 2.0,
+    "internal_modem_uart_baud_default": 115200,
+    "internal_modem_uart_8n1_payload_bit_s": 92160
+  },
+  "i2c_addresses": {"BQ25628E":"0x6A","MAX17055":"0x36","CST816_touch":"0x15 (confirm exact populated controller)"},
+  "release_gates": [
+    "replace every reference footprint with vendor-controlled production land pattern",
+    "route and peer-review charger, buck-boost, shunt Kelvin, return currents, mic port, and class-D output",
+    "bench power, off-state back-power, LTE-M latency, AEC, antenna, thermal, and battery tests",
+    "portable RF exposure, simultaneous-transmitter, FCC Part 15B, PTCRB, carrier, Bluetooth, and battery compliance"
+  ]
+}

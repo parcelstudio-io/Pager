@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "Mochi")(type "KiCad")(uri "${KIPRJMOD}/mochi.kicad_sym")(options "")(descr "Mochi generated reference symbols"))
+)

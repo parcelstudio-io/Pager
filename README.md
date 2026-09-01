@@ -10,6 +10,7 @@ The current phase is V1 interaction implementation plus EVT (engineering validat
 - [V1 prototype high-level design](docs/prototype/0001_v1_high_level_design.md)
 - [V1 beginner build guide and exact materials](docs/prototype/0002_v1_beginner_build_guide.md)
 - [Companion app and synchronization architecture](docs/design/0002_companion_app_and_sync_architecture.md)
+- [Carrier board hardware design](docs/design/0003_mochi_carrier_board_design.md)
 - [MVP requirements](docs/requirements/0001_mvp_requirements.md)
 - [Component sources and staged BOM](docs/research/0001_component_sources_and_bom.md)
 - [Shared-conversation and video source audit](docs/research/0002_reference_observations.md)

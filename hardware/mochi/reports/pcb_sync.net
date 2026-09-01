@@ -1,0 +1,8129 @@
+(export
+	(version "E")
+	(design
+		(source "/home/jaewoo-jang/Desktop/Projects/Pager/hardware/mochi/mochi.kicad_sch")
+		(date "2026-09-01T06:25:19")
+		(tool "Eeschema 10.0.6")
+		(sheet
+			(number "1")
+			(name "/")
+			(tstamps "/")
+			(title_block
+				(title "Mochi R1 Walter modular carrier electrical reference")
+				(company "Mochi Pager")
+				(rev "R1-EVT-REFERENCE")
+				(date "2026-09-01")
+				(source "mochi.kicad_sch")
+				(comment
+					(number "1")
+					(value "NOT RELEASED FOR FABRICATION - production footprints/routing/physical tests remain")
+				)
+				(comment
+					(number "2")
+					(value "Baseline: Walter LTE-M/Wi-Fi/BLE; announced Cat 1 bis is future and unverified")
+				)
+				(comment
+					(number "3")
+					(value "")
+				)
+				(comment
+					(number "4")
+					(value "")
+				)
+				(comment
+					(number "5")
+					(value "")
+				)
+				(comment
+					(number "6")
+					(value "")
+				)
+				(comment
+					(number "7")
+					(value "")
+				)
+				(comment
+					(number "8")
+					(value "")
+				)
+				(comment
+					(number "9")
+					(value "")
+				)
+			)
+		)
+	)
+	(components
+		(comp
+			(ref "C1")
+			(value "1uF 25V X7R")
+			(footprint "Mochi_Reference:C1_C0603")
+			(description "BQ VBUS bypass")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:C1_C0603")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "BQ VBUS bypass")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "C1_1uF_25V_X7R")
+				(description "BQ VBUS bypass")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "85fdc95c-fde9-509a-bd4e-fa73f13bcbeb")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C2")
+			(value "10uF 25V X7R")
+			(footprint "Mochi_Reference:C2_C0805")
+			(description "BQ PMID bulk")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:C2_C0805")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "BQ PMID bulk")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "C2_10uF_25V_X7R")
+				(description "BQ PMID bulk")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "eb6e2269-7959-529c-b4c1-7231b57197b5")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C3")
+			(value "100nF 25V X7R")
+			(footprint "Mochi_Reference:C3_C0402")
+			(description "BQ PMID high-frequency bypass")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:C3_C0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "BQ PMID high-frequency bypass")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "C3_100nF_25V_X7R")
+				(description "BQ PMID high-frequency bypass")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "89a75fba-5861-59ad-ac78-fc5f7e6dafe9")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C4")
+			(value "47nF 25V X7R")
+			(footprint "Mochi_Reference:C4_C0402")
+			(description "BQ bootstrap capacitor")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:C4_C0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "BQ bootstrap capacitor")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "C4_47nF_25V_X7R")
+				(description "BQ bootstrap capacitor")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "944fd44a-12a8-5cd1-b3ca-65a77e0cfaf9")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C5")
+			(value "4.7uF 10V X7R")
+			(footprint "Mochi_Reference:C5_C0603")
+			(description "BQ REGN bypass")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:C5_C0603")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "BQ REGN bypass")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "C5_4_7uF_10V_X7R")
+				(description "BQ REGN bypass")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "547df2f9-d2e0-563d-b0a2-850313eb4b18")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C6")
+			(value "10uF 10V X7R")
+			(footprint "Mochi_Reference:C6_C0805")
+			(description "BQ SYS bulk 1 of 2")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:C6_C0805")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "BQ SYS bulk 1 of 2")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "C6_10uF_10V_X7R")
+				(description "BQ SYS bulk 1 of 2")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "9fd2f192-71d7-5ff2-9897-b12686f3fd96")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C7")
+			(value "10uF 10V X7R")
+			(footprint "Mochi_Reference:C7_C0805")
+			(description "BQ SYS bulk 2 of 2")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:C7_C0805")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "BQ SYS bulk 2 of 2")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "C7_10uF_10V_X7R")
+				(description "BQ SYS bulk 2 of 2")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "29811f13-0b0d-573a-8310-5fc845abe17c")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C8")
+			(value "10uF 10V X7R")
+			(footprint "Mochi_Reference:C8_C0805")
+			(description "BQ BAT bypass")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:C8_C0805")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "BQ BAT bypass")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "C8_10uF_10V_X7R")
+				(description "BQ BAT bypass")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "e52a686e-2d87-5aae-afd4-5ea1a89c039b")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C9")
+			(value "100nF 10V X7R")
+			(footprint "Mochi_Reference:C9_C0402")
+			(description "Fuel-gauge bypass")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:C9_C0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Fuel-gauge bypass")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "C9_100nF_10V_X7R")
+				(description "Fuel-gauge bypass")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "b13db360-b1e8-582e-95ba-9cae80369e48")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C10")
+			(value "1uF 10V X7R")
+			(footprint "Mochi_Reference:C10_C0603")
+			(description "Master-switch input bypass")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:C10_C0603")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Master-switch input bypass")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "C10_1uF_10V_X7R")
+				(description "Master-switch input bypass")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "4f61e2d0-4130-5de6-b1d1-6a13afedec17")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C11")
+			(value "10uF 10V X7R")
+			(footprint "Mochi_Reference:C11_C0805")
+			(description "Master-switch output bulk")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:C11_C0805")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Master-switch output bulk")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "C11_10uF_10V_X7R")
+				(description "Master-switch output bulk")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "383a7f82-45f8-5223-8a7e-a141489c960b")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C12")
+			(value "10uF 10V X7R")
+			(footprint "Mochi_Reference:C12_C0805")
+			(description "TPS63802 input bulk")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:C12_C0805")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "TPS63802 input bulk")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "C12_10uF_10V_X7R")
+				(description "TPS63802 input bulk")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "cf8e5673-f6b6-5018-816e-afd5d7cfccd7")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C13")
+			(value "22uF 6.3V X7R")
+			(footprint "Mochi_Reference:C13_C0805")
+			(description "TPS63802 output bulk")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:C13_C0805")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "TPS63802 output bulk")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "C13_22uF_6_3V_X7R")
+				(description "TPS63802 output bulk")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "cf131880-d2b7-542f-ba26-565b3242b8c9")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C14")
+			(value "100uF 6.3V low-ESR")
+			(footprint "Mochi_Reference:C14_C1210")
+			(description "Walter VIN EVT reservoir 1 of 2")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:C14_C1210")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Walter VIN EVT reservoir 1 of 2")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "C14_100uF_6_3V_low-ESR")
+				(description "Walter VIN EVT reservoir 1 of 2")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "2b34c439-38e6-53de-9455-9ff90751dec2")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C15")
+			(value "100uF 6.3V low-ESR")
+			(footprint "Mochi_Reference:C15_C1210")
+			(description "Walter VIN EVT reservoir 2 of 2")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:C15_C1210")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Walter VIN EVT reservoir 2 of 2")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "C15_100uF_6_3V_low-ESR")
+				(description "Walter VIN EVT reservoir 2 of 2")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "b7520cd3-d85c-57bf-a75b-b887726e0e7c")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C16")
+			(value "10uF 10V X7R")
+			(footprint "Mochi_Reference:C16_C0805")
+			(description "Walter VIN local bypass")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:C16_C0805")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Walter VIN local bypass")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "C16_10uF_10V_X7R")
+				(description "Walter VIN local bypass")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "c9fce27e-ef32-5343-a300-32516ba88640")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C17")
+			(value "100nF 10V X7R")
+			(footprint "Mochi_Reference:C17_C0402")
+			(description "Walter VIN high-frequency bypass")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:C17_C0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Walter VIN high-frequency bypass")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "C17_100nF_10V_X7R")
+				(description "Walter VIN high-frequency bypass")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "d76cae51-965b-5189-9277-9995c2b699cf")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C18")
+			(value "1uF 6.3V X7R")
+			(footprint "Mochi_Reference:C18_C0603")
+			(description "Switched microphone-rail bypass")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:C18_C0603")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Switched microphone-rail bypass")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "C18_1uF_6_3V_X7R")
+				(description "Switched microphone-rail bypass")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "bc27ccd1-fcaa-566d-aa3f-2e3baa163a51")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C19")
+			(value "10uF 6.3V X7R")
+			(footprint "Mochi_Reference:C19_C0805")
+			(description "Amplifier local bulk")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:C19_C0805")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Amplifier local bulk")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "C19_10uF_6_3V_X7R")
+				(description "Amplifier local bulk")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "d1d19818-6a18-5ba2-b2ae-1b782f4786f1")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C20")
+			(value "100nF 6.3V X7R")
+			(footprint "Mochi_Reference:C20_C0402")
+			(description "Amplifier high-frequency bypass")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:C20_C0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Amplifier high-frequency bypass")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "C20_100nF_6_3V_X7R")
+				(description "Amplifier high-frequency bypass")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "f618a2c0-baf6-5a05-8265-af888ba3de4c")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "D1")
+			(value "CYAN CAPTURE LED")
+			(footprint "Mochi_Reference:D1_LED0402")
+			(description "Hardware-coupled capture truth indicator")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:D1_LED0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Hardware-coupled capture truth indicator")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "D1_CYAN_CAPTURE_LED")
+				(description "Hardware-coupled capture truth indicator")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "5ae35e15-4baf-5763-b8bb-6c8dc896f54f")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "D2")
+			(value "AMBER BUTTON LED")
+			(footprint "Mochi_Reference:D2_LED0402")
+			(description "Connecting and session-intent indicator inside SW2")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:D2_LED0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Connecting and session-intent indicator inside SW2")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "D2_AMBER_BUTTON_LED")
+				(description "Connecting and session-intent indicator inside SW2")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "476e2d14-9a3f-525e-88a8-3661a6d9a9d2")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "D3")
+			(value "WHITE CAMERA POWER LED DNP")
+			(footprint "Mochi_Reference:D3_LED0402")
+			(description "Hardware-coupled camera-power indicator")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:D3_LED0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Hardware-coupled camera-power indicator")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "D3_WHITE_CAMERA_POWER_LED_DNP")
+				(description "Hardware-coupled camera-power indicator")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(property
+				(name "dnp")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "4c9572fe-cda5-5582-b376-9aebb1ce5a22")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "D4")
+			(value "ESDA7P60-1U1M")
+			(footprint "Mochi_Reference:D4_QFN-2")
+			(datasheet "https://www.st.com/en/protections-and-emi-filters/esda7p60-1u1m.html")
+			(description "USB VBUS TVS")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:D4_QFN-2")
+				(field
+					(name "Datasheet") "https://www.st.com/en/protections-and-emi-filters/esda7p60-1u1m.html")
+				(field
+					(name "Description") "USB VBUS TVS")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "D4_ESDA7P60-1U1M")
+				(description "USB VBUS TVS")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "67fda270-0e8e-5feb-bc28-d31580d3b79d")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "F1")
+			(value "1206L075/24")
+			(footprint "Mochi_Reference:F1_F1206")
+			(datasheet "https://www.littelfuse.com/products/polyswitch-resettable-pptcs/surface-mount/1206l")
+			(description "Resettable USB input fuse")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:F1_F1206")
+				(field
+					(name "Datasheet") "https://www.littelfuse.com/products/polyswitch-resettable-pptcs/surface-mount/1206l")
+				(field
+					(name "Description") "Resettable USB input fuse")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "F1_1206L075_24")
+				(description "Resettable USB input fuse")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "1bcf2118-a030-5724-b3ab-148fe34c81a9")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "J1")
+			(value "USB4105-GF-A")
+			(footprint "Mochi_Reference:J1_USB-C-16P")
+			(datasheet "https://gct.co/connector/usb4105")
+			(description "User USB-C charge-only receptacle")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:J1_USB-C-16P")
+				(field
+					(name "Datasheet") "https://gct.co/connector/usb4105")
+				(field
+					(name "Description") "User USB-C charge-only receptacle")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "J1_USB4105-GF-A")
+				(description "User USB-C charge-only receptacle")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "b3ee42ec-6aaf-54b1-adec-7335f5f9f6d9")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "3")
+						)
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "5")
+						)
+						(pin
+							(num "4")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "J2")
+			(value "Molex 5023520300")
+			(footprint "Mochi_Reference:J2_DuraClik-3P-RA")
+			(datasheet "https://www.molex.com/en-us/products/part-detail/5023520300")
+			(description "Protected pack connector")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:J2_DuraClik-3P-RA")
+				(field
+					(name "Datasheet") "https://www.molex.com/en-us/products/part-detail/5023520300")
+				(field
+					(name "Description") "Protected pack connector")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "J2_Molex_5023520300")
+				(description "Protected pack connector")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "29d50d0d-aa0f-5b90-ac20-7c0e587fb76a")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "3")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "J4")
+			(value "AS01808AO-SC18-WP-R")
+			(footprint "Mochi_Reference:J4_Speaker-18x13-Spring")
+			(datasheet "https://puiaudio.com/file/specs-AS01808AO-SC18-WP-R.pdf")
+			(description "8ohm 1W spring-contact speaker")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:J4_Speaker-18x13-Spring")
+				(field
+					(name "Datasheet") "https://puiaudio.com/file/specs-AS01808AO-SC18-WP-R.pdf")
+				(field
+					(name "Description") "8ohm 1W spring-contact speaker")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "J4_AS01808AO-SC18-WP-R")
+				(description "8ohm 1W spring-contact speaker")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "f0a4eb75-5893-5a44-8fb1-f43af8f209f5")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "J5")
+			(value "WAVESHARE 1.69IN TOUCH LCD 27057")
+			(footprint "Mochi_Reference:J5_GH1.25-12P-RA-VERIFY")
+			(datasheet "https://www.waveshare.com/wiki/1.69inch_Touch_LCD_Module")
+			(description "GH1.25 12-pin 240x280 ST7789V2 LCD and CST816S touch module")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:J5_GH1.25-12P-RA-VERIFY")
+				(field
+					(name "Datasheet") "https://www.waveshare.com/wiki/1.69inch_Touch_LCD_Module")
+				(field
+					(name "Description") "GH1.25 12-pin 240x280 ST7789V2 LCD and CST816S touch module")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "J5_WAVESHARE_1_69IN_TOUCH_LCD_27057")
+				(description "GH1.25 12-pin 240x280 ST7789V2 LCD and CST816S touch module")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "e154942d-cf3f-5852-be85-5518f6635292")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "6")
+						)
+						(pin
+							(num "5")
+						)
+						(pin
+							(num "4")
+						)
+						(pin
+							(num "3")
+						)
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "12")
+						)
+						(pin
+							(num "11")
+						)
+						(pin
+							(num "10")
+						)
+						(pin
+							(num "9")
+						)
+						(pin
+							(num "8")
+						)
+						(pin
+							(num "7")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "J6")
+			(value "ARDUCAM MEGA 3MP B0400 DNP")
+			(footprint "Mochi_Reference:J6_XH2.54-1x6-RA")
+			(datasheet "https://docs.arducam.com/Arduino-SPI-camera/MEGA-SPI/MEGA-SPI-Camera/")
+			(description "Six-wire SPI still-camera experiment; too large for baseline enclosure")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:J6_XH2.54-1x6-RA")
+				(field
+					(name "Datasheet") "https://docs.arducam.com/Arduino-SPI-camera/MEGA-SPI/MEGA-SPI-Camera/")
+				(field
+					(name "Description") "Six-wire SPI still-camera experiment; too large for baseline enclosure")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "J6_ARDUCAM_MEGA_3MP_B0400_DNP")
+				(description "Six-wire SPI still-camera experiment; too large for baseline enclosure")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(property
+				(name "dnp")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "6a88d9db-be1b-5573-a7dc-bd204bb75f5d")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "3")
+						)
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "6")
+						)
+						(pin
+							(num "5")
+						)
+						(pin
+							(num "4")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "L1")
+			(value "1uH XGL4020-102")
+			(footprint "Mochi_Reference:L1_L4x4")
+			(datasheet "https://www.coilcraft.com/en-us/products/power/shielded-inductors/xgl/xgl4020/")
+			(description "BQ25628E power-path inductor")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:L1_L4x4")
+				(field
+					(name "Datasheet") "https://www.coilcraft.com/en-us/products/power/shielded-inductors/xgl/xgl4020/")
+				(field
+					(name "Description") "BQ25628E power-path inductor")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "L1_1uH_XGL4020-102")
+				(description "BQ25628E power-path inductor")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "2e3535a5-1dbb-5e1e-bf4f-1900fc4f93a1")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "L2")
+			(value "0.47uH XFL4015-471")
+			(footprint "Mochi_Reference:L2_L4x4")
+			(datasheet "https://www.coilcraft.com/en-us/products/power/shielded-inductors/xfl/xfl4015/")
+			(description "TPS63802 buck-boost inductor")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:L2_L4x4")
+				(field
+					(name "Datasheet") "https://www.coilcraft.com/en-us/products/power/shielded-inductors/xfl/xfl4015/")
+				(field
+					(name "Description") "TPS63802 buck-boost inductor")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "L2_0_47uH_XFL4015-471")
+				(description "TPS63802 buck-boost inductor")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "3f9b1b82-bc75-55c5-8c6b-e3463bb35f98")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "MK1")
+			(value "IM69D129F")
+			(footprint "Mochi_Reference:MK1_MEMS-5-3.5x2.65-BOTTOM-PORT")
+			(datasheet "https://www.infineon.com/part/IM69D129F")
+			(description "Bottom-port PDM microphone")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:MK1_MEMS-5-3.5x2.65-BOTTOM-PORT")
+				(field
+					(name "Datasheet") "https://www.infineon.com/part/IM69D129F")
+				(field
+					(name "Description") "Bottom-port PDM microphone")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "MK1_IM69D129F")
+				(description "Bottom-port PDM microphone")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "fb818734-26a7-5d56-bde2-8bbd51b0f824")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "3")
+						)
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "5")
+						)
+						(pin
+							(num "4")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R1")
+			(value "5.1k 1%")
+			(footprint "Mochi_Reference:R1_R0402")
+			(description "USB-C CC1 Rd")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:R1_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "USB-C CC1 Rd")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "R1_5_1k_1_")
+				(description "USB-C CC1 Rd")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "5a67ab28-de3c-5646-a167-73ebd618fe2d")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R2")
+			(value "5.1k 1%")
+			(footprint "Mochi_Reference:R2_R0402")
+			(description "USB-C CC2 Rd")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:R2_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "USB-C CC2 Rd")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "R2_5_1k_1_")
+				(description "USB-C CC2 Rd")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "6b3b0879-c642-5460-932b-56c6bdb4758a")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R3")
+			(value "4.99k 1%")
+			(footprint "Mochi_Reference:R3_R0402")
+			(datasheet "https://www.ti.com/lit/ds/symlink/bq25628e.pdf")
+			(description "BQ input-current limit, about 500mA")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:R3_R0402")
+				(field
+					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/bq25628e.pdf")
+				(field
+					(name "Description") "BQ input-current limit, about 500mA")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "R3_4_99k_1_")
+				(description "BQ input-current limit, about 500mA")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "4ba1f119-0c6e-506e-b8c4-d57376b696b9")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R4")
+			(value "5.23k 1%")
+			(footprint "Mochi_Reference:R4_R0402")
+			(datasheet "https://www.ti.com/lit/ds/symlink/bq25628e.pdf")
+			(description "BQ TS upper resistor for 103AT-class NTC")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:R4_R0402")
+				(field
+					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/bq25628e.pdf")
+				(field
+					(name "Description") "BQ TS upper resistor for 103AT-class NTC")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "R4_5_23k_1_")
+				(description "BQ TS upper resistor for 103AT-class NTC")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "35af5600-1818-5822-840d-f233eae9a378")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R5")
+			(value "30.1k 1%")
+			(footprint "Mochi_Reference:R5_R0402")
+			(datasheet "https://www.ti.com/lit/ds/symlink/bq25628e.pdf")
+			(description "BQ TS lower resistor for 103AT-class NTC")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:R5_R0402")
+				(field
+					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/bq25628e.pdf")
+				(field
+					(name "Description") "BQ TS lower resistor for 103AT-class NTC")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "R5_30_1k_1_")
+				(description "BQ TS lower resistor for 103AT-class NTC")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "aef125ab-cf4f-5b91-b658-afd91fb8e171")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R6")
+			(value "100k 1%")
+			(footprint "Mochi_Reference:R6_R0402")
+			(description "Power-enable fail-safe pull-down")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:R6_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Power-enable fail-safe pull-down")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "R6_100k_1_")
+				(description "Power-enable fail-safe pull-down")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "7555fcf4-37dc-51ff-bded-ccace952bd7f")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R7")
+			(value "523R 1%")
+			(footprint "Mochi_Reference:R7_R0402")
+			(datasheet "https://www.ti.com/lit/ds/symlink/tps22950.pdf")
+			(description "TPS22950 nominal about 2.4A current limit")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:R7_R0402")
+				(field
+					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/tps22950.pdf")
+				(field
+					(name "Description") "TPS22950 nominal about 2.4A current limit")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "R7_523R_1_")
+				(description "TPS22950 nominal about 2.4A current limit")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "4130c2ed-120a-5bee-ab46-7dbc5e5fc522")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R8")
+			(value "511k 1%")
+			(footprint "Mochi_Reference:R8_R0402")
+			(description "TPS63802 3.3V feedback upper")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:R8_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "TPS63802 3.3V feedback upper")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "R8_511k_1_")
+				(description "TPS63802 3.3V feedback upper")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "27feec6d-6700-5241-90c0-38a26035ec36")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R9")
+			(value "91k 1%")
+			(footprint "Mochi_Reference:R9_R0402")
+			(description "TPS63802 3.3V feedback lower")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:R9_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "TPS63802 3.3V feedback lower")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "R9_91k_1_")
+				(description "TPS63802 3.3V feedback lower")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "22fa22d8-15c6-5bcd-b03b-889ff90824d9")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R10")
+			(value "4.7k 1%")
+			(footprint "Mochi_Reference:R10_R0402")
+			(description "I2C SDA pull-up")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:R10_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "I2C SDA pull-up")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "R10_4_7k_1_")
+				(description "I2C SDA pull-up")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "bcea0952-c814-5a47-9ec0-35fd1e0f6d78")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R11")
+			(value "4.7k 1%")
+			(footprint "Mochi_Reference:R11_R0402")
+			(description "I2C SCL pull-up")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:R11_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "I2C SCL pull-up")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "R11_4_7k_1_")
+				(description "I2C SCL pull-up")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "daf3bc1f-8d9d-5788-8dab-04fdbe33141a")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R12")
+			(value "10k 1%")
+			(footprint "Mochi_Reference:R12_R0402")
+			(description "Conversation-button pull-up")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:R12_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Conversation-button pull-up")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "R12_10k_1_")
+				(description "Conversation-button pull-up")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "30f221f4-4012-5cd4-90f5-f2ee10718d28")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R13")
+			(value "1.5k 1%")
+			(footprint "Mochi_Reference:R13_R0402")
+			(description "Amber LED current limit")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:R13_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Amber LED current limit")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "R13_1_5k_1_")
+				(description "Amber LED current limit")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "ffe67c27-42ea-5809-8e76-c4f2a9d0b319")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R14")
+			(value "100k 1%")
+			(footprint "Mochi_Reference:R14_R0402")
+			(description "Capture-enable fail-safe pull-down")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:R14_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Capture-enable fail-safe pull-down")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "R14_100k_1_")
+				(description "Capture-enable fail-safe pull-down")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "fb37684c-a777-56c2-b8e0-1fd895dd0af7")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R15")
+			(value "1.5k 1%")
+			(footprint "Mochi_Reference:R15_R0402")
+			(description "Cyan LED current limit")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:R15_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Cyan LED current limit")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "R15_1_5k_1_")
+				(description "Cyan LED current limit")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "e7ab035b-29bb-5601-9380-495dc6c13dee")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R16")
+			(value "100k 1%")
+			(footprint "Mochi_Reference:R16_R0402")
+			(description "Amplifier shutdown pull-down")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:R16_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Amplifier shutdown pull-down")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "R16_100k_1_")
+				(description "Amplifier shutdown pull-down")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "11655208-dc7e-5aa9-a36b-8155a02edb37")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R17")
+			(value "100k 1% DNP")
+			(footprint "Mochi_Reference:R17_R0402")
+			(description "Camera-enable fail-safe pull-down")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:R17_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Camera-enable fail-safe pull-down")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "R17_100k_1__DNP")
+				(description "Camera-enable fail-safe pull-down")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(property
+				(name "dnp")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "e4262a24-7301-5d87-9c80-04408f1caa41")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R18")
+			(value "1.5k 1% DNP")
+			(footprint "Mochi_Reference:R18_R0402")
+			(description "Camera indicator current limit")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:R18_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Camera indicator current limit")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "R18_1_5k_1__DNP")
+				(description "Camera indicator current limit")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(property
+				(name "dnp")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "e0480628-9f83-5c10-960f-403bff463a46")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "RS1")
+			(value "10m 1% Kelvin")
+			(footprint "Mochi_Reference:RS1_R1206-Kelvin")
+			(description "Fuel-gauge low-side shunt")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:RS1_R1206-Kelvin")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Fuel-gauge low-side shunt")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "RS1_10m_1__Kelvin")
+				(description "Fuel-gauge low-side shunt")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "c87d4f4c-5bc5-52cb-ba0f-a60642560cab")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "SW1")
+			(value "LATCHING POWER SLIDE")
+			(footprint "Mochi_Reference:SW1_Slide-SPST-RA-TBD")
+			(description "Only latching hardware power control")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:SW1_Slide-SPST-RA-TBD")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Only latching hardware power control")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "SW1_LATCHING_POWER_SLIDE")
+				(description "Only latching hardware power control")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "c7e06ccd-7930-5882-b3d3-aaf5945f33eb")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "SW2")
+			(value "ILLUMINATED CONVERSATION BUTTON")
+			(footprint "Mochi_Reference:SW2_Top-Button-TBD")
+			(description "Only momentary user control; amber LED is D2")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:SW2_Top-Button-TBD")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Only momentary user control; amber LED is D2")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "SW2_ILLUMINATED_CONVERSATION_BUTTON")
+				(description "Only momentary user control; amber LED is D2")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "9cd19d57-0ea1-5dc2-8b9d-2e1991383070")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP1")
+			(value "DEBUG_TX")
+			(footprint "Mochi_Reference:TP1_TestPoint-1mm")
+			(description "Factory UART TX pad; never supply power")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:TP1_TestPoint-1mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Factory UART TX pad; never supply power")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "TP1_DEBUG_TX")
+				(description "Factory UART TX pad; never supply power")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "e8b59456-cd51-57f6-842d-89ebf9e5211b")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP2")
+			(value "DEBUG_RX")
+			(footprint "Mochi_Reference:TP2_TestPoint-1mm")
+			(description "Factory UART RX pad; verify no off-state injection")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:TP2_TestPoint-1mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Factory UART RX pad; verify no off-state injection")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "TP2_DEBUG_RX")
+				(description "Factory UART RX pad; verify no off-state injection")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "aa59b788-cf37-5a2a-bff8-d60be508c994")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP3")
+			(value "WALTER_DFU_N")
+			(footprint "Mochi_Reference:TP3_TestPoint-1mm")
+			(description "Factory boot and DFU pad")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:TP3_TestPoint-1mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Factory boot and DFU pad")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "TP3_WALTER_DFU_N")
+				(description "Factory boot and DFU pad")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "2419dd12-303d-5925-9659-cc7ec8b9f9cf")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP4")
+			(value "WALTER_RESET_N")
+			(footprint "Mochi_Reference:TP4_TestPoint-1mm")
+			(description "Factory reset pad")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:TP4_TestPoint-1mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Factory reset pad")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "TP4_WALTER_RESET_N")
+				(description "Factory reset pad")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "452e69d8-1f31-5ec4-8b03-b3d972fdd76c")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP5")
+			(value "MAIN_FAULT_N")
+			(footprint "Mochi_Reference:TP5_TestPoint-1mm")
+			(description "Master-switch fault pad")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:TP5_TestPoint-1mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Master-switch fault pad")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "TP5_MAIN_FAULT_N")
+				(description "Master-switch fault pad")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "cf13a892-56e4-59de-af28-efecb433f7ae")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP6")
+			(value "3V3_POWER_GOOD")
+			(footprint "Mochi_Reference:TP6_TestPoint-1mm")
+			(description "Peripheral-rail validation pad")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:TP6_TestPoint-1mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Peripheral-rail validation pad")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "TP6_3V3_POWER_GOOD")
+				(description "Peripheral-rail validation pad")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "1eb81236-fda4-5e30-a19f-7ef953b4feac")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP7")
+			(value "BQ_INTERRUPT")
+			(footprint "Mochi_Reference:TP7_TestPoint-1mm")
+			(description "Charger-interrupt validation pad")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:TP7_TestPoint-1mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Charger-interrupt validation pad")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "TP7_BQ_INTERRUPT")
+				(description "Charger-interrupt validation pad")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "9871c840-efe1-5eb4-b1d9-ff24ffb8fbaa")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP8")
+			(value "GROUND")
+			(footprint "Mochi_Reference:TP8_TestPoint-1mm")
+			(description "Factory measurement ground")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:TP8_TestPoint-1mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Factory measurement ground")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "TP8_GROUND")
+				(description "Factory measurement ground")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "584275b9-b39a-5f17-9e18-c4860d2b9415")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP9")
+			(value "WALTER_3V3_OUT")
+			(footprint "Mochi_Reference:TP9_TestPoint-1mm")
+			(description "Walter switched 3.3V output measurement only; never tie to 3V3_PERIPH")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:TP9_TestPoint-1mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Walter switched 3.3V output measurement only; never tie to 3V3_PERIPH")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "TP9_WALTER_3V3_OUT")
+				(description "Walter switched 3.3V output measurement only; never tie to 3V3_PERIPH")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "52dd063d-b015-57b0-b92b-27596aac19bd")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP10")
+			(value "GAUGE_ALERT")
+			(footprint "Mochi_Reference:TP10_TestPoint-1mm")
+			(description "Fuel-gauge alert validation pad")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:TP10_TestPoint-1mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Fuel-gauge alert validation pad")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "TP10_GAUGE_ALERT")
+				(description "Fuel-gauge alert validation pad")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "d456bfe0-5413-568d-83ad-f473968cc3a0")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP11")
+			(value "BQ_POWER_GOOD")
+			(footprint "Mochi_Reference:TP11_TestPoint-1mm")
+			(description "Charger power-good validation pad")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:TP11_TestPoint-1mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Charger power-good validation pad")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "TP11_BQ_POWER_GOOD")
+				(description "Charger power-good validation pad")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "4b6b5bad-9e87-52ee-acc3-feaa142ec639")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "U1")
+			(value "TPD2EUSB30")
+			(footprint "Mochi_Reference:U1_SOT23-3")
+			(datasheet "https://www.ti.com/product/TPD2EUSB30")
+			(description "USB-C CC1/CC2 ESD protection")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:U1_SOT23-3")
+				(field
+					(name "Datasheet") "https://www.ti.com/product/TPD2EUSB30")
+				(field
+					(name "Description") "USB-C CC1/CC2 ESD protection")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "U1_TPD2EUSB30")
+				(description "USB-C CC1/CC2 ESD protection")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "64009494-13c1-5bfe-8b39-c51f910b14db")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "3")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "U3")
+			(value "BQ25628E")
+			(footprint "Mochi_Reference:U3_WQFN-18-2.5x3")
+			(datasheet "https://www.ti.com/lit/ds/symlink/bq25628e.pdf")
+			(description "1-cell 2A NVDC charger and power path")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:U3_WQFN-18-2.5x3")
+				(field
+					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/bq25628e.pdf")
+				(field
+					(name "Description") "1-cell 2A NVDC charger and power path")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "U3_BQ25628E")
+				(description "1-cell 2A NVDC charger and power path")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "56c42cfb-e3ea-50aa-8e9c-6cc4f45e8b9d")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "8")
+						)
+						(pin
+							(num "7")
+						)
+						(pin
+							(num "6")
+						)
+						(pin
+							(num "5")
+						)
+						(pin
+							(num "4")
+						)
+						(pin
+							(num "3")
+						)
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "16")
+						)
+						(pin
+							(num "15")
+						)
+						(pin
+							(num "14")
+						)
+						(pin
+							(num "13")
+						)
+						(pin
+							(num "12")
+						)
+						(pin
+							(num "11")
+						)
+						(pin
+							(num "10")
+						)
+						(pin
+							(num "9")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "U4")
+			(value "MAX17055ETB+T")
+			(footprint "Mochi_Reference:U4_TDFN-10-2x2.5")
+			(datasheet "https://www.analog.com/en/products/MAX17055.html")
+			(description "Fuel gauge with current and time estimation")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:U4_TDFN-10-2x2.5")
+				(field
+					(name "Datasheet") "https://www.analog.com/en/products/MAX17055.html")
+				(field
+					(name "Description") "Fuel gauge with current and time estimation")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "U4_MAX17055ETB+T")
+				(description "Fuel gauge with current and time estimation")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "2d4ab41f-1e82-55f0-9cd6-a952fd04f1a2")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "3")
+						)
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "6")
+						)
+						(pin
+							(num "5")
+						)
+						(pin
+							(num "4")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "U5")
+			(value "TPS22950")
+			(footprint "Mochi_Reference:U5_SOT23-6")
+			(datasheet "https://www.ti.com/lit/ds/symlink/tps22950.pdf")
+			(description "Reverse-blocking adjustable-current-limit master load switch")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:U5_SOT23-6")
+				(field
+					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/tps22950.pdf")
+				(field
+					(name "Description") "Reverse-blocking adjustable-current-limit master load switch")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "U5_TPS22950")
+				(description "Reverse-blocking adjustable-current-limit master load switch")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "d090fdf4-3660-51cf-91ef-6485f689bcf4")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "3")
+						)
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "6")
+						)
+						(pin
+							(num "5")
+						)
+						(pin
+							(num "4")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "U6")
+			(value "TPS63802")
+			(footprint "Mochi_Reference:U6_VSON-10-3x2")
+			(datasheet "https://www.ti.com/lit/ds/symlink/tps63802.pdf")
+			(description "2A 3.3V peripheral buck-boost")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:U6_VSON-10-3x2")
+				(field
+					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/tps63802.pdf")
+				(field
+					(name "Description") "2A 3.3V peripheral buck-boost")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "U6_TPS63802")
+				(description "2A 3.3V peripheral buck-boost")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "92b66cd2-ed5e-55b8-8372-3395ff3121f7")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "4")
+						)
+						(pin
+							(num "3")
+						)
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "8")
+						)
+						(pin
+							(num "7")
+						)
+						(pin
+							(num "6")
+						)
+						(pin
+							(num "5")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "U10")
+			(value "WALTER P000000100 N16R2")
+			(footprint "Mochi_Reference:U10_WALTER-28-REF")
+			(datasheet "https://quickspot.io/datasheet/walter_datasheet.pdf")
+			(description "ESP32-S3 Wi-Fi/BLE plus Sequans GM02SP LTE-M/NB-IoT/GNSS SoM")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:U10_WALTER-28-REF")
+				(field
+					(name "Datasheet") "https://quickspot.io/datasheet/walter_datasheet.pdf")
+				(field
+					(name "Description") "ESP32-S3 Wi-Fi/BLE plus Sequans GM02SP LTE-M/NB-IoT/GNSS SoM")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "U10_WALTER_P000000100_N16R2")
+				(description "ESP32-S3 Wi-Fi/BLE plus Sequans GM02SP LTE-M/NB-IoT/GNSS SoM")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "c6ce6303-eb63-5b47-b0cf-f2bbf4bc5c8f")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "14")
+						)
+						(pin
+							(num "13")
+						)
+						(pin
+							(num "12")
+						)
+						(pin
+							(num "11")
+						)
+						(pin
+							(num "10")
+						)
+						(pin
+							(num "9")
+						)
+						(pin
+							(num "8")
+						)
+						(pin
+							(num "7")
+						)
+						(pin
+							(num "6")
+						)
+						(pin
+							(num "5")
+						)
+						(pin
+							(num "4")
+						)
+						(pin
+							(num "3")
+						)
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "28")
+						)
+						(pin
+							(num "27")
+						)
+						(pin
+							(num "26")
+						)
+						(pin
+							(num "25")
+						)
+						(pin
+							(num "24")
+						)
+						(pin
+							(num "23")
+						)
+						(pin
+							(num "22")
+						)
+						(pin
+							(num "21")
+						)
+						(pin
+							(num "20")
+						)
+						(pin
+							(num "19")
+						)
+						(pin
+							(num "18")
+						)
+						(pin
+							(num "17")
+						)
+						(pin
+							(num "16")
+						)
+						(pin
+							(num "15")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "U12")
+			(value "TPS22918")
+			(footprint "Mochi_Reference:U12_SOT23-6")
+			(datasheet "https://www.ti.com/lit/ds/symlink/tps22918.pdf")
+			(description "Hardware microphone rail gate")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:U12_SOT23-6")
+				(field
+					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/tps22918.pdf")
+				(field
+					(name "Description") "Hardware microphone rail gate")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "U12_TPS22918")
+				(description "Hardware microphone rail gate")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "6dd2721f-e580-54b4-a491-669219f9b2de")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "4")
+						)
+						(pin
+							(num "3")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "U13")
+			(value "SN74LVC2G125")
+			(footprint "Mochi_Reference:U13_VSSOP-8")
+			(datasheet "https://www.ti.com/lit/ds/symlink/sn74lvc2g125.pdf")
+			(description "PDM clock and data isolation with Ioff")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:U13_VSSOP-8")
+				(field
+					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/sn74lvc2g125.pdf")
+				(field
+					(name "Description") "PDM clock and data isolation with Ioff")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "U13_SN74LVC2G125")
+				(description "PDM clock and data isolation with Ioff")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "a8dcc044-9545-5297-b56c-bc8903e0aee0")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "4")
+						)
+						(pin
+							(num "3")
+						)
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "8")
+						)
+						(pin
+							(num "7")
+						)
+						(pin
+							(num "6")
+						)
+						(pin
+							(num "5")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "U14")
+			(value "MAX98357AETE+T")
+			(footprint "Mochi_Reference:U14_TQFN-16-3x3")
+			(datasheet "https://www.analog.com/en/products/max98357a.html")
+			(description "I2S mono class-D amplifier")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:U14_TQFN-16-3x3")
+				(field
+					(name "Datasheet") "https://www.analog.com/en/products/max98357a.html")
+				(field
+					(name "Description") "I2S mono class-D amplifier")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "U14_MAX98357AETE+T")
+				(description "I2S mono class-D amplifier")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "f63284f2-319b-5f26-9f3d-ffb0d4a67d9b")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "4")
+						)
+						(pin
+							(num "3")
+						)
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "8")
+						)
+						(pin
+							(num "7")
+						)
+						(pin
+							(num "6")
+						)
+						(pin
+							(num "5")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "U15")
+			(value "TPS22918 DNP CAMERA")
+			(footprint "Mochi_Reference:U15_SOT23-6")
+			(datasheet "https://www.ti.com/lit/ds/symlink/tps22918.pdf")
+			(description "Optional camera rail gate")
+			(fields
+				(field
+					(name "Footprint") "Mochi_Reference:U15_SOT23-6")
+				(field
+					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/tps22918.pdf")
+				(field
+					(name "Description") "Optional camera rail gate")
+			)
+			(libsource
+				(lib "Mochi")
+				(part "U15_TPS22918_DNP_CAMERA")
+				(description "Optional camera rail gate")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "mochi.kicad_sch")
+			)
+			(property
+				(name "dnp")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "b3b5b1ae-cb7b-5156-98b1-b21bf271c6fc")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "4")
+						)
+						(pin
+							(num "3")
+						)
+					)
+				)
+			)
+		)
+	)
+	(groups)
+	(variants)
+	(libparts
+		(libpart
+			(lib "Mochi")
+			(part "C10_1uF_10V_X7R")
+			(description "Master-switch input bypass")
+			(fields
+				(field
+					(name "Reference") "C")
+				(field
+					(name "Value") "1uF 10V X7R")
+				(field
+					(name "Footprint") "Mochi_Reference:C10_C0603")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Master-switch input bypass")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "C11_10uF_10V_X7R")
+			(description "Master-switch output bulk")
+			(fields
+				(field
+					(name "Reference") "C")
+				(field
+					(name "Value") "10uF 10V X7R")
+				(field
+					(name "Footprint") "Mochi_Reference:C11_C0805")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Master-switch output bulk")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "C12_10uF_10V_X7R")
+			(description "TPS63802 input bulk")
+			(fields
+				(field
+					(name "Reference") "C")
+				(field
+					(name "Value") "10uF 10V X7R")
+				(field
+					(name "Footprint") "Mochi_Reference:C12_C0805")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "TPS63802 input bulk")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "C13_22uF_6_3V_X7R")
+			(description "TPS63802 output bulk")
+			(fields
+				(field
+					(name "Reference") "C")
+				(field
+					(name "Value") "22uF 6.3V X7R")
+				(field
+					(name "Footprint") "Mochi_Reference:C13_C0805")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "TPS63802 output bulk")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "C14_100uF_6_3V_low-ESR")
+			(description "Walter VIN EVT reservoir 1 of 2")
+			(fields
+				(field
+					(name "Reference") "C")
+				(field
+					(name "Value") "100uF 6.3V low-ESR")
+				(field
+					(name "Footprint") "Mochi_Reference:C14_C1210")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Walter VIN EVT reservoir 1 of 2")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "C15_100uF_6_3V_low-ESR")
+			(description "Walter VIN EVT reservoir 2 of 2")
+			(fields
+				(field
+					(name "Reference") "C")
+				(field
+					(name "Value") "100uF 6.3V low-ESR")
+				(field
+					(name "Footprint") "Mochi_Reference:C15_C1210")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Walter VIN EVT reservoir 2 of 2")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "C16_10uF_10V_X7R")
+			(description "Walter VIN local bypass")
+			(fields
+				(field
+					(name "Reference") "C")
+				(field
+					(name "Value") "10uF 10V X7R")
+				(field
+					(name "Footprint") "Mochi_Reference:C16_C0805")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Walter VIN local bypass")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "C17_100nF_10V_X7R")
+			(description "Walter VIN high-frequency bypass")
+			(fields
+				(field
+					(name "Reference") "C")
+				(field
+					(name "Value") "100nF 10V X7R")
+				(field
+					(name "Footprint") "Mochi_Reference:C17_C0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Walter VIN high-frequency bypass")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "C18_1uF_6_3V_X7R")
+			(description "Switched microphone-rail bypass")
+			(fields
+				(field
+					(name "Reference") "C")
+				(field
+					(name "Value") "1uF 6.3V X7R")
+				(field
+					(name "Footprint") "Mochi_Reference:C18_C0603")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Switched microphone-rail bypass")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "C19_10uF_6_3V_X7R")
+			(description "Amplifier local bulk")
+			(fields
+				(field
+					(name "Reference") "C")
+				(field
+					(name "Value") "10uF 6.3V X7R")
+				(field
+					(name "Footprint") "Mochi_Reference:C19_C0805")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Amplifier local bulk")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "C1_1uF_25V_X7R")
+			(description "BQ VBUS bypass")
+			(fields
+				(field
+					(name "Reference") "C")
+				(field
+					(name "Value") "1uF 25V X7R")
+				(field
+					(name "Footprint") "Mochi_Reference:C1_C0603")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "BQ VBUS bypass")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "C20_100nF_6_3V_X7R")
+			(description "Amplifier high-frequency bypass")
+			(fields
+				(field
+					(name "Reference") "C")
+				(field
+					(name "Value") "100nF 6.3V X7R")
+				(field
+					(name "Footprint") "Mochi_Reference:C20_C0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Amplifier high-frequency bypass")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "C2_10uF_25V_X7R")
+			(description "BQ PMID bulk")
+			(fields
+				(field
+					(name "Reference") "C")
+				(field
+					(name "Value") "10uF 25V X7R")
+				(field
+					(name "Footprint") "Mochi_Reference:C2_C0805")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "BQ PMID bulk")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "C3_100nF_25V_X7R")
+			(description "BQ PMID high-frequency bypass")
+			(fields
+				(field
+					(name "Reference") "C")
+				(field
+					(name "Value") "100nF 25V X7R")
+				(field
+					(name "Footprint") "Mochi_Reference:C3_C0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "BQ PMID high-frequency bypass")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "C4_47nF_25V_X7R")
+			(description "BQ bootstrap capacitor")
+			(fields
+				(field
+					(name "Reference") "C")
+				(field
+					(name "Value") "47nF 25V X7R")
+				(field
+					(name "Footprint") "Mochi_Reference:C4_C0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "BQ bootstrap capacitor")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "C5_4_7uF_10V_X7R")
+			(description "BQ REGN bypass")
+			(fields
+				(field
+					(name "Reference") "C")
+				(field
+					(name "Value") "4.7uF 10V X7R")
+				(field
+					(name "Footprint") "Mochi_Reference:C5_C0603")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "BQ REGN bypass")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "C6_10uF_10V_X7R")
+			(description "BQ SYS bulk 1 of 2")
+			(fields
+				(field
+					(name "Reference") "C")
+				(field
+					(name "Value") "10uF 10V X7R")
+				(field
+					(name "Footprint") "Mochi_Reference:C6_C0805")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "BQ SYS bulk 1 of 2")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "C7_10uF_10V_X7R")
+			(description "BQ SYS bulk 2 of 2")
+			(fields
+				(field
+					(name "Reference") "C")
+				(field
+					(name "Value") "10uF 10V X7R")
+				(field
+					(name "Footprint") "Mochi_Reference:C7_C0805")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "BQ SYS bulk 2 of 2")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "C8_10uF_10V_X7R")
+			(description "BQ BAT bypass")
+			(fields
+				(field
+					(name "Reference") "C")
+				(field
+					(name "Value") "10uF 10V X7R")
+				(field
+					(name "Footprint") "Mochi_Reference:C8_C0805")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "BQ BAT bypass")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "C9_100nF_10V_X7R")
+			(description "Fuel-gauge bypass")
+			(fields
+				(field
+					(name "Reference") "C")
+				(field
+					(name "Value") "100nF 10V X7R")
+				(field
+					(name "Footprint") "Mochi_Reference:C9_C0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Fuel-gauge bypass")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "D1_CYAN_CAPTURE_LED")
+			(description "Hardware-coupled capture truth indicator")
+			(fields
+				(field
+					(name "Reference") "D")
+				(field
+					(name "Value") "CYAN CAPTURE LED")
+				(field
+					(name "Footprint") "Mochi_Reference:D1_LED0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Hardware-coupled capture truth indicator")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "A")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "K")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "D2_AMBER_BUTTON_LED")
+			(description "Connecting and session-intent indicator inside SW2")
+			(fields
+				(field
+					(name "Reference") "D")
+				(field
+					(name "Value") "AMBER BUTTON LED")
+				(field
+					(name "Footprint") "Mochi_Reference:D2_LED0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Connecting and session-intent indicator inside SW2")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "A")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "K")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "D3_WHITE_CAMERA_POWER_LED_DNP")
+			(description "Hardware-coupled camera-power indicator")
+			(fields
+				(field
+					(name "Reference") "D")
+				(field
+					(name "Value") "WHITE CAMERA POWER LED DNP")
+				(field
+					(name "Footprint") "Mochi_Reference:D3_LED0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Hardware-coupled camera-power indicator")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "A")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "K")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "D4_ESDA7P60-1U1M")
+			(description "USB VBUS TVS")
+			(docs "https://www.st.com/en/protections-and-emi-filters/esda7p60-1u1m.html")
+			(fields
+				(field
+					(name "Reference") "D")
+				(field
+					(name "Value") "ESDA7P60-1U1M")
+				(field
+					(name "Footprint") "Mochi_Reference:D4_QFN-2")
+				(field
+					(name "Datasheet") "https://www.st.com/en/protections-and-emi-filters/esda7p60-1u1m.html")
+				(field
+					(name "Description") "USB VBUS TVS")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "K")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "A")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "F1_1206L075_24")
+			(description "Resettable USB input fuse")
+			(docs "https://www.littelfuse.com/products/polyswitch-resettable-pptcs/surface-mount/1206l")
+			(fields
+				(field
+					(name "Reference") "F")
+				(field
+					(name "Value") "1206L075/24")
+				(field
+					(name "Footprint") "Mochi_Reference:F1_F1206")
+				(field
+					(name "Datasheet") "https://www.littelfuse.com/products/polyswitch-resettable-pptcs/surface-mount/1206l")
+				(field
+					(name "Description") "Resettable USB input fuse")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "J1_USB4105-GF-A")
+			(description "User USB-C charge-only receptacle")
+			(docs "https://gct.co/connector/usb4105")
+			(fields
+				(field
+					(name "Reference") "J")
+				(field
+					(name "Value") "USB4105-GF-A")
+				(field
+					(name "Footprint") "Mochi_Reference:J1_USB-C-16P")
+				(field
+					(name "Datasheet") "https://gct.co/connector/usb4105")
+				(field
+					(name "Description") "User USB-C charge-only receptacle")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "VBUS")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "GND")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "CC1")
+					(type "passive")
+				)
+				(pin
+					(num "4")
+					(name "CC2")
+					(type "passive")
+				)
+				(pin
+					(num "5")
+					(name "SHIELD")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "J2_Molex_5023520300")
+			(description "Protected pack connector")
+			(docs "https://www.molex.com/en-us/products/part-detail/5023520300")
+			(fields
+				(field
+					(name "Reference") "J")
+				(field
+					(name "Value") "Molex 5023520300")
+				(field
+					(name "Footprint") "Mochi_Reference:J2_DuraClik-3P-RA")
+				(field
+					(name "Datasheet") "https://www.molex.com/en-us/products/part-detail/5023520300")
+				(field
+					(name "Description") "Protected pack connector")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "PACK+")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "NTC")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "PACK-")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "J4_AS01808AO-SC18-WP-R")
+			(description "8ohm 1W spring-contact speaker")
+			(docs "https://puiaudio.com/file/specs-AS01808AO-SC18-WP-R.pdf")
+			(fields
+				(field
+					(name "Reference") "J")
+				(field
+					(name "Value") "AS01808AO-SC18-WP-R")
+				(field
+					(name "Footprint") "Mochi_Reference:J4_Speaker-18x13-Spring")
+				(field
+					(name "Datasheet") "https://puiaudio.com/file/specs-AS01808AO-SC18-WP-R.pdf")
+				(field
+					(name "Description") "8ohm 1W spring-contact speaker")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "+")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "-")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "J5_WAVESHARE_1_69IN_TOUCH_LCD_27057")
+			(description "GH1.25 12-pin 240x280 ST7789V2 LCD and CST816S touch module")
+			(docs "https://www.waveshare.com/wiki/1.69inch_Touch_LCD_Module")
+			(fields
+				(field
+					(name "Reference") "J")
+				(field
+					(name "Value") "WAVESHARE 1.69IN TOUCH LCD 27057")
+				(field
+					(name "Footprint") "Mochi_Reference:J5_GH1.25-12P-RA-VERIFY")
+				(field
+					(name "Datasheet") "https://www.waveshare.com/wiki/1.69inch_Touch_LCD_Module")
+				(field
+					(name "Description") "GH1.25 12-pin 240x280 ST7789V2 LCD and CST816S touch module")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "VCC")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "GND")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "LCD_DIN")
+					(type "passive")
+				)
+				(pin
+					(num "4")
+					(name "LCD_CLK")
+					(type "passive")
+				)
+				(pin
+					(num "5")
+					(name "LCD_CS")
+					(type "passive")
+				)
+				(pin
+					(num "6")
+					(name "LCD_DC")
+					(type "passive")
+				)
+				(pin
+					(num "7")
+					(name "LCD_RST")
+					(type "passive")
+				)
+				(pin
+					(num "8")
+					(name "LCD_BL")
+					(type "passive")
+				)
+				(pin
+					(num "9")
+					(name "TP_SDA")
+					(type "passive")
+				)
+				(pin
+					(num "10")
+					(name "TP_SCL")
+					(type "passive")
+				)
+				(pin
+					(num "11")
+					(name "TP_RST")
+					(type "passive")
+				)
+				(pin
+					(num "12")
+					(name "TP_IRQ")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "J6_ARDUCAM_MEGA_3MP_B0400_DNP")
+			(description "Six-wire SPI still-camera experiment; too large for baseline enclosure")
+			(docs "https://docs.arducam.com/Arduino-SPI-camera/MEGA-SPI/MEGA-SPI-Camera/")
+			(fields
+				(field
+					(name "Reference") "J")
+				(field
+					(name "Value") "ARDUCAM MEGA 3MP B0400 DNP")
+				(field
+					(name "Footprint") "Mochi_Reference:J6_XH2.54-1x6-RA")
+				(field
+					(name "Datasheet") "https://docs.arducam.com/Arduino-SPI-camera/MEGA-SPI/MEGA-SPI-Camera/")
+				(field
+					(name "Description") "Six-wire SPI still-camera experiment; too large for baseline enclosure")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "VCC")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "GND")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "SCK")
+					(type "passive")
+				)
+				(pin
+					(num "4")
+					(name "MISO")
+					(type "passive")
+				)
+				(pin
+					(num "5")
+					(name "MOSI")
+					(type "passive")
+				)
+				(pin
+					(num "6")
+					(name "CS")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "L1_1uH_XGL4020-102")
+			(description "BQ25628E power-path inductor")
+			(docs "https://www.coilcraft.com/en-us/products/power/shielded-inductors/xgl/xgl4020/")
+			(fields
+				(field
+					(name "Reference") "L")
+				(field
+					(name "Value") "1uH XGL4020-102")
+				(field
+					(name "Footprint") "Mochi_Reference:L1_L4x4")
+				(field
+					(name "Datasheet") "https://www.coilcraft.com/en-us/products/power/shielded-inductors/xgl/xgl4020/")
+				(field
+					(name "Description") "BQ25628E power-path inductor")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "L2_0_47uH_XFL4015-471")
+			(description "TPS63802 buck-boost inductor")
+			(docs "https://www.coilcraft.com/en-us/products/power/shielded-inductors/xfl/xfl4015/")
+			(fields
+				(field
+					(name "Reference") "L")
+				(field
+					(name "Value") "0.47uH XFL4015-471")
+				(field
+					(name "Footprint") "Mochi_Reference:L2_L4x4")
+				(field
+					(name "Datasheet") "https://www.coilcraft.com/en-us/products/power/shielded-inductors/xfl/xfl4015/")
+				(field
+					(name "Description") "TPS63802 buck-boost inductor")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "MK1_IM69D129F")
+			(description "Bottom-port PDM microphone")
+			(docs "https://www.infineon.com/part/IM69D129F")
+			(fields
+				(field
+					(name "Reference") "MK")
+				(field
+					(name "Value") "IM69D129F")
+				(field
+					(name "Footprint") "Mochi_Reference:MK1_MEMS-5-3.5x2.65-BOTTOM-PORT")
+				(field
+					(name "Datasheet") "https://www.infineon.com/part/IM69D129F")
+				(field
+					(name "Description") "Bottom-port PDM microphone")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "VDD")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "GND")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "CLK")
+					(type "passive")
+				)
+				(pin
+					(num "4")
+					(name "DATA")
+					(type "passive")
+				)
+				(pin
+					(num "5")
+					(name "L/R")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "R10_4_7k_1_")
+			(description "I2C SDA pull-up")
+			(fields
+				(field
+					(name "Reference") "R")
+				(field
+					(name "Value") "4.7k 1%")
+				(field
+					(name "Footprint") "Mochi_Reference:R10_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "I2C SDA pull-up")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "R11_4_7k_1_")
+			(description "I2C SCL pull-up")
+			(fields
+				(field
+					(name "Reference") "R")
+				(field
+					(name "Value") "4.7k 1%")
+				(field
+					(name "Footprint") "Mochi_Reference:R11_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "I2C SCL pull-up")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "R12_10k_1_")
+			(description "Conversation-button pull-up")
+			(fields
+				(field
+					(name "Reference") "R")
+				(field
+					(name "Value") "10k 1%")
+				(field
+					(name "Footprint") "Mochi_Reference:R12_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Conversation-button pull-up")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "R13_1_5k_1_")
+			(description "Amber LED current limit")
+			(fields
+				(field
+					(name "Reference") "R")
+				(field
+					(name "Value") "1.5k 1%")
+				(field
+					(name "Footprint") "Mochi_Reference:R13_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Amber LED current limit")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "R14_100k_1_")
+			(description "Capture-enable fail-safe pull-down")
+			(fields
+				(field
+					(name "Reference") "R")
+				(field
+					(name "Value") "100k 1%")
+				(field
+					(name "Footprint") "Mochi_Reference:R14_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Capture-enable fail-safe pull-down")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "R15_1_5k_1_")
+			(description "Cyan LED current limit")
+			(fields
+				(field
+					(name "Reference") "R")
+				(field
+					(name "Value") "1.5k 1%")
+				(field
+					(name "Footprint") "Mochi_Reference:R15_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Cyan LED current limit")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "R16_100k_1_")
+			(description "Amplifier shutdown pull-down")
+			(fields
+				(field
+					(name "Reference") "R")
+				(field
+					(name "Value") "100k 1%")
+				(field
+					(name "Footprint") "Mochi_Reference:R16_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Amplifier shutdown pull-down")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "R17_100k_1__DNP")
+			(description "Camera-enable fail-safe pull-down")
+			(fields
+				(field
+					(name "Reference") "R")
+				(field
+					(name "Value") "100k 1% DNP")
+				(field
+					(name "Footprint") "Mochi_Reference:R17_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Camera-enable fail-safe pull-down")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "R18_1_5k_1__DNP")
+			(description "Camera indicator current limit")
+			(fields
+				(field
+					(name "Reference") "R")
+				(field
+					(name "Value") "1.5k 1% DNP")
+				(field
+					(name "Footprint") "Mochi_Reference:R18_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Camera indicator current limit")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "R1_5_1k_1_")
+			(description "USB-C CC1 Rd")
+			(fields
+				(field
+					(name "Reference") "R")
+				(field
+					(name "Value") "5.1k 1%")
+				(field
+					(name "Footprint") "Mochi_Reference:R1_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "USB-C CC1 Rd")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "R2_5_1k_1_")
+			(description "USB-C CC2 Rd")
+			(fields
+				(field
+					(name "Reference") "R")
+				(field
+					(name "Value") "5.1k 1%")
+				(field
+					(name "Footprint") "Mochi_Reference:R2_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "USB-C CC2 Rd")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "R3_4_99k_1_")
+			(description "BQ input-current limit, about 500mA")
+			(docs "https://www.ti.com/lit/ds/symlink/bq25628e.pdf")
+			(fields
+				(field
+					(name "Reference") "R")
+				(field
+					(name "Value") "4.99k 1%")
+				(field
+					(name "Footprint") "Mochi_Reference:R3_R0402")
+				(field
+					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/bq25628e.pdf")
+				(field
+					(name "Description") "BQ input-current limit, about 500mA")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "R4_5_23k_1_")
+			(description "BQ TS upper resistor for 103AT-class NTC")
+			(docs "https://www.ti.com/lit/ds/symlink/bq25628e.pdf")
+			(fields
+				(field
+					(name "Reference") "R")
+				(field
+					(name "Value") "5.23k 1%")
+				(field
+					(name "Footprint") "Mochi_Reference:R4_R0402")
+				(field
+					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/bq25628e.pdf")
+				(field
+					(name "Description") "BQ TS upper resistor for 103AT-class NTC")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "R5_30_1k_1_")
+			(description "BQ TS lower resistor for 103AT-class NTC")
+			(docs "https://www.ti.com/lit/ds/symlink/bq25628e.pdf")
+			(fields
+				(field
+					(name "Reference") "R")
+				(field
+					(name "Value") "30.1k 1%")
+				(field
+					(name "Footprint") "Mochi_Reference:R5_R0402")
+				(field
+					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/bq25628e.pdf")
+				(field
+					(name "Description") "BQ TS lower resistor for 103AT-class NTC")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "R6_100k_1_")
+			(description "Power-enable fail-safe pull-down")
+			(fields
+				(field
+					(name "Reference") "R")
+				(field
+					(name "Value") "100k 1%")
+				(field
+					(name "Footprint") "Mochi_Reference:R6_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Power-enable fail-safe pull-down")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "R7_523R_1_")
+			(description "TPS22950 nominal about 2.4A current limit")
+			(docs "https://www.ti.com/lit/ds/symlink/tps22950.pdf")
+			(fields
+				(field
+					(name "Reference") "R")
+				(field
+					(name "Value") "523R 1%")
+				(field
+					(name "Footprint") "Mochi_Reference:R7_R0402")
+				(field
+					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/tps22950.pdf")
+				(field
+					(name "Description") "TPS22950 nominal about 2.4A current limit")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "R8_511k_1_")
+			(description "TPS63802 3.3V feedback upper")
+			(fields
+				(field
+					(name "Reference") "R")
+				(field
+					(name "Value") "511k 1%")
+				(field
+					(name "Footprint") "Mochi_Reference:R8_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "TPS63802 3.3V feedback upper")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "R9_91k_1_")
+			(description "TPS63802 3.3V feedback lower")
+			(fields
+				(field
+					(name "Reference") "R")
+				(field
+					(name "Value") "91k 1%")
+				(field
+					(name "Footprint") "Mochi_Reference:R9_R0402")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "TPS63802 3.3V feedback lower")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "RS1_10m_1__Kelvin")
+			(description "Fuel-gauge low-side shunt")
+			(fields
+				(field
+					(name "Reference") "RS")
+				(field
+					(name "Value") "10m 1% Kelvin")
+				(field
+					(name "Footprint") "Mochi_Reference:RS1_R1206-Kelvin")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Fuel-gauge low-side shunt")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "PACK")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "SYSTEM")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "SW1_LATCHING_POWER_SLIDE")
+			(description "Only latching hardware power control")
+			(fields
+				(field
+					(name "Reference") "SW")
+				(field
+					(name "Value") "LATCHING POWER SLIDE")
+				(field
+					(name "Footprint") "Mochi_Reference:SW1_Slide-SPST-RA-TBD")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Only latching hardware power control")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "COMMON")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "ON")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "SW2_ILLUMINATED_CONVERSATION_BUTTON")
+			(description "Only momentary user control; amber LED is D2")
+			(fields
+				(field
+					(name "Reference") "SW")
+				(field
+					(name "Value") "ILLUMINATED CONVERSATION BUTTON")
+				(field
+					(name "Footprint") "Mochi_Reference:SW2_Top-Button-TBD")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Only momentary user control; amber LED is D2")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "SIGNAL")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "GND")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "TP10_GAUGE_ALERT")
+			(description "Fuel-gauge alert validation pad")
+			(fields
+				(field
+					(name "Reference") "TP")
+				(field
+					(name "Value") "GAUGE_ALERT")
+				(field
+					(name "Footprint") "Mochi_Reference:TP10_TestPoint-1mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Fuel-gauge alert validation pad")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "TP11_BQ_POWER_GOOD")
+			(description "Charger power-good validation pad")
+			(fields
+				(field
+					(name "Reference") "TP")
+				(field
+					(name "Value") "BQ_POWER_GOOD")
+				(field
+					(name "Footprint") "Mochi_Reference:TP11_TestPoint-1mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Charger power-good validation pad")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "TP1_DEBUG_TX")
+			(description "Factory UART TX pad; never supply power")
+			(fields
+				(field
+					(name "Reference") "TP")
+				(field
+					(name "Value") "DEBUG_TX")
+				(field
+					(name "Footprint") "Mochi_Reference:TP1_TestPoint-1mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Factory UART TX pad; never supply power")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "TP2_DEBUG_RX")
+			(description "Factory UART RX pad; verify no off-state injection")
+			(fields
+				(field
+					(name "Reference") "TP")
+				(field
+					(name "Value") "DEBUG_RX")
+				(field
+					(name "Footprint") "Mochi_Reference:TP2_TestPoint-1mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Factory UART RX pad; verify no off-state injection")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "TP3_WALTER_DFU_N")
+			(description "Factory boot and DFU pad")
+			(fields
+				(field
+					(name "Reference") "TP")
+				(field
+					(name "Value") "WALTER_DFU_N")
+				(field
+					(name "Footprint") "Mochi_Reference:TP3_TestPoint-1mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Factory boot and DFU pad")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "TP4_WALTER_RESET_N")
+			(description "Factory reset pad")
+			(fields
+				(field
+					(name "Reference") "TP")
+				(field
+					(name "Value") "WALTER_RESET_N")
+				(field
+					(name "Footprint") "Mochi_Reference:TP4_TestPoint-1mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Factory reset pad")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "TP5_MAIN_FAULT_N")
+			(description "Master-switch fault pad")
+			(fields
+				(field
+					(name "Reference") "TP")
+				(field
+					(name "Value") "MAIN_FAULT_N")
+				(field
+					(name "Footprint") "Mochi_Reference:TP5_TestPoint-1mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Master-switch fault pad")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "TP6_3V3_POWER_GOOD")
+			(description "Peripheral-rail validation pad")
+			(fields
+				(field
+					(name "Reference") "TP")
+				(field
+					(name "Value") "3V3_POWER_GOOD")
+				(field
+					(name "Footprint") "Mochi_Reference:TP6_TestPoint-1mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Peripheral-rail validation pad")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "TP7_BQ_INTERRUPT")
+			(description "Charger-interrupt validation pad")
+			(fields
+				(field
+					(name "Reference") "TP")
+				(field
+					(name "Value") "BQ_INTERRUPT")
+				(field
+					(name "Footprint") "Mochi_Reference:TP7_TestPoint-1mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Charger-interrupt validation pad")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "TP8_GROUND")
+			(description "Factory measurement ground")
+			(fields
+				(field
+					(name "Reference") "TP")
+				(field
+					(name "Value") "GROUND")
+				(field
+					(name "Footprint") "Mochi_Reference:TP8_TestPoint-1mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Factory measurement ground")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "TP9_WALTER_3V3_OUT")
+			(description "Walter switched 3.3V output measurement only; never tie to 3V3_PERIPH")
+			(fields
+				(field
+					(name "Reference") "TP")
+				(field
+					(name "Value") "WALTER_3V3_OUT")
+				(field
+					(name "Footprint") "Mochi_Reference:TP9_TestPoint-1mm")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Walter switched 3.3V output measurement only; never tie to 3V3_PERIPH")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "U10_WALTER_P000000100_N16R2")
+			(description "ESP32-S3 Wi-Fi/BLE plus Sequans GM02SP LTE-M/NB-IoT/GNSS SoM")
+			(docs "https://quickspot.io/datasheet/walter_datasheet.pdf")
+			(fields
+				(field
+					(name "Reference") "U")
+				(field
+					(name "Value") "WALTER P000000100 N16R2")
+				(field
+					(name "Footprint") "Mochi_Reference:U10_WALTER-28-REF")
+				(field
+					(name "Datasheet") "https://quickspot.io/datasheet/walter_datasheet.pdf")
+				(field
+					(name "Description") "ESP32-S3 Wi-Fi/BLE plus Sequans GM02SP LTE-M/NB-IoT/GNSS SoM")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "RESET/EN")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "IO44/RX0")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "IO43/TX0")
+					(type "passive")
+				)
+				(pin
+					(num "4")
+					(name "IO0/DFU/3V3_EN")
+					(type "passive")
+				)
+				(pin
+					(num "5")
+					(name "IO12")
+					(type "passive")
+				)
+				(pin
+					(num "6")
+					(name "IO11")
+					(type "passive")
+				)
+				(pin
+					(num "7")
+					(name "IO13")
+					(type "passive")
+				)
+				(pin
+					(num "8")
+					(name "IO38")
+					(type "passive")
+				)
+				(pin
+					(num "9")
+					(name "IO39")
+					(type "passive")
+				)
+				(pin
+					(num "10")
+					(name "IO40")
+					(type "passive")
+				)
+				(pin
+					(num "11")
+					(name "IO41")
+					(type "passive")
+				)
+				(pin
+					(num "12")
+					(name "IO42")
+					(type "passive")
+				)
+				(pin
+					(num "13")
+					(name "IO2")
+					(type "passive")
+				)
+				(pin
+					(num "14")
+					(name "IO1")
+					(type "passive")
+				)
+				(pin
+					(num "15")
+					(name "IO4")
+					(type "passive")
+				)
+				(pin
+					(num "16")
+					(name "IO5")
+					(type "passive")
+				)
+				(pin
+					(num "17")
+					(name "IO6")
+					(type "passive")
+				)
+				(pin
+					(num "18")
+					(name "IO7")
+					(type "passive")
+				)
+				(pin
+					(num "19")
+					(name "IO15")
+					(type "passive")
+				)
+				(pin
+					(num "20")
+					(name "IO16")
+					(type "passive")
+				)
+				(pin
+					(num "21")
+					(name "IO17")
+					(type "passive")
+				)
+				(pin
+					(num "22")
+					(name "IO18")
+					(type "passive")
+				)
+				(pin
+					(num "23")
+					(name "IO8")
+					(type "passive")
+				)
+				(pin
+					(num "24")
+					(name "IO9")
+					(type "passive")
+				)
+				(pin
+					(num "25")
+					(name "IO10")
+					(type "passive")
+				)
+				(pin
+					(num "26")
+					(name "3V3_OUT")
+					(type "passive")
+				)
+				(pin
+					(num "27")
+					(name "GND")
+					(type "passive")
+				)
+				(pin
+					(num "28")
+					(name "VIN")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "U12_TPS22918")
+			(description "Hardware microphone rail gate")
+			(docs "https://www.ti.com/lit/ds/symlink/tps22918.pdf")
+			(fields
+				(field
+					(name "Reference") "U")
+				(field
+					(name "Value") "TPS22918")
+				(field
+					(name "Footprint") "Mochi_Reference:U12_SOT23-6")
+				(field
+					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/tps22918.pdf")
+				(field
+					(name "Description") "Hardware microphone rail gate")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "VIN")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "EN")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "VOUT")
+					(type "passive")
+				)
+				(pin
+					(num "4")
+					(name "GND")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "U13_SN74LVC2G125")
+			(description "PDM clock and data isolation with Ioff")
+			(docs "https://www.ti.com/lit/ds/symlink/sn74lvc2g125.pdf")
+			(fields
+				(field
+					(name "Reference") "U")
+				(field
+					(name "Value") "SN74LVC2G125")
+				(field
+					(name "Footprint") "Mochi_Reference:U13_VSSOP-8")
+				(field
+					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/sn74lvc2g125.pdf")
+				(field
+					(name "Description") "PDM clock and data isolation with Ioff")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "VCC")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "GND")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "OE1_N")
+					(type "passive")
+				)
+				(pin
+					(num "4")
+					(name "A1")
+					(type "passive")
+				)
+				(pin
+					(num "5")
+					(name "Y1")
+					(type "passive")
+				)
+				(pin
+					(num "6")
+					(name "OE2_N")
+					(type "passive")
+				)
+				(pin
+					(num "7")
+					(name "A2")
+					(type "passive")
+				)
+				(pin
+					(num "8")
+					(name "Y2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "U14_MAX98357AETE+T")
+			(description "I2S mono class-D amplifier")
+			(docs "https://www.analog.com/en/products/max98357a.html")
+			(fields
+				(field
+					(name "Reference") "U")
+				(field
+					(name "Value") "MAX98357AETE+T")
+				(field
+					(name "Footprint") "Mochi_Reference:U14_TQFN-16-3x3")
+				(field
+					(name "Datasheet") "https://www.analog.com/en/products/max98357a.html")
+				(field
+					(name "Description") "I2S mono class-D amplifier")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "VDD")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "GND")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "BCLK")
+					(type "passive")
+				)
+				(pin
+					(num "4")
+					(name "LRCLK")
+					(type "passive")
+				)
+				(pin
+					(num "5")
+					(name "DIN")
+					(type "passive")
+				)
+				(pin
+					(num "6")
+					(name "SD_MODE")
+					(type "passive")
+				)
+				(pin
+					(num "7")
+					(name "OUTP")
+					(type "passive")
+				)
+				(pin
+					(num "8")
+					(name "OUTN")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "U15_TPS22918_DNP_CAMERA")
+			(description "Optional camera rail gate")
+			(docs "https://www.ti.com/lit/ds/symlink/tps22918.pdf")
+			(fields
+				(field
+					(name "Reference") "U")
+				(field
+					(name "Value") "TPS22918 DNP CAMERA")
+				(field
+					(name "Footprint") "Mochi_Reference:U15_SOT23-6")
+				(field
+					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/tps22918.pdf")
+				(field
+					(name "Description") "Optional camera rail gate")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "VIN")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "EN")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "VOUT")
+					(type "passive")
+				)
+				(pin
+					(num "4")
+					(name "GND")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "U1_TPD2EUSB30")
+			(description "USB-C CC1/CC2 ESD protection")
+			(docs "https://www.ti.com/product/TPD2EUSB30")
+			(fields
+				(field
+					(name "Reference") "U")
+				(field
+					(name "Value") "TPD2EUSB30")
+				(field
+					(name "Footprint") "Mochi_Reference:U1_SOT23-3")
+				(field
+					(name "Datasheet") "https://www.ti.com/product/TPD2EUSB30")
+				(field
+					(name "Description") "USB-C CC1/CC2 ESD protection")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "IO1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "IO2")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "GND")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "U3_BQ25628E")
+			(description "1-cell 2A NVDC charger and power path")
+			(docs "https://www.ti.com/lit/ds/symlink/bq25628e.pdf")
+			(fields
+				(field
+					(name "Reference") "U")
+				(field
+					(name "Value") "BQ25628E")
+				(field
+					(name "Footprint") "Mochi_Reference:U3_WQFN-18-2.5x3")
+				(field
+					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/bq25628e.pdf")
+				(field
+					(name "Description") "1-cell 2A NVDC charger and power path")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "VBUS")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "PMID")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "SW")
+					(type "passive")
+				)
+				(pin
+					(num "4")
+					(name "BTST")
+					(type "passive")
+				)
+				(pin
+					(num "5")
+					(name "REGN")
+					(type "passive")
+				)
+				(pin
+					(num "6")
+					(name "BAT")
+					(type "passive")
+				)
+				(pin
+					(num "7")
+					(name "SYS")
+					(type "passive")
+				)
+				(pin
+					(num "8")
+					(name "GND")
+					(type "passive")
+				)
+				(pin
+					(num "9")
+					(name "ILIM")
+					(type "passive")
+				)
+				(pin
+					(num "10")
+					(name "TS_BIAS")
+					(type "passive")
+				)
+				(pin
+					(num "11")
+					(name "TS")
+					(type "passive")
+				)
+				(pin
+					(num "12")
+					(name "SDA")
+					(type "passive")
+				)
+				(pin
+					(num "13")
+					(name "SCL")
+					(type "passive")
+				)
+				(pin
+					(num "14")
+					(name "INT_N")
+					(type "passive")
+				)
+				(pin
+					(num "15")
+					(name "PG_N")
+					(type "passive")
+				)
+				(pin
+					(num "16")
+					(name "CE_N")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "U4_MAX17055ETB+T")
+			(description "Fuel gauge with current and time estimation")
+			(docs "https://www.analog.com/en/products/MAX17055.html")
+			(fields
+				(field
+					(name "Reference") "U")
+				(field
+					(name "Value") "MAX17055ETB+T")
+				(field
+					(name "Footprint") "Mochi_Reference:U4_TDFN-10-2x2.5")
+				(field
+					(name "Datasheet") "https://www.analog.com/en/products/MAX17055.html")
+				(field
+					(name "Description") "Fuel gauge with current and time estimation")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "BATT")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "CSP")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "CSN")
+					(type "passive")
+				)
+				(pin
+					(num "4")
+					(name "SDA")
+					(type "passive")
+				)
+				(pin
+					(num "5")
+					(name "SCL")
+					(type "passive")
+				)
+				(pin
+					(num "6")
+					(name "ALRT_N")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "U5_TPS22950")
+			(description "Reverse-blocking adjustable-current-limit master load switch")
+			(docs "https://www.ti.com/lit/ds/symlink/tps22950.pdf")
+			(fields
+				(field
+					(name "Reference") "U")
+				(field
+					(name "Value") "TPS22950")
+				(field
+					(name "Footprint") "Mochi_Reference:U5_SOT23-6")
+				(field
+					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/tps22950.pdf")
+				(field
+					(name "Description") "Reverse-blocking adjustable-current-limit master load switch")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "VIN")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "ON")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "VOUT")
+					(type "passive")
+				)
+				(pin
+					(num "4")
+					(name "ILIM")
+					(type "passive")
+				)
+				(pin
+					(num "5")
+					(name "FLT_N")
+					(type "passive")
+				)
+				(pin
+					(num "6")
+					(name "GND")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Mochi")
+			(part "U6_TPS63802")
+			(description "2A 3.3V peripheral buck-boost")
+			(docs "https://www.ti.com/lit/ds/symlink/tps63802.pdf")
+			(fields
+				(field
+					(name "Reference") "U")
+				(field
+					(name "Value") "TPS63802")
+				(field
+					(name "Footprint") "Mochi_Reference:U6_VSON-10-3x2")
+				(field
+					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/tps63802.pdf")
+				(field
+					(name "Description") "2A 3.3V peripheral buck-boost")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "VIN")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "EN")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "L1")
+					(type "passive")
+				)
+				(pin
+					(num "4")
+					(name "L2")
+					(type "passive")
+				)
+				(pin
+					(num "5")
+					(name "VOUT")
+					(type "passive")
+				)
+				(pin
+					(num "6")
+					(name "FB")
+					(type "passive")
+				)
+				(pin
+					(num "7")
+					(name "PG")
+					(type "passive")
+				)
+				(pin
+					(num "8")
+					(name "GND")
+					(type "passive")
+				)
+			)
+		)
+	)
+	(libraries
+		(library
+			(logical "Mochi")
+			(uri "${KIPRJMOD}/mochi.kicad_sym")
+		)
+	)
+	(nets
+		(net
+			(code "1")
+			(name "3V3_PERIPH")
+			(class "Default")
+			(node
+				(ref "C13")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C19")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C20")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "J5")
+				(pin "1")
+				(pinfunction "VCC_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "R10")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R11")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R12")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R8")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U12")
+				(pin "1")
+				(pinfunction "VIN_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U14")
+				(pin "1")
+				(pinfunction "VDD_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U15")
+				(pin "1")
+				(pinfunction "VIN_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U6")
+				(pin "5")
+				(pinfunction "VOUT_5")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "2")
+			(name "3V3_PG_TP")
+			(class "Default")
+			(node
+				(ref "TP6")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U6")
+				(pin "7")
+				(pinfunction "PG_7")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "3")
+			(name "AMBER_LED")
+			(class "Default")
+			(node
+				(ref "D2")
+				(pin "1")
+				(pinfunction "A_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "13")
+				(pinfunction "IO2_13")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "4")
+			(name "AMBER_LED_K")
+			(class "Default")
+			(node
+				(ref "D2")
+				(pin "2")
+				(pinfunction "K_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R13")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "5")
+			(name "AMP_SD")
+			(class "Default")
+			(node
+				(ref "R16")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "12")
+				(pinfunction "IO42_12")
+				(pintype "passive")
+			)
+			(node
+				(ref "U14")
+				(pin "6")
+				(pinfunction "SD_MODE_6")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "6")
+			(name "BAT_NTC")
+			(class "Default")
+			(node
+				(ref "J2")
+				(pin "2")
+				(pinfunction "NTC_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R4")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R5")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U3")
+				(pin "11")
+				(pinfunction "TS_11")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "7")
+			(name "BB_FB")
+			(class "Default")
+			(node
+				(ref "R8")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R9")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U6")
+				(pin "6")
+				(pinfunction "FB_6")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "8")
+			(name "BB_L1")
+			(class "Default")
+			(node
+				(ref "L2")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U6")
+				(pin "3")
+				(pinfunction "L1_3")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "9")
+			(name "BB_L2")
+			(class "Default")
+			(node
+				(ref "L2")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "U6")
+				(pin "4")
+				(pinfunction "L2_4")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "10")
+			(name "BQ_BTST")
+			(class "Default")
+			(node
+				(ref "C4")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U3")
+				(pin "4")
+				(pinfunction "BTST_4")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "11")
+			(name "BQ_INT_N_TP")
+			(class "Default")
+			(node
+				(ref "TP7")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U3")
+				(pin "14")
+				(pinfunction "INT_N_14")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "12")
+			(name "BQ_PG_N_TP")
+			(class "Default")
+			(node
+				(ref "TP11")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U3")
+				(pin "15")
+				(pinfunction "PG_N_15")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "13")
+			(name "BQ_PMID")
+			(class "Default")
+			(node
+				(ref "C2")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C3")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U3")
+				(pin "2")
+				(pinfunction "PMID_2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "14")
+			(name "BQ_REGN")
+			(class "Default")
+			(node
+				(ref "C5")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U3")
+				(pin "5")
+				(pinfunction "REGN_5")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "15")
+			(name "BQ_SW")
+			(class "Default")
+			(node
+				(ref "C4")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "L1")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U3")
+				(pin "3")
+				(pinfunction "SW_3")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "16")
+			(name "BTN_CONV")
+			(class "Default")
+			(node
+				(ref "R12")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "SW2")
+				(pin "1")
+				(pinfunction "SIGNAL_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "10")
+				(pinfunction "IO40_10")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "17")
+			(name "CAM_3V3")
+			(class "Default")
+			(node
+				(ref "D3")
+				(pin "1")
+				(pinfunction "A_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "J6")
+				(pin "1")
+				(pinfunction "VCC_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U15")
+				(pin "3")
+				(pinfunction "VOUT_3")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "18")
+			(name "CAM_CS")
+			(class "Default")
+			(node
+				(ref "J6")
+				(pin "6")
+				(pinfunction "CS_6")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "14")
+				(pinfunction "IO1_14")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "19")
+			(name "CAM_EN")
+			(class "Default")
+			(node
+				(ref "R17")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "21")
+				(pinfunction "IO17_21")
+				(pintype "passive")
+			)
+			(node
+				(ref "U15")
+				(pin "2")
+				(pinfunction "EN_2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "20")
+			(name "CAM_LED_K")
+			(class "Default")
+			(node
+				(ref "D3")
+				(pin "2")
+				(pinfunction "K_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R18")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "21")
+			(name "CAPTURE_EN")
+			(class "Default")
+			(node
+				(ref "R14")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "11")
+				(pinfunction "IO41_11")
+				(pintype "passive")
+			)
+			(node
+				(ref "U12")
+				(pin "2")
+				(pinfunction "EN_2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "22")
+			(name "CYAN_LED_K")
+			(class "Default")
+			(node
+				(ref "D1")
+				(pin "2")
+				(pinfunction "K_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R15")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "23")
+			(name "DBG_RX")
+			(class "Default")
+			(node
+				(ref "TP2")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "2")
+				(pinfunction "IO44/RX0_2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "24")
+			(name "DBG_TX")
+			(class "Default")
+			(node
+				(ref "TP1")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "3")
+				(pinfunction "IO43/TX0_3")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "25")
+			(name "GAUGE_ALRT_N")
+			(class "Default")
+			(node
+				(ref "TP10")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U4")
+				(pin "6")
+				(pinfunction "ALRT_N_6")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "26")
+			(name "GND")
+			(class "Default")
+			(node
+				(ref "C1")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C10")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C11")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C12")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C13")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C14")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C15")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C16")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C17")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C18")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C19")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C2")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C20")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C3")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C5")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C6")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C7")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C8")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C9")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "D4")
+				(pin "2")
+				(pinfunction "A_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "J1")
+				(pin "2")
+				(pinfunction "GND_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "J1")
+				(pin "5")
+				(pinfunction "SHIELD_5")
+				(pintype "passive")
+			)
+			(node
+				(ref "J5")
+				(pin "2")
+				(pinfunction "GND_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "J6")
+				(pin "2")
+				(pinfunction "GND_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "MK1")
+				(pin "2")
+				(pinfunction "GND_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "MK1")
+				(pin "5")
+				(pinfunction "L/R_5")
+				(pintype "passive")
+			)
+			(node
+				(ref "R1")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R13")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R14")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R15")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R16")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R17")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R18")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R2")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R3")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R5")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R6")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R7")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R9")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "RS1")
+				(pin "2")
+				(pinfunction "SYSTEM_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "SW2")
+				(pin "2")
+				(pinfunction "GND_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "TP8")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "3")
+				(pinfunction "GND_3")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "27")
+				(pinfunction "GND_27")
+				(pintype "passive")
+			)
+			(node
+				(ref "U12")
+				(pin "4")
+				(pinfunction "GND_4")
+				(pintype "passive")
+			)
+			(node
+				(ref "U13")
+				(pin "2")
+				(pinfunction "GND_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "U13")
+				(pin "3")
+				(pinfunction "OE1_N_3")
+				(pintype "passive")
+			)
+			(node
+				(ref "U13")
+				(pin "6")
+				(pinfunction "OE2_N_6")
+				(pintype "passive")
+			)
+			(node
+				(ref "U14")
+				(pin "2")
+				(pinfunction "GND_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "U15")
+				(pin "4")
+				(pinfunction "GND_4")
+				(pintype "passive")
+			)
+			(node
+				(ref "U3")
+				(pin "16")
+				(pinfunction "CE_N_16")
+				(pintype "passive")
+			)
+			(node
+				(ref "U3")
+				(pin "8")
+				(pinfunction "GND_8")
+				(pintype "passive")
+			)
+			(node
+				(ref "U4")
+				(pin "3")
+				(pinfunction "CSN_3")
+				(pintype "passive")
+			)
+			(node
+				(ref "U5")
+				(pin "6")
+				(pinfunction "GND_6")
+				(pintype "passive")
+			)
+			(node
+				(ref "U6")
+				(pin "8")
+				(pinfunction "GND_8")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "27")
+			(name "I2C_SCL")
+			(class "Default")
+			(node
+				(ref "J5")
+				(pin "10")
+				(pinfunction "TP_SCL_10")
+				(pintype "passive")
+			)
+			(node
+				(ref "R11")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "24")
+				(pinfunction "IO9_24")
+				(pintype "passive")
+			)
+			(node
+				(ref "U3")
+				(pin "13")
+				(pinfunction "SCL_13")
+				(pintype "passive")
+			)
+			(node
+				(ref "U4")
+				(pin "5")
+				(pinfunction "SCL_5")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "28")
+			(name "I2C_SDA")
+			(class "Default")
+			(node
+				(ref "J5")
+				(pin "9")
+				(pinfunction "TP_SDA_9")
+				(pintype "passive")
+			)
+			(node
+				(ref "R10")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "23")
+				(pinfunction "IO8_23")
+				(pintype "passive")
+			)
+			(node
+				(ref "U3")
+				(pin "12")
+				(pinfunction "SDA_12")
+				(pintype "passive")
+			)
+			(node
+				(ref "U4")
+				(pin "4")
+				(pinfunction "SDA_4")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "29")
+			(name "I2S_BCLK")
+			(class "Default")
+			(node
+				(ref "U10")
+				(pin "17")
+				(pinfunction "IO6_17")
+				(pintype "passive")
+			)
+			(node
+				(ref "U14")
+				(pin "3")
+				(pinfunction "BCLK_3")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "30")
+			(name "I2S_DOUT")
+			(class "Default")
+			(node
+				(ref "U10")
+				(pin "19")
+				(pinfunction "IO15_19")
+				(pintype "passive")
+			)
+			(node
+				(ref "U14")
+				(pin "5")
+				(pinfunction "DIN_5")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "31")
+			(name "I2S_LRCLK")
+			(class "Default")
+			(node
+				(ref "U10")
+				(pin "18")
+				(pinfunction "IO7_18")
+				(pintype "passive")
+			)
+			(node
+				(ref "U14")
+				(pin "4")
+				(pinfunction "LRCLK_4")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "32")
+			(name "LCD_BL")
+			(class "Default")
+			(node
+				(ref "J5")
+				(pin "8")
+				(pinfunction "LCD_BL_8")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "9")
+				(pinfunction "IO39_9")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "33")
+			(name "LCD_CS")
+			(class "Default")
+			(node
+				(ref "J5")
+				(pin "5")
+				(pinfunction "LCD_CS_5")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "25")
+				(pinfunction "IO10_25")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "34")
+			(name "LCD_DC")
+			(class "Default")
+			(node
+				(ref "J5")
+				(pin "6")
+				(pinfunction "LCD_DC_6")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "8")
+				(pinfunction "IO38_8")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "35")
+			(name "MAIN_FLT_N")
+			(class "Default")
+			(node
+				(ref "TP5")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U5")
+				(pin "5")
+				(pinfunction "FLT_N_5")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "36")
+			(name "MAIN_ILIM")
+			(class "Default")
+			(node
+				(ref "R7")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U5")
+				(pin "4")
+				(pinfunction "ILIM_4")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "37")
+			(name "MIC_3V3")
+			(class "Default")
+			(node
+				(ref "C18")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "D1")
+				(pin "1")
+				(pinfunction "A_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "MK1")
+				(pin "1")
+				(pinfunction "VDD_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U12")
+				(pin "3")
+				(pinfunction "VOUT_3")
+				(pintype "passive")
+			)
+			(node
+				(ref "U13")
+				(pin "1")
+				(pinfunction "VCC_1")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "38")
+			(name "PACK_N")
+			(class "Default")
+			(node
+				(ref "J2")
+				(pin "3")
+				(pinfunction "PACK-_3")
+				(pintype "passive")
+			)
+			(node
+				(ref "RS1")
+				(pin "1")
+				(pinfunction "PACK_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U4")
+				(pin "2")
+				(pinfunction "CSP_2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "39")
+			(name "PACK_P")
+			(class "Default")
+			(node
+				(ref "C8")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C9")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "J2")
+				(pin "1")
+				(pinfunction "PACK+_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U3")
+				(pin "6")
+				(pinfunction "BAT_6")
+				(pintype "passive")
+			)
+			(node
+				(ref "U4")
+				(pin "1")
+				(pinfunction "BATT_1")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "40")
+			(name "PDM_CLK_MCU")
+			(class "Default")
+			(node
+				(ref "U10")
+				(pin "15")
+				(pinfunction "IO4_15")
+				(pintype "passive")
+			)
+			(node
+				(ref "U13")
+				(pin "4")
+				(pinfunction "A1_4")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "41")
+			(name "PDM_CLK_MIC")
+			(class "Default")
+			(node
+				(ref "MK1")
+				(pin "3")
+				(pinfunction "CLK_3")
+				(pintype "passive")
+			)
+			(node
+				(ref "U13")
+				(pin "5")
+				(pinfunction "Y1_5")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "42")
+			(name "PDM_DATA_MCU")
+			(class "Default")
+			(node
+				(ref "U10")
+				(pin "16")
+				(pinfunction "IO5_16")
+				(pintype "passive")
+			)
+			(node
+				(ref "U13")
+				(pin "8")
+				(pinfunction "Y2_8")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "43")
+			(name "PDM_DATA_MIC")
+			(class "Default")
+			(node
+				(ref "MK1")
+				(pin "4")
+				(pinfunction "DATA_4")
+				(pintype "passive")
+			)
+			(node
+				(ref "U13")
+				(pin "7")
+				(pinfunction "A2_7")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "44")
+			(name "PWR_SW_ON")
+			(class "Default")
+			(node
+				(ref "R6")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "SW1")
+				(pin "2")
+				(pinfunction "ON_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "U5")
+				(pin "2")
+				(pinfunction "ON_2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "45")
+			(name "SPI_MISO")
+			(class "Default")
+			(node
+				(ref "J6")
+				(pin "4")
+				(pinfunction "MISO_4")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "7")
+				(pinfunction "IO13_7")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "46")
+			(name "SPI_MOSI")
+			(class "Default")
+			(node
+				(ref "J5")
+				(pin "3")
+				(pinfunction "LCD_DIN_3")
+				(pintype "passive")
+			)
+			(node
+				(ref "J6")
+				(pin "5")
+				(pinfunction "MOSI_5")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "6")
+				(pinfunction "IO11_6")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "47")
+			(name "SPI_SCK")
+			(class "Default")
+			(node
+				(ref "J5")
+				(pin "4")
+				(pinfunction "LCD_CLK_4")
+				(pintype "passive")
+			)
+			(node
+				(ref "J6")
+				(pin "3")
+				(pinfunction "SCK_3")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "5")
+				(pinfunction "IO12_5")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "48")
+			(name "SPK_N")
+			(class "Default")
+			(node
+				(ref "J4")
+				(pin "2")
+				(pinfunction "-_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "U14")
+				(pin "8")
+				(pinfunction "OUTN_8")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "49")
+			(name "SPK_P")
+			(class "Default")
+			(node
+				(ref "J4")
+				(pin "1")
+				(pinfunction "+_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U14")
+				(pin "7")
+				(pinfunction "OUTP_7")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "50")
+			(name "SYS_ALWAYS")
+			(class "Default")
+			(node
+				(ref "C10")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C6")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C7")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "L1")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "SW1")
+				(pin "1")
+				(pinfunction "COMMON_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U3")
+				(pin "7")
+				(pinfunction "SYS_7")
+				(pintype "passive")
+			)
+			(node
+				(ref "U5")
+				(pin "1")
+				(pinfunction "VIN_1")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "51")
+			(name "SYS_SW")
+			(class "Default")
+			(node
+				(ref "C11")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C12")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C14")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C15")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C16")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C17")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "28")
+				(pinfunction "VIN_28")
+				(pintype "passive")
+			)
+			(node
+				(ref "U5")
+				(pin "3")
+				(pinfunction "VOUT_3")
+				(pintype "passive")
+			)
+			(node
+				(ref "U6")
+				(pin "1")
+				(pinfunction "VIN_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U6")
+				(pin "2")
+				(pinfunction "EN_2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "52")
+			(name "TOUCH_IRQ")
+			(class "Default")
+			(node
+				(ref "J5")
+				(pin "12")
+				(pinfunction "TP_IRQ_12")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "20")
+				(pinfunction "IO16_20")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "53")
+			(name "TS_BIAS")
+			(class "Default")
+			(node
+				(ref "R4")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U3")
+				(pin "10")
+				(pinfunction "TS_BIAS_10")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "54")
+			(name "UI_RST_N")
+			(class "Default")
+			(node
+				(ref "J5")
+				(pin "11")
+				(pinfunction "TP_RST_11")
+				(pintype "passive")
+			)
+			(node
+				(ref "J5")
+				(pin "7")
+				(pinfunction "LCD_RST_7")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "22")
+				(pinfunction "IO18_22")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "55")
+			(name "USB_CC1")
+			(class "Default")
+			(node
+				(ref "J1")
+				(pin "3")
+				(pinfunction "CC1_3")
+				(pintype "passive")
+			)
+			(node
+				(ref "R1")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "1")
+				(pinfunction "IO1_1")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "56")
+			(name "USB_CC2")
+			(class "Default")
+			(node
+				(ref "J1")
+				(pin "4")
+				(pinfunction "CC2_4")
+				(pintype "passive")
+			)
+			(node
+				(ref "R2")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "2")
+				(pinfunction "IO2_2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "57")
+			(name "USB_ILIM_500MA")
+			(class "Default")
+			(node
+				(ref "R3")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U3")
+				(pin "9")
+				(pinfunction "ILIM_9")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "58")
+			(name "VBUS_5V")
+			(class "Default")
+			(node
+				(ref "C1")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "F1")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "U3")
+				(pin "1")
+				(pinfunction "VBUS_1")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "59")
+			(name "VBUS_CONN")
+			(class "Default")
+			(node
+				(ref "D4")
+				(pin "1")
+				(pinfunction "K_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "F1")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "J1")
+				(pin "1")
+				(pinfunction "VBUS_1")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "60")
+			(name "WALTER_3V3_TP")
+			(class "Default")
+			(node
+				(ref "TP9")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "26")
+				(pinfunction "3V3_OUT_26")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "61")
+			(name "WALTER_DFU_N")
+			(class "Default")
+			(node
+				(ref "TP3")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "4")
+				(pinfunction "IO0/DFU/3V3_EN_4")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "62")
+			(name "WALTER_RESET_N")
+			(class "Default")
+			(node
+				(ref "TP4")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U10")
+				(pin "1")
+				(pinfunction "RESET/EN_1")
+				(pintype "passive")
+			)
+		)
+	)
+)

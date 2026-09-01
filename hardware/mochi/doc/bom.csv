@@ -1,0 +1,76 @@
+reference,value_or_mpn,manufacturer,role,population,datasheet,footprint_status
+J1,USB4105-GF-A,GCT,User USB-C charge-only receptacle,FIT,https://gct.co/connector/usb4105,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+U1,TPD2EUSB30,Texas Instruments,USB-C CC1/CC2 ESD protection,FIT,https://www.ti.com/product/TPD2EUSB30,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+D4,ESDA7P60-1U1M,STMicroelectronics,USB VBUS TVS,FIT,https://www.st.com/en/protections-and-emi-filters/esda7p60-1u1m.html,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+F1,1206L075/24,Littelfuse,Resettable USB input fuse,FIT,https://www.littelfuse.com/products/polyswitch-resettable-pptcs/surface-mount/1206l,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+R1,5.1k 1%,Generic,USB-C CC1 Rd,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+R2,5.1k 1%,Generic,USB-C CC2 Rd,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+U3,BQ25628E,Texas Instruments,1-cell 2A NVDC charger and power path,FIT,https://www.ti.com/lit/ds/symlink/bq25628e.pdf,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+L1,1uH XGL4020-102,Coilcraft,BQ25628E power-path inductor,FIT,https://www.coilcraft.com/en-us/products/power/shielded-inductors/xgl/xgl4020/,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+C1,1uF 25V X7R,Generic,BQ VBUS bypass,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+C2,10uF 25V X7R,Generic,BQ PMID bulk,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+C3,100nF 25V X7R,Generic,BQ PMID high-frequency bypass,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+C4,47nF 25V X7R,Generic,BQ bootstrap capacitor,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+C5,4.7uF 10V X7R,Generic,BQ REGN bypass,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+C6,10uF 10V X7R,Generic,BQ SYS bulk 1 of 2,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+C7,10uF 10V X7R,Generic,BQ SYS bulk 2 of 2,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+C8,10uF 10V X7R,Generic,BQ BAT bypass,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+R3,4.99k 1%,Generic,"BQ input-current limit, about 500mA",FIT,https://www.ti.com/lit/ds/symlink/bq25628e.pdf,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+R4,5.23k 1%,Generic,BQ TS upper resistor for 103AT-class NTC,FIT,https://www.ti.com/lit/ds/symlink/bq25628e.pdf,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+R5,30.1k 1%,Generic,BQ TS lower resistor for 103AT-class NTC,FIT,https://www.ti.com/lit/ds/symlink/bq25628e.pdf,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+J2,Molex 5023520300,Molex,Protected pack connector,FIT,https://www.molex.com/en-us/products/part-detail/5023520300,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+RS1,10m 1% Kelvin,Vishay or equivalent,Fuel-gauge low-side shunt,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+U4,MAX17055ETB+T,Analog Devices,Fuel gauge with current and time estimation,FIT,https://www.analog.com/en/products/MAX17055.html,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+C9,100nF 10V X7R,Generic,Fuel-gauge bypass,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+SW1,LATCHING POWER SLIDE,C&K or Alps TBD,Only latching hardware power control,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+R6,100k 1%,Generic,Power-enable fail-safe pull-down,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+U5,TPS22950,Texas Instruments,Reverse-blocking adjustable-current-limit master load switch,FIT,https://www.ti.com/lit/ds/symlink/tps22950.pdf,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+R7,523R 1%,Generic,TPS22950 nominal about 2.4A current limit,FIT,https://www.ti.com/lit/ds/symlink/tps22950.pdf,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+C10,1uF 10V X7R,Generic,Master-switch input bypass,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+C11,10uF 10V X7R,Generic,Master-switch output bulk,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+U6,TPS63802,Texas Instruments,2A 3.3V peripheral buck-boost,FIT,https://www.ti.com/lit/ds/symlink/tps63802.pdf,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+L2,0.47uH XFL4015-471,Coilcraft,TPS63802 buck-boost inductor,FIT,https://www.coilcraft.com/en-us/products/power/shielded-inductors/xfl/xfl4015/,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+R8,511k 1%,Generic,TPS63802 3.3V feedback upper,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+R9,91k 1%,Generic,TPS63802 3.3V feedback lower,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+C12,10uF 10V X7R,Generic,TPS63802 input bulk,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+C13,22uF 6.3V X7R,Generic,TPS63802 output bulk,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+R10,4.7k 1%,Generic,I2C SDA pull-up,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+R11,4.7k 1%,Generic,I2C SCL pull-up,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+U10,WALTER P000000100 N16R2,QuickSpot/DPTechnics,ESP32-S3 Wi-Fi/BLE plus Sequans GM02SP LTE-M/NB-IoT/GNSS SoM,FIT,https://quickspot.io/datasheet/walter_datasheet.pdf,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+C14,100uF 6.3V low-ESR,Panasonic or equivalent,Walter VIN EVT reservoir 1 of 2,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+C15,100uF 6.3V low-ESR,Panasonic or equivalent,Walter VIN EVT reservoir 2 of 2,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+C16,10uF 10V X7R,Generic,Walter VIN local bypass,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+C17,100nF 10V X7R,Generic,Walter VIN high-frequency bypass,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+SW2,ILLUMINATED CONVERSATION BUTTON,TBD,Only momentary user control; amber LED is D2,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+R12,10k 1%,Generic,Conversation-button pull-up,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+D2,AMBER BUTTON LED,TBD,Connecting and session-intent indicator inside SW2,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+R13,1.5k 1%,Generic,Amber LED current limit,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+U12,TPS22918,Texas Instruments,Hardware microphone rail gate,FIT,https://www.ti.com/lit/ds/symlink/tps22918.pdf,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+R14,100k 1%,Generic,Capture-enable fail-safe pull-down,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+C18,1uF 6.3V X7R,Generic,Switched microphone-rail bypass,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+U13,SN74LVC2G125,Texas Instruments,PDM clock and data isolation with Ioff,FIT,https://www.ti.com/lit/ds/symlink/sn74lvc2g125.pdf,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+MK1,IM69D129F,Infineon,Bottom-port PDM microphone,FIT,https://www.infineon.com/part/IM69D129F,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+D1,CYAN CAPTURE LED,TBD,Hardware-coupled capture truth indicator,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+R15,1.5k 1%,Generic,Cyan LED current limit,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+U14,MAX98357AETE+T,Analog Devices,I2S mono class-D amplifier,FIT,https://www.analog.com/en/products/max98357a.html,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+R16,100k 1%,Generic,Amplifier shutdown pull-down,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+C19,10uF 6.3V X7R,Generic,Amplifier local bulk,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+C20,100nF 6.3V X7R,Generic,Amplifier high-frequency bypass,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+J4,AS01808AO-SC18-WP-R,PUI Audio,8ohm 1W spring-contact speaker,FIT,https://puiaudio.com/file/specs-AS01808AO-SC18-WP-R.pdf,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+J5,WAVESHARE 1.69IN TOUCH LCD 27057,Waveshare,GH1.25 12-pin 240x280 ST7789V2 LCD and CST816S touch module,FIT,https://www.waveshare.com/wiki/1.69inch_Touch_LCD_Module,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+U15,TPS22918 DNP CAMERA,Texas Instruments,Optional camera rail gate,DNP,https://www.ti.com/lit/ds/symlink/tps22918.pdf,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+R17,100k 1% DNP,Generic,Camera-enable fail-safe pull-down,DNP,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+J6,ARDUCAM MEGA 3MP B0400 DNP,Arducam,Six-wire SPI still-camera experiment; too large for baseline enclosure,DNP,https://docs.arducam.com/Arduino-SPI-camera/MEGA-SPI/MEGA-SPI-Camera/,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+D3,WHITE CAMERA POWER LED DNP,TBD,Hardware-coupled camera-power indicator,DNP,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+R18,1.5k 1% DNP,Generic,Camera indicator current limit,DNP,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+TP1,DEBUG_TX,Generic,Factory UART TX pad; never supply power,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+TP2,DEBUG_RX,Generic,Factory UART RX pad; verify no off-state injection,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+TP3,WALTER_DFU_N,Generic,Factory boot and DFU pad,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+TP4,WALTER_RESET_N,Generic,Factory reset pad,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+TP5,MAIN_FAULT_N,Generic,Master-switch fault pad,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+TP6,3V3_POWER_GOOD,Generic,Peripheral-rail validation pad,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+TP7,BQ_INTERRUPT,Generic,Charger-interrupt validation pad,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+TP8,GROUND,Generic,Factory measurement ground,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+TP9,WALTER_3V3_OUT,Generic,Walter switched 3.3V output measurement only; never tie to 3V3_PERIPH,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+TP10,GAUGE_ALERT,Generic,Fuel-gauge alert validation pad,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB
+TP11,BQ_POWER_GOOD,Generic,Charger power-good validation pad,FIT,,REFERENCE_ONLY_VERIFY_BEFORE_FAB

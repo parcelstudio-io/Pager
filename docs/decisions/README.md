@@ -23,5 +23,8 @@ Architecture decision records (ADRs) preserve why a choice was made, its costs, 
 8. [Use exactly two physical controls](0008_use_exactly_two_physical_controls.md)
 9. [Use server-owned contextual prompt assembly](0009_use_server_owned_contextual_prompt_assembly.md)
 10. [Use local hierarchical expression arbitration](0010_use_local_hierarchical_expression_arbitration.md)
+11. [Integrate LEXI-R10401D and a camera on the first carrier — rejected for Rev A](0011_integrate_lexi_r10401d_on_four_layer_carrier.md)
+12. [Use a modular North-American Cat 1bis Click for Rev A — superseded](0012_use_modular_north_american_cat1bis_click_for_rev_a.md)
+13. [Use the Walter family for the Rev A EVT carrier](0013_use_walter_family_for_rev_a_evt.md)
 
 The implementation contract shared by ADRs 0002, 0003, 0007, 0008, and 0009 is consolidated in [Companion app and synchronization architecture](../design/0002_companion_app_and_sync_architecture.md).

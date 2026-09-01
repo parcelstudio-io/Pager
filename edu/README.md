@@ -37,6 +37,7 @@ Hardware ultimately follows physics and component datasheets, not an analogy. Ex
 4. [Cellular, radio, power, and certification](0004_cellular_rf_power_and_certification.md) — how a modem reaches a carrier, why antennas and current bursts are physical design problems, and what module approval does not cover.
 5. [Realtime voice, memory, and privacy](0005_realtime_voice_memory_and_privacy.md) — sampled sound, streaming, full duplex, echo cancellation, interruption, gateway trust, and distinct kinds of memory.
 6. [Companion apps, Bluetooth setup, and synchronization](0006_companion_app_provisioning_and_sync.md) — provisioning, claiming, Bluetooth Low Energy, secret paths, authoritative revisions, history cursors, and deletion tombstones.
+7. [Reading the Mochi carrier schematic](0007_reading_the_carrier_schematic.md) — pin budgets, voltage domains, burst-current arithmetic, tuned decoupling, and what desk verification can and cannot prove.
 
 Use the [plain-language glossary](GLOSSARY.md) whenever a later document introduces an unfamiliar term. The lesson must still explain important terms inline; the glossary is a backup, not required pre-reading.
 
