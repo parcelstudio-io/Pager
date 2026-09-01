@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { buildCompanionPrompt } from "./prompt-builder.js";
+import { PAGER_EMOTION_TOOL } from "../device-simulator/emotion-contract.js";
 
 const CURRENT_FILE = fileURLToPath(import.meta.url);
 const REPO_ROOT = path.resolve(path.dirname(CURRENT_FILE), "../..");
@@ -19,6 +20,7 @@ const STATIC_ASSETS = Object.freeze({
   "/caption-pacer.js": ["caption-pacer.js", "text/javascript; charset=utf-8"],
   "/caption-motion.js": ["caption-motion.js", "text/javascript; charset=utf-8"],
   "/expression-director.js": ["expression-director.js", "text/javascript; charset=utf-8"],
+  "/emotion-contract.js": ["emotion-contract.js", "text/javascript; charset=utf-8"],
   "/media.js": ["media.js", "text/javascript; charset=utf-8"],
   "/styles.css": ["styles.css", "text/css; charset=utf-8"],
 });
@@ -58,7 +60,7 @@ export function buildSessionConfig(env = process.env, promptContext = {}) {
     type: "realtime",
     model: env.OPENAI_REALTIME_MODEL || "gpt-realtime-2.1-mini",
     output_modalities: ["audio"],
-    tools: [],
+    tools: [PAGER_EMOTION_TOOL],
     instructions: buildCompanionPrompt({
       ...promptContext,
       companionName: env.MOCHI_COMPANION_NAME || "Mochi",

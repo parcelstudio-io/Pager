@@ -2,10 +2,18 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import {
+  EMOTIONS,
   ExpressionDirector,
   batteryEnergy,
   deriveFacePose,
 } from "../tools/device-simulator/expression-director.js";
+
+test("expression director accepts the complete pager emotion vocabulary", () => {
+  assert.equal(EMOTIONS.length, 28);
+  for (const emotion of ["happy", "affectionate", "skeptical", "angry", "relieved"]) {
+    assert.equal(deriveFacePose({ emotion }).expression, emotion);
+  }
+});
 
 class FakeClock {
   constructor() {

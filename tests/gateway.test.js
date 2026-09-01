@@ -58,7 +58,10 @@ test("session configuration is fixed server-side for full-duplex audio", () => {
   assert.equal(config.type, "realtime");
   assert.equal(config.model, "gpt-realtime-2.1-mini");
   assert.deepEqual(config.output_modalities, ["audio"]);
-  assert.deepEqual(config.tools, []);
+  assert.equal(config.tools.length, 1);
+  assert.equal(config.tools[0].name, "set_pager_emotion");
+  assert.equal(config.tools[0].parameters.properties.emotion.enum.includes("happy"), true);
+  assert.equal(config.tools[0].parameters.properties.emotion.enum.length >= 25, true);
   assert.deepEqual(config.audio.input.turn_detection, {
     type: "semantic_vad",
     eagerness: "auto",
@@ -352,6 +355,10 @@ test("static server exposes only the simulator allowlist", async () => {
     "expression-director.js",
     "text/javascript; charset=utf-8",
   ]);
+  assert.deepEqual(staticAssetForPath("/emotion-contract.js"), [
+    "emotion-contract.js",
+    "text/javascript; charset=utf-8",
+  ]);
   assert.equal(staticAssetForPath("/.env"), null);
   assert.equal(staticAssetForPath("/../.env"), null);
 
@@ -383,6 +390,7 @@ test("browser assets contain one control and no provider credential name", async
     "caption-pacer.js",
     "caption-motion.js",
     "expression-director.js",
+    "emotion-contract.js",
     "media.js",
     "styles.css",
   ];
@@ -401,7 +409,9 @@ test("browser assets contain one control and no provider credential name", async
   assert.ok(html.indexOf('class="face"') < html.indexOf('id="caption-viewport"'));
   assert.equal(html.includes('class="mouth"'), false);
   assert.equal((html.match(/class="eye-rig /g) || []).length, 2);
-  assert.equal((html.match(/class="pupil"/g) || []).length, 2);
+  assert.equal(html.includes("pupil"), false);
+  assert.equal((html.match(/class="eye-motion"/g) || []).length, 2);
+  assert.equal((html.match(/class="eye-life"/g) || []).length, 2);
   assert.equal(html.includes('data-expression="neutral"'), true);
   assert.equal(html.includes('data-mood="calm"'), true);
   assert.equal(html.includes('data-rest-gaze="center"'), true);
@@ -419,15 +429,19 @@ test("browser assets contain one control and no provider credential name", async
   assert.equal(styles.includes(".caption-empty"), false);
   assert.equal(styles.includes("will-change: transform"), true);
   assert.equal(contents[4].includes("DEFAULT_CAPTION_SPEED_PX_PER_SECOND = 60"), true);
-  assert.equal(styles.includes("@keyframes curious-roll-clockwise"), true);
-  assert.equal(styles.includes("@keyframes think-saccades"), true);
-  assert.equal(styles.includes("@keyframes lid-look-up"), true);
-  assert.equal(styles.includes("@keyframes lid-look-down"), true);
-  assert.equal(styles.includes("@keyframes lid-roll-clockwise"), true);
+  assert.equal(styles.includes(".pupil"), false);
+  assert.equal(styles.includes("background: var(--cream)"), true);
+  assert.equal(styles.includes("@keyframes whole-eye-roll-clockwise"), true);
+  assert.equal(styles.includes("@keyframes think-eye-saccades"), true);
+  assert.equal(styles.includes("@keyframes aperture-look-up"), true);
+  assert.equal(styles.includes("@keyframes aperture-look-down"), true);
+  assert.equal(styles.includes("@keyframes aperture-roll-clockwise"), true);
+  assert.equal(styles.includes("@keyframes eye-life-calm"), true);
+  assert.equal(styles.includes("@keyframes eye-life-positive"), true);
   assert.equal(styles.includes("animation: speak-eyes"), false);
   assert.equal(styles.includes("animation: duplex-eyes"), false);
   const clockwiseRoll = styles.match(
-    /@keyframes curious-roll-clockwise \{([\s\S]*?)\n\}/,
+    /@keyframes whole-eye-roll-clockwise \{([\s\S]*?)\n\}/,
   )?.[1] || "";
   assert.match(clockwiseRoll, /10%, 20%/);
   assert.match(clockwiseRoll, /23%, 34%/);

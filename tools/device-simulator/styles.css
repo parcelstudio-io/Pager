@@ -125,57 +125,134 @@ body {
 
 .eye-rig {
   position: relative;
-  width: 90px;
-  height: 90px;
+  width: 104px;
+  height: 104px;
   display: grid;
   place-items: center;
   transform-origin: center;
   transition: transform 150ms ease, opacity 180ms ease;
 }
 
-.eye {
-  position: relative;
+.eye-motion {
+  --gaze-x: 0px;
+  --gaze-y: 0px;
+  width: 96px;
+  height: 96px;
+  display: grid;
+  place-items: center;
+  transform: translate3d(var(--gaze-x), var(--gaze-y), 0);
+  transition: transform 80ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+
+.eye-life {
+  width: 96px;
+  height: 96px;
+  display: grid;
+  place-items: center;
+  transform-origin: center;
+  animation: eye-life-calm 4.8s ease-in-out infinite;
+}
+
+.eye-shape {
   width: 78px;
   height: 78px;
-  overflow: hidden;
   border-radius: 50%;
-  background: var(--cream);
-  box-shadow: 0 0 28px rgba(255, 244, 218, 0.2);
-  clip-path: ellipse(50% 50% at 50% 50%);
+  transform: rotate(0deg);
   transform-origin: center;
-  /* Two unevenly spaced blinks avoid a metronomic loop. Gaze-specific rules
-     add a second animation for the visible eye aperture. */
-  animation: blink 11.2s linear infinite;
   transition:
     width 220ms ease,
     height 220ms ease,
-    opacity 220ms ease,
-    background-color 220ms ease,
-    box-shadow 220ms ease,
-    clip-path 90ms ease-out;
+    border-radius 220ms ease,
+    transform 160ms ease,
+    opacity 220ms ease;
 }
 
-.pupil {
-  --rest-x: 0px;
-  --rest-y: 0px;
-  --gaze-x: var(--rest-x);
-  --gaze-y: var(--rest-y);
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  left: 50%;
-  top: 50%;
-  border-radius: 50%;
-  background: var(--ink);
-  transform: translate(
-    calc(-50% + var(--gaze-x)),
-    calc(-50% + var(--gaze-y))
-  );
+/* Persistent motion stays small enough that the larger saccade/fixation gaze
+   gestures remain readable. Affect changes its rhythm; it never changes the
+   separate listening indicator or session truth. */
+.pager-screen[data-expression="curious"] .eye-life,
+.pager-screen[data-expression="pensive"] .eye-life,
+.pager-screen[data-expression="confused"] .eye-life {
+  animation-name: eye-life-inquisitive;
+  animation-duration: 3.6s;
+}
+
+.pager-screen[data-expression="delighted"] .eye-life,
+.pager-screen[data-expression="happy"] .eye-life,
+.pager-screen[data-expression="joyful"] .eye-life,
+.pager-screen[data-expression="amused"] .eye-life,
+.pager-screen[data-expression="proud"] .eye-life,
+.pager-screen[data-expression="relieved"] .eye-life {
+  animation-name: eye-life-positive;
+  animation-duration: 2.7s;
+}
+
+.pager-screen[data-expression="excited"] .eye-life,
+.pager-screen[data-expression="surprised"] .eye-life,
+.pager-screen[data-expression="startled"] .eye-life {
+  animation-name: eye-life-alert;
+  animation-duration: 1.35s;
+}
+
+.pager-screen[data-expression="affectionate"] .eye-life,
+.pager-screen[data-expression="embarrassed"] .eye-life,
+.pager-screen[data-expression="shy"] .eye-life {
+  animation-name: eye-life-soft;
+  animation-duration: 4.2s;
+}
+
+.pager-screen[data-expression="skeptical"] .eye-life,
+.pager-screen[data-expression="suspicious"] .eye-life,
+.pager-screen[data-expression="focused"] .eye-life,
+.pager-screen[data-expression="determined"] .eye-life {
+  animation-name: eye-life-watchful;
+  animation-duration: 3.8s;
+}
+
+.pager-screen[data-expression="concerned"] .eye-life,
+.pager-screen[data-expression="worried"] .eye-life,
+.pager-screen[data-expression="sad"] .eye-life,
+.pager-screen[data-expression="disappointed"] .eye-life {
+  animation-name: eye-life-downcast;
+  animation-duration: 5.2s;
+}
+
+.pager-screen[data-expression="angry"] .eye-life,
+.pager-screen[data-expression="frustrated"] .eye-life {
+  animation-name: eye-life-tense;
+  animation-duration: 2.2s;
+}
+
+.pager-screen[data-expression="sleepy"] .eye-life,
+.pager-screen[data-expression="bored"] .eye-life {
+  animation-name: eye-life-drowsy;
+  animation-duration: 6.4s;
+}
+
+.pager-screen[data-face-activity="listening"] .eye-life {
+  animation-name: eye-life-attending;
+  animation-duration: 2.1s;
+}
+
+.pager-screen[data-face-activity="speaking"] .eye-life,
+.pager-screen[data-face-activity="duplex"] .eye-life {
+  animation-name: eye-life-speaking;
+  animation-duration: 2.4s;
+}
+
+.eye {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--cream);
+  box-shadow: 0 0 30px rgba(255, 244, 218, 0.24);
+  transform-origin: center;
+  animation: blink 11.2s linear infinite;
   transition:
-    width 180ms ease,
-    height 180ms ease,
-    transform 80ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    opacity 180ms ease;
+    opacity 220ms ease,
+    box-shadow 220ms ease,
+    clip-path 90ms ease-out;
 }
 
 .pager-screen[data-face-activity="listening"] .eye-rig {
@@ -195,69 +272,277 @@ body {
 }
 
 .pager-screen[data-expression="curious"] .eye {
+  box-shadow: 0 0 38px rgba(255, 255, 255, 0.3);
+}
+
+.pager-screen[data-expression="curious"] .eye-shape {
   width: 82px;
+  height: 88px;
+}
+
+.pager-screen[data-expression="delighted"] .eye-shape,
+.pager-screen[data-expression="happy"] .eye-shape,
+.pager-screen[data-expression="joyful"] .eye-shape {
+  width: 86px;
+  height: 58px;
+  border-radius: 50% 50% 46% 46%;
+}
+
+.pager-screen[data-expression="delighted"] .eye-left .eye-shape,
+.pager-screen[data-expression="happy"] .eye-left .eye-shape,
+.pager-screen[data-expression="joyful"] .eye-left .eye-shape {
+  transform: rotate(-5deg);
+}
+
+.pager-screen[data-expression="delighted"] .eye-right .eye-shape,
+.pager-screen[data-expression="happy"] .eye-right .eye-shape,
+.pager-screen[data-expression="joyful"] .eye-right .eye-shape {
+  transform: rotate(5deg);
+}
+
+.pager-screen[data-expression="joyful"] .eye {
+  box-shadow: 0 0 44px rgba(255, 255, 255, 0.38);
+}
+
+.pager-screen[data-expression="excited"] .eye-shape {
+  width: 88px;
+  height: 94px;
+}
+
+.pager-screen[data-expression="affectionate"] .eye-shape {
+  width: 82px;
+  height: 68px;
+  border-radius: 54% 54% 46% 46%;
+}
+
+.pager-screen[data-expression="affectionate"] .eye-left .eye-shape {
+  transform: rotate(4deg);
+}
+
+.pager-screen[data-expression="affectionate"] .eye-right .eye-shape {
+  transform: rotate(-4deg);
+}
+
+.pager-screen[data-expression="amused"] .eye-left .eye-shape {
+  width: 84px;
+  height: 46px;
+  transform: rotate(-7deg);
+}
+
+.pager-screen[data-expression="amused"] .eye-right .eye-shape {
+  width: 78px;
+  height: 66px;
+  transform: rotate(4deg);
+}
+
+.pager-screen[data-expression="proud"] .eye-shape {
+  width: 82px;
+  height: 52px;
+}
+
+.pager-screen[data-expression="proud"] .eye-left .eye-shape,
+.pager-screen[data-expression="relieved"] .eye-left .eye-shape {
+  transform: rotate(-5deg);
+}
+
+.pager-screen[data-expression="proud"] .eye-right .eye-shape,
+.pager-screen[data-expression="relieved"] .eye-right .eye-shape {
+  transform: rotate(5deg);
+}
+
+.pager-screen[data-expression="surprised"] .eye-shape {
+  width: 92px;
+  height: 92px;
+}
+
+.pager-screen[data-expression="startled"] .eye-shape {
+  width: 78px;
+  height: 98px;
+  border-radius: 48%;
+}
+
+.pager-screen[data-expression="confused"] .eye-left .eye-shape {
+  width: 86px;
+  height: 72px;
+  transform: rotate(-8deg);
+}
+
+.pager-screen[data-expression="confused"] .eye-right .eye-shape {
+  width: 68px;
+  height: 82px;
+  transform: rotate(5deg);
+}
+
+.pager-screen[data-expression="pensive"] .eye-shape {
+  width: 80px;
+  height: 62px;
+}
+
+.pager-screen[data-expression="pensive"] .eye-left .eye-shape {
+  transform: rotate(-7deg);
+}
+
+.pager-screen[data-expression="pensive"] .eye-right .eye-shape {
+  transform: rotate(2deg);
+}
+
+.pager-screen[data-expression="skeptical"] .eye-left .eye-shape {
+  width: 84px;
+  height: 42px;
+  transform: rotate(-10deg);
+}
+
+.pager-screen[data-expression="skeptical"] .eye-right .eye-shape {
+  width: 76px;
+  height: 70px;
+  transform: rotate(3deg);
+}
+
+.pager-screen[data-expression="suspicious"] .eye-shape {
+  width: 88px;
+  height: 36px;
+}
+
+.pager-screen[data-expression="suspicious"] .eye-left .eye-shape,
+.pager-screen[data-expression="angry"] .eye-left .eye-shape,
+.pager-screen[data-expression="frustrated"] .eye-left .eye-shape,
+.pager-screen[data-expression="determined"] .eye-left .eye-shape {
+  transform: rotate(10deg);
+}
+
+.pager-screen[data-expression="suspicious"] .eye-right .eye-shape,
+.pager-screen[data-expression="angry"] .eye-right .eye-shape,
+.pager-screen[data-expression="frustrated"] .eye-right .eye-shape,
+.pager-screen[data-expression="determined"] .eye-right .eye-shape {
+  transform: rotate(-10deg);
+}
+
+.pager-screen[data-expression="concerned"] .eye-shape {
+  width: 78px;
+  height: 64px;
+}
+
+.pager-screen[data-expression="concerned"] .eye-left .eye-shape,
+.pager-screen[data-expression="worried"] .eye-left .eye-shape,
+.pager-screen[data-expression="sad"] .eye-left .eye-shape {
+  transform: rotate(-8deg);
+}
+
+.pager-screen[data-expression="concerned"] .eye-right .eye-shape,
+.pager-screen[data-expression="worried"] .eye-right .eye-shape,
+.pager-screen[data-expression="sad"] .eye-right .eye-shape {
+  transform: rotate(8deg);
+}
+
+.pager-screen[data-expression="worried"] .eye-shape {
+  width: 72px;
   height: 82px;
 }
 
-.pager-screen[data-expression="curious"] .pupil {
-  width: 22px;
-  height: 22px;
-}
-
-.pager-screen[data-expression="delighted"] .eye {
-  width: 84px;
-  height: 76px;
-  box-shadow: 0 0 38px rgba(255, 244, 218, 0.32);
-}
-
-.pager-screen[data-expression="delighted"] .pupil {
-  width: 24px;
-  height: 24px;
-}
-
-.pager-screen[data-expression="confused"] .eye-left .eye {
-  width: 82px;
-  height: 76px;
-}
-
-.pager-screen[data-expression="confused"] .eye-right .eye {
-  width: 74px;
-  height: 70px;
-}
-
-.pager-screen[data-expression="concerned"] .eye {
-  width: 76px;
-  height: 66px;
-}
-
-.pager-screen[data-expression="concerned"] .pupil {
-  width: 17px;
-  height: 17px;
-}
-
-.pager-screen[data-expression="sleepy"] .eye {
-  width: 76px;
+.pager-screen[data-expression="sad"] .eye-shape {
+  width: 78px;
   height: 56px;
 }
 
-.pager-screen[data-expression="sleepy"] .pupil {
-  width: 16px;
-  height: 16px;
+.pager-screen[data-expression="disappointed"] .eye-shape {
+  width: 80px;
+  height: 46px;
+  transform: rotate(-2deg);
+}
+
+.pager-screen[data-expression="angry"] .eye-shape {
+  width: 88px;
+  height: 45px;
+  border-radius: 42%;
+}
+
+.pager-screen[data-expression="frustrated"] .eye-shape {
+  width: 90px;
+  height: 34px;
+  border-radius: 38%;
+}
+
+.pager-screen[data-expression="embarrassed"] .eye-shape {
+  width: 68px;
+  height: 54px;
+}
+
+.pager-screen[data-expression="embarrassed"] .eye-left .eye-shape {
+  transform: rotate(7deg);
+}
+
+.pager-screen[data-expression="embarrassed"] .eye-right .eye-shape {
+  transform: rotate(-3deg);
+}
+
+.pager-screen[data-expression="shy"] .eye-shape {
+  width: 64px;
+  height: 58px;
+}
+
+.pager-screen[data-expression="shy"] .eye-left .eye-shape {
+  transform: rotate(-4deg);
+}
+
+.pager-screen[data-expression="shy"] .eye-right .eye-shape {
+  transform: rotate(4deg);
+}
+
+.pager-screen[data-expression="sleepy"] .eye-shape {
+  width: 80px;
+  height: 38px;
+}
+
+.pager-screen[data-expression="bored"] .eye-left .eye-shape {
+  width: 82px;
+  height: 38px;
+  transform: rotate(-3deg);
+}
+
+.pager-screen[data-expression="bored"] .eye-right .eye-shape {
+  width: 82px;
+  height: 44px;
+  transform: rotate(2deg);
+}
+
+.pager-screen[data-expression="focused"] .eye-shape,
+.pager-screen[data-expression="determined"] .eye-shape {
+  width: 84px;
+  height: 58px;
+}
+
+.pager-screen[data-expression="focused"] .eye-left .eye-shape {
+  transform: rotate(5deg);
+}
+
+.pager-screen[data-expression="focused"] .eye-right .eye-shape {
+  transform: rotate(-5deg);
+}
+
+.pager-screen[data-expression="relieved"] .eye-shape {
+  width: 84px;
+  height: 50px;
 }
 
 .pager-screen[data-charging="true"] .eye {
   box-shadow:
-    0 0 30px rgba(255, 244, 218, 0.22),
+    0 0 30px rgba(255, 255, 255, 0.22),
     0 0 24px rgba(89, 230, 234, 0.24);
 }
 
-.pager-screen[data-energy="low"] .eye {
+.pager-screen[data-energy="low"] .eye-shape {
   height: 62px;
+}
+
+.pager-screen[data-energy="low"] .eye {
   opacity: 0.78;
 }
 
-.pager-screen[data-energy="critical"] .eye {
+.pager-screen[data-energy="critical"] .eye-shape {
   height: 48px;
+}
+
+.pager-screen[data-energy="critical"] .eye {
   opacity: 0.58;
   box-shadow: 0 0 16px rgba(255, 113, 106, 0.18);
 }
@@ -269,119 +554,103 @@ body {
     0 0 26px rgba(89, 230, 234, 0.3);
 }
 
-.pager-screen[data-rest-gaze="up"] .pupil {
-  --rest-y: -13px;
+.pager-screen[data-rest-gaze="up"] .eye-motion {
+  --gaze-y: -8px;
 }
 
-.pager-screen[data-rest-gaze="down"] .pupil {
-  --rest-y: 12px;
+.pager-screen[data-rest-gaze="down"] .eye-motion {
+  --gaze-y: 9px;
 }
 
-.pager-screen[data-rest-gaze="side"] .eye-left .pupil {
-  --rest-x: -9px;
-  --rest-y: 3px;
+.pager-screen[data-rest-gaze="side"] .eye-motion {
+  --gaze-x: 9px;
+  --gaze-y: 1px;
 }
 
-.pager-screen[data-rest-gaze="side"] .eye-right .pupil {
-  --rest-x: 7px;
-  --rest-y: -2px;
-}
-
-.pager-screen[data-gaze-motion="center"] .pupil {
+.pager-screen[data-gaze-motion="center"] .eye-motion {
   --gaze-x: 0px;
   --gaze-y: 0px;
 }
 
-.pager-screen[data-gaze-motion="up"] .pupil {
-  --gaze-y: -13px;
+.pager-screen[data-gaze-motion="up"] .eye-motion {
+  --gaze-y: -8px;
 }
 
-.pager-screen[data-gaze-motion="down"] .pupil {
-  --gaze-y: 12px;
+.pager-screen[data-gaze-motion="down"] .eye-motion {
+  --gaze-y: 9px;
 }
 
-.pager-screen[data-gaze-motion="side"] .eye-left .pupil {
-  --gaze-x: -9px;
-  --gaze-y: 3px;
+.pager-screen[data-gaze-motion="side"] .eye-motion {
+  --gaze-x: 9px;
+  --gaze-y: 1px;
 }
 
-.pager-screen[data-gaze-motion="side"] .eye-right .pupil {
-  --gaze-x: 7px;
-  --gaze-y: -2px;
-}
-
-.pager-screen[data-gaze-motion="attentive"] .eye-left .pupil {
+.pager-screen[data-gaze-motion="attentive"] .eye-left .eye-motion {
   --gaze-x: 5px;
-  --gaze-y: -2px;
+  --gaze-y: -3px;
 }
 
-.pager-screen[data-gaze-motion="attentive"] .eye-right .pupil {
+.pager-screen[data-gaze-motion="attentive"] .eye-right .eye-motion {
   --gaze-x: -5px;
-  --gaze-y: -2px;
+  --gaze-y: -3px;
 }
 
-.pager-screen[data-gaze-motion="thinking-scan"] .pupil {
-  animation: think-saccades 3.4s linear 1 both;
+.pager-screen[data-gaze-motion="thinking-scan"] .eye-motion {
+  animation: think-eye-saccades 3.4s linear 1 both;
 }
 
-.pager-screen[data-gaze-motion="thinking-scan"] .eye {
-  animation:
-    blink 11.2s linear infinite,
-    lid-thinking 3.4s linear 1 both;
-}
-
-.pager-screen[data-gaze-motion="look-up"] .pupil {
-  animation: curious-look-up 1.6s linear 1;
+.pager-screen[data-gaze-motion="look-up"] .eye-motion {
+  animation: whole-eye-look-up 1.6s linear 1;
 }
 
 .pager-screen[data-gaze-motion="look-up"] .eye {
   animation:
     blink 11.2s linear infinite,
-    lid-look-up 1.6s linear 1;
+    aperture-look-up 1.6s linear 1;
 }
 
-.pager-screen[data-gaze-motion="look-down"] .pupil {
-  animation: curious-look-down 1.6s linear 1;
+.pager-screen[data-gaze-motion="look-down"] .eye-motion {
+  animation: whole-eye-look-down 1.6s linear 1;
 }
 
 .pager-screen[data-gaze-motion="look-down"] .eye {
   animation:
     blink 11.2s linear infinite,
-    lid-look-down 1.6s linear 1;
+    aperture-look-down 1.6s linear 1;
 }
 
-.pager-screen[data-gaze-motion="look-around"][data-roll-direction="clockwise"] .pupil {
-  animation: curious-look-around-right 2s linear 1;
+.pager-screen[data-gaze-motion="look-around"][data-roll-direction="clockwise"] .eye-motion {
+  animation: whole-eye-look-around-right 2s linear 1;
 }
 
-.pager-screen[data-gaze-motion="look-around"][data-roll-direction="counterclockwise"] .pupil {
-  animation: curious-look-around-left 2s linear 1;
+.pager-screen[data-gaze-motion="look-around"][data-roll-direction="counterclockwise"] .eye-motion {
+  animation: whole-eye-look-around-left 2s linear 1;
 }
 
 .pager-screen[data-gaze-motion="look-around"] .eye {
   animation:
     blink 11.2s linear infinite,
-    lid-look-around 2s linear 1;
+    aperture-look-around 2s linear 1;
 }
 
-.pager-screen[data-gaze-motion="roll-around"][data-roll-direction="clockwise"] .pupil {
-  animation: curious-roll-clockwise 2.4s linear;
+.pager-screen[data-gaze-motion="roll-around"][data-roll-direction="clockwise"] .eye-motion {
+  animation: whole-eye-roll-clockwise 2.4s linear;
 }
 
-.pager-screen[data-gaze-motion="roll-around"][data-roll-direction="counterclockwise"] .pupil {
-  animation: curious-roll-counterclockwise 2.4s linear;
+.pager-screen[data-gaze-motion="roll-around"][data-roll-direction="counterclockwise"] .eye-motion {
+  animation: whole-eye-roll-counterclockwise 2.4s linear;
 }
 
 .pager-screen[data-gaze-motion="roll-around"][data-roll-direction="clockwise"] .eye {
   animation:
     blink 11.2s linear infinite,
-    lid-roll-clockwise 2.4s linear 1;
+    aperture-roll-clockwise 2.4s linear 1;
 }
 
 .pager-screen[data-gaze-motion="roll-around"][data-roll-direction="counterclockwise"] .eye {
   animation:
     blink 11.2s linear infinite,
-    lid-roll-counterclockwise 2.4s linear 1;
+    aperture-roll-counterclockwise 2.4s linear 1;
 }
 
 .pager-screen[data-input="user_speaking"] .listening-halo {
@@ -486,102 +755,90 @@ audio {
   to { transform: scale(0.96); }
 }
 
-/* Human gaze is mostly fixation separated by brief, conjugate saccades. The
-   repeated coordinates below create holds; the narrow gaps create 50–100 ms
-   jumps instead of a continuous drift. Smooth pursuit belongs to a future
-   tracked-target behavior, not to ambient curiosity. */
-@keyframes think-saccades {
-  0%, 16% { transform: translate(-50%, -50%); }
-  19%, 44% { transform: translate(calc(-50% - 11px), calc(-50% - 4px)); }
-  47%, 67% { transform: translate(calc(-50% + 9px), calc(-50% - 2px)); }
-  70%, 82% { transform: translate(calc(-50% - 4px), calc(-50% + 3px)); }
-  85%, 100% { transform: translate(calc(-50% - 9px), calc(-50% - 3px)); }
+/* Human gaze is mostly fixation separated by brief, conjugate saccades. With
+   no pupils, both complete ivory apertures jump together and then hold. */
+@keyframes think-eye-saccades {
+  0%, 16% { transform: translate3d(0, 0, 0); }
+  19%, 44% { transform: translate3d(-8px, -3px, 0); }
+  47%, 67% { transform: translate3d(7px, -2px, 0); }
+  70%, 82% { transform: translate3d(-3px, 3px, 0); }
+  85%, 100% { transform: translate3d(-6px, -2px, 0); }
 }
 
-@keyframes curious-look-up {
-  0%, 10% { transform: translate(-50%, -50%); }
-  14%, 60% { transform: translate(calc(-50% + 3px), calc(-50% - 14px)); }
-  64%, 74% { transform: translate(calc(-50% - 3px), calc(-50% - 12px)); }
-  78%, 84% { transform: translate(calc(-50% + 1px), calc(-50% - 13px)); }
-  89%, 100% { transform: translate(-50%, -50%); }
+@keyframes whole-eye-look-up {
+  0%, 10% { transform: translate3d(0, 0, 0); }
+  14%, 60% { transform: translate3d(2px, -10px, 0); }
+  64%, 74% { transform: translate3d(-2px, -9px, 0); }
+  78%, 84% { transform: translate3d(1px, -10px, 0); }
+  89%, 100% { transform: translate3d(0, 0, 0); }
 }
 
-@keyframes curious-look-down {
-  0%, 10% { transform: translate(-50%, -50%); }
-  14%, 60% { transform: translate(calc(-50% - 3px), calc(-50% + 13px)); }
-  64%, 74% { transform: translate(calc(-50% + 3px), calc(-50% + 11px)); }
-  78%, 84% { transform: translate(calc(-50% - 1px), calc(-50% + 12px)); }
-  89%, 100% { transform: translate(-50%, -50%); }
+@keyframes whole-eye-look-down {
+  0%, 10% { transform: translate3d(0, 0, 0); }
+  14%, 60% { transform: translate3d(-2px, 10px, 0); }
+  64%, 74% { transform: translate3d(2px, 9px, 0); }
+  78%, 84% { transform: translate3d(-1px, 10px, 0); }
+  89%, 100% { transform: translate3d(0, 0, 0); }
 }
 
-@keyframes curious-look-around-right {
-  0%, 10% { transform: translate(-50%, -50%); }
-  14%, 43% { transform: translate(calc(-50% + 14px), calc(-50% - 2px)); }
-  47%, 58% { transform: translate(calc(-50% + 7px), calc(-50% + 4px)); }
-  62%, 82% { transform: translate(calc(-50% - 12px), calc(-50% + 1px)); }
-  87%, 100% { transform: translate(-50%, -50%); }
+@keyframes whole-eye-look-around-right {
+  0%, 10% { transform: translate3d(0, 0, 0); }
+  14%, 43% { transform: translate3d(11px, -2px, 0); }
+  47%, 58% { transform: translate3d(6px, 3px, 0); }
+  62%, 82% { transform: translate3d(-10px, 1px, 0); }
+  87%, 100% { transform: translate3d(0, 0, 0); }
 }
 
-@keyframes curious-look-around-left {
-  0%, 10% { transform: translate(-50%, -50%); }
-  14%, 43% { transform: translate(calc(-50% - 14px), calc(-50% - 2px)); }
-  47%, 58% { transform: translate(calc(-50% - 7px), calc(-50% + 4px)); }
-  62%, 82% { transform: translate(calc(-50% + 12px), calc(-50% + 1px)); }
-  87%, 100% { transform: translate(-50%, -50%); }
+@keyframes whole-eye-look-around-left {
+  0%, 10% { transform: translate3d(0, 0, 0); }
+  14%, 43% { transform: translate3d(-11px, -2px, 0); }
+  47%, 58% { transform: translate3d(-6px, 3px, 0); }
+  62%, 82% { transform: translate3d(10px, 1px, 0); }
+  87%, 100% { transform: translate3d(0, 0, 0); }
 }
 
-@keyframes curious-roll-clockwise {
-  0%, 7% { transform: translate(-50%, -50%); }
-  10%, 20% { transform: translate(calc(-50% + 9px), calc(-50% - 11px)); }
-  23%, 34% { transform: translate(calc(-50% + 14px), -50%); }
-  37%, 47% { transform: translate(calc(-50% + 9px), calc(-50% + 10px)); }
-  50%, 60% { transform: translate(-50%, calc(-50% + 13px)); }
-  63%, 72% { transform: translate(calc(-50% - 9px), calc(-50% + 10px)); }
-  75%, 83% { transform: translate(calc(-50% - 14px), -50%); }
-  86%, 93% { transform: translate(calc(-50% - 9px), calc(-50% - 11px)); }
-  97%, 100% { transform: translate(-50%, -50%); }
+@keyframes whole-eye-roll-clockwise {
+  0%, 7% { transform: translate3d(0, 0, 0); }
+  10%, 20% { transform: translate3d(7px, -8px, 0); }
+  23%, 34% { transform: translate3d(11px, 0, 0); }
+  37%, 47% { transform: translate3d(7px, 8px, 0); }
+  50%, 60% { transform: translate3d(0, 10px, 0); }
+  63%, 72% { transform: translate3d(-7px, 8px, 0); }
+  75%, 83% { transform: translate3d(-11px, 0, 0); }
+  86%, 93% { transform: translate3d(-7px, -8px, 0); }
+  97%, 100% { transform: translate3d(0, 0, 0); }
 }
 
-@keyframes curious-roll-counterclockwise {
-  0%, 7% { transform: translate(-50%, -50%); }
-  10%, 20% { transform: translate(calc(-50% - 9px), calc(-50% - 11px)); }
-  23%, 34% { transform: translate(calc(-50% - 14px), -50%); }
-  37%, 47% { transform: translate(calc(-50% - 9px), calc(-50% + 10px)); }
-  50%, 60% { transform: translate(-50%, calc(-50% + 13px)); }
-  63%, 72% { transform: translate(calc(-50% + 9px), calc(-50% + 10px)); }
-  75%, 83% { transform: translate(calc(-50% + 14px), -50%); }
-  86%, 93% { transform: translate(calc(-50% + 9px), calc(-50% - 11px)); }
-  97%, 100% { transform: translate(-50%, -50%); }
+@keyframes whole-eye-roll-counterclockwise {
+  0%, 7% { transform: translate3d(0, 0, 0); }
+  10%, 20% { transform: translate3d(-7px, -8px, 0); }
+  23%, 34% { transform: translate3d(-11px, 0, 0); }
+  37%, 47% { transform: translate3d(-7px, 8px, 0); }
+  50%, 60% { transform: translate3d(0, 10px, 0); }
+  63%, 72% { transform: translate3d(7px, 8px, 0); }
+  75%, 83% { transform: translate3d(11px, 0, 0); }
+  86%, 93% { transform: translate3d(7px, -8px, 0); }
+  97%, 100% { transform: translate3d(0, 0, 0); }
 }
 
-/* The cream shape represents the visible aperture between the eyelids. The
-   eyeball does not squash; the aperture follows vertical gaze and narrows. */
-@keyframes lid-thinking {
-  0%, 16% { clip-path: ellipse(50% 50% at 50% 50%); }
-  19%, 44% { clip-path: ellipse(49% 47% at 49% 48%); }
-  47%, 67% { clip-path: ellipse(49% 48% at 51% 49%); }
-  70%, 82% { clip-path: ellipse(49% 46% at 49% 52%); }
-  85%, 100% { clip-path: ellipse(49% 47% at 49% 48%); }
-}
-
-@keyframes lid-look-up {
+@keyframes aperture-look-up {
   0%, 10%, 89%, 100% { clip-path: ellipse(50% 50% at 50% 50%); }
   14%, 84% { clip-path: ellipse(50% 48% at 50% 47%); }
 }
 
-@keyframes lid-look-down {
+@keyframes aperture-look-down {
   0%, 10%, 89%, 100% { clip-path: ellipse(50% 50% at 50% 50%); }
   14%, 84% { clip-path: ellipse(50% 43% at 50% 54%); }
 }
 
-@keyframes lid-look-around {
+@keyframes aperture-look-around {
   0%, 10%, 87%, 100% { clip-path: ellipse(50% 50% at 50% 50%); }
   14%, 43% { clip-path: ellipse(48% 48% at 51% 50%); }
   47%, 58% { clip-path: ellipse(49% 46% at 50% 52%); }
   62%, 82% { clip-path: ellipse(48% 48% at 49% 50%); }
 }
 
-@keyframes lid-roll-clockwise {
+@keyframes aperture-roll-clockwise {
   0%, 7%, 97%, 100% { clip-path: ellipse(50% 50% at 50% 50%); }
   10%, 20% { clip-path: ellipse(49% 48% at 51% 47%); }
   23%, 34% { clip-path: ellipse(48% 49% at 52% 50%); }
@@ -592,7 +849,7 @@ audio {
   86%, 93% { clip-path: ellipse(49% 48% at 49% 47%); }
 }
 
-@keyframes lid-roll-counterclockwise {
+@keyframes aperture-roll-counterclockwise {
   0%, 7%, 97%, 100% { clip-path: ellipse(50% 50% at 50% 50%); }
   10%, 20% { clip-path: ellipse(49% 48% at 49% 47%); }
   23%, 34% { clip-path: ellipse(48% 49% at 48% 50%); }
@@ -603,10 +860,69 @@ audio {
   86%, 93% { clip-path: ellipse(49% 48% at 51% 47%); }
 }
 
+@keyframes eye-life-calm {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(0, -1px, 0) scale(1.012); }
+}
+
+@keyframes eye-life-inquisitive {
+  0%, 100% { transform: translate3d(-1px, 0, 0) rotate(-0.6deg); }
+  45% { transform: translate3d(1px, -2px, 0) rotate(0.8deg); }
+  70% { transform: translate3d(0, -1px, 0) rotate(0deg); }
+}
+
+@keyframes eye-life-positive {
+  0%, 100% { transform: translate3d(0, 1px, 0) scale(0.99); }
+  42% { transform: translate3d(0, -3px, 0) scale(1.025); }
+  58% { transform: translate3d(0, -2px, 0) scale(1.015); }
+}
+
+@keyframes eye-life-alert {
+  0%, 100% { transform: scale(0.97); }
+  45% { transform: translate3d(0, -2px, 0) scale(1.035); }
+}
+
+@keyframes eye-life-soft {
+  0%, 100% { transform: translate3d(-1px, 1px, 0) rotate(-0.7deg); }
+  50% { transform: translate3d(1px, -1px, 0) rotate(0.7deg); }
+}
+
+@keyframes eye-life-watchful {
+  0%, 100% { transform: translate3d(0, 0, 0) scaleX(1); }
+  50% { transform: translate3d(1px, 0, 0) scaleX(1.018); }
+}
+
+@keyframes eye-life-downcast {
+  0%, 100% { transform: translate3d(0, 1px, 0) scale(1); }
+  50% { transform: translate3d(0, 3px, 0) scale(0.985); }
+}
+
+@keyframes eye-life-tense {
+  0%, 100% { transform: translate3d(-1px, 0, 0) scaleX(1.01); }
+  50% { transform: translate3d(1px, 0, 0) scaleX(0.99); }
+}
+
+@keyframes eye-life-drowsy {
+  0%, 100% { transform: translate3d(0, 1px, 0) scaleY(1); }
+  50% { transform: translate3d(0, 4px, 0) scaleY(0.92); }
+}
+
+@keyframes eye-life-attending {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(0, -2px, 0) scale(1.02); }
+}
+
+@keyframes eye-life-speaking {
+  0%, 100% { transform: translate3d(0, 1px, 0) scaleY(0.99); }
+  50% { transform: translate3d(0, -2px, 0) scaleY(1.025); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .eye-rig,
+  .eye-motion,
+  .eye-life,
+  .eye-shape,
   .eye,
-  .pupil,
   .listening-halo {
     animation: none !important;
     transition: none !important;

@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node tools/prototype-server/server.js",
     "test": "node --test",
-    "check": "node --check tools/prototype-server/server.js && node --check tools/prototype-server/prompt-builder.js && node --check tools/device-simulator/app.js && node --check tools/device-simulator/state.js && node --check tools/device-simulator/caption-pacer.js && node --check tools/device-simulator/caption-motion.js && node --check tools/device-simulator/expression-director.js && node --check tools/device-simulator/media.js"
+    "check": "node --check tools/prototype-server/server.js && node --check tools/prototype-server/prompt-builder.js && node --check tools/device-simulator/app.js && node --check tools/device-simulator/state.js && node --check tools/device-simulator/caption-pacer.js && node --check tools/device-simulator/caption-motion.js && node --check tools/device-simulator/emotion-contract.js && node --check tools/device-simulator/expression-director.js && node --check tools/device-simulator/media.js"
   },
   "engines": {
     "node": ">=20"

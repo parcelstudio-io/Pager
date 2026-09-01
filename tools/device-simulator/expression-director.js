@@ -1,15 +1,10 @@
+import { PAGER_EMOTIONS } from "./emotion-contract.js";
+
 const SESSION_VALUES = new Set(["inactive", "connecting", "live", "error"]);
 const INPUT_VALUES = new Set(["gated", "quiet", "user_speaking"]);
 const OUTPUT_VALUES = new Set(["idle", "generating", "playing"]);
 
-export const EMOTIONS = Object.freeze([
-  "neutral",
-  "curious",
-  "delighted",
-  "confused",
-  "concerned",
-  "sleepy",
-]);
+export const EMOTIONS = PAGER_EMOTIONS;
 
 export const MOODS = Object.freeze([
   "auto",
@@ -96,8 +91,8 @@ export function batteryEnergy(batteryPercent) {
 
 function moodExpression(mood) {
   if (mood === "curious") return "curious";
-  if (mood === "playful") return "delighted";
-  if (mood === "pensive") return "confused";
+  if (mood === "playful") return "amused";
+  if (mood === "pensive") return "pensive";
   if (mood === "tired") return "sleepy";
   return "neutral";
 }
@@ -114,9 +109,20 @@ function deriveExpression(context, activity, energy) {
 }
 
 function staticGazeFor(expression) {
-  if (expression === "curious") return "up";
-  if (expression === "concerned" || expression === "sleepy") return "down";
-  if (expression === "confused") return "side";
+  if (["curious", "excited", "proud", "surprised"].includes(expression)) return "up";
+  if ([
+    "concerned",
+    "worried",
+    "sad",
+    "disappointed",
+    "embarrassed",
+    "shy",
+    "sleepy",
+    "bored",
+  ].includes(expression)) return "down";
+  if (["amused", "confused", "pensive", "skeptical", "suspicious"].includes(expression)) {
+    return "side";
+  }
   return "center";
 }
 
@@ -124,7 +130,7 @@ function restingGazeFor(context, activity, energy) {
   if (energy !== "normal" || activity === "fault") return "down";
 
   // An explicit, short-lived emotion is allowed to carry a gaze. Ambient moods
-  // only change the eye shape; otherwise they made the idle pupils park upward
+  // only change the eye shape; otherwise they made the idle eyes park upward
   // between gestures instead of returning to a calm, centered resting pose.
   if (context.emotion !== "neutral") return staticGazeFor(context.emotion);
   if (activity === "thinking") return "side";

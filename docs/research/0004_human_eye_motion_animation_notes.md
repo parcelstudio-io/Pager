@@ -9,19 +9,21 @@ This note records the biological observations behind Mochi's stylized browser fa
 1. Human gaze is dominated by **fixations** separated by **saccades**. Fixations are relatively stable at visible scale. Saccades are fast, brief movements that shift both eyes toward a new target, typically over tens of milliseconds rather than a slow glide.
 2. The two eyes normally make largely conjugate saccades: they move in the same direction at nearly the same time. Independent wandering reads as loss of binocular coordination, not ordinary curiosity.
 3. Smooth pursuit is used to follow a moving visual target. Without such a target, an exploratory scan is better represented as saccade, fixation, corrective saccade, and another fixation.
-4. Tiny drift, tremor, and microsaccades occur during fixation, but faithfully scaling those movements to Mochi's low-resolution pupils would exaggerate them into visible jitter. The prototype therefore leaves fixations visually still.
+4. Tiny drift, tremor, and microsaccades occur during fixation, but faithfully scaling those movements to Mochi's low-resolution eyes would exaggerate them into visible jitter. Large gaze motion therefore uses stable fixations; a separate one-to-four-pixel “alive” motion supplies continuous character without pretending to be a visible microsaccade.
 5. The eyeball does not squash when gaze changes. The visible aperture between the eyelids changes: the upper lid accompanies vertical saccades and downward gaze narrows and lowers the visible opening.
 
 ## Animation translation
 
 - Idle gestures retain random 3–5 second startup and 6–12 second repeat delays.
-- Each large pupil displacement happens within approximately 50–100 milliseconds, followed by a longer hold.
+- Each large whole-eye displacement happens within approximately 50–100 milliseconds, followed by a longer hold.
 - Look-up and look-down gestures use one main saccade, a small corrective saccade, another fixation, and a rapid return to center.
 - Look-around and eye-roll gestures are scan paths made from discrete fixation points. A “roll” is intentionally a sequence of saccades around the perimeter, not a continuously interpolated circle.
 - Thinking performs one short scan and then holds its final fixation. It does not sweep left and right forever.
 - Speaking and simultaneous speaking/listening change the static eye pose but do not rhythmically bob the entire eye rig.
-- The cream eye shape is treated as the visible eyelid aperture. It shifts and narrows with vertical gaze while the dark pupil remains circular inside it.
-- Both pupils share the same saccade timing and direction.
+- There are no pupils. The ivory shape represents the complete stylized visible eye. Both shapes translate together for gaze, while width, height, tilt, spacing, and asymmetry carry expression.
+- Moving the complete aperture is a deliberate non-anatomical abstraction forced by the pupil-free design. Its timing and conjugate direction borrow from gaze; its displacement is not a claim that human eye openings slide around the face.
+- Both eyes share the same saccade timing and direction. Emotion may make their shape asymmetric, but random gaze does not make them wander independently.
+- A persistent low-amplitude layer changes rhythm by emotion: buoyant for positive affect, widened and faster for alert affect, slow/downward for sad or sleepy affect, and restrained for focus. It is character motion, not biological gaze.
 - Reduced-motion preference disables these animations.
 
 The timings are animation choices informed by physiology, not a claim that the display reproduces exact eye angles or muscle dynamics.

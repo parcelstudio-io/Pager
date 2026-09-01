@@ -1,6 +1,7 @@
 import { CaptionPacer } from "./caption-pacer.js";
 import { CaptionMotion } from "./caption-motion.js";
 import { closeMediaSession, watchAudioTrackEnds } from "./media.js";
+import { parsePagerEmotionToolEvent } from "./emotion-contract.js";
 import {
   SESSION,
   createGuardedOptionalController,
@@ -191,8 +192,47 @@ function maybeOpenCapture(session) {
   });
 }
 
+function sendRealtimeEvent(session, event) {
+  if (!isCurrent(session) || session.dataChannel?.readyState !== "open") return false;
+  session.dataChannel.send(JSON.stringify(event));
+  return true;
+}
+
+function handlePagerEmotionTool(session, event) {
+  const toolCall = parsePagerEmotionToolEvent(event);
+  if (!toolCall) return false;
+
+  const accepted = !toolCall.error && faceController.setEmotion(
+    toolCall.emotion,
+    { durationMs: toolCall.durationMs },
+  );
+  const output = accepted
+    ? {
+        ok: true,
+        emotion: toolCall.emotion,
+        next: "speak_response_without_another_emotion_call",
+      }
+    : {
+        ok: false,
+        error: toolCall.error || "expression_controller_unavailable",
+        next: "speak_response_without_another_emotion_call",
+      };
+
+  sendRealtimeEvent(session, {
+    type: "conversation.item.create",
+    item: {
+      type: "function_call_output",
+      call_id: toolCall.callId,
+      output: JSON.stringify(output),
+    },
+  });
+  sendRealtimeEvent(session, { type: "response.create" });
+  return true;
+}
+
 function handleRealtimeEvent(session, event) {
   if (!isCurrent(session)) return;
+  if (handlePagerEmotionTool(session, event)) return;
   const epoch = session.epoch;
 
   switch (event.type) {

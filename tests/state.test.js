@@ -79,6 +79,21 @@ test("an optional controller diagnostic callback is isolated too", () => {
   assert.doesNotThrow(() => adapter.update({}));
 });
 
+test("the optional controller safely forwards allowlisted emotion cues", () => {
+  const calls = [];
+  const optional = createGuardedOptionalController();
+  optional.attach({
+    update() {},
+    setEmotion(emotion, options) { calls.push({ emotion, options }); },
+    dispose() {},
+  });
+
+  assert.equal(optional.setEmotion("happy", { durationMs: 8_000 }), true);
+  assert.deepEqual(calls, [{ emotion: "happy", options: { durationMs: 8_000 } }]);
+  optional.dispose();
+  assert.equal(optional.setEmotion("sad"), false);
+});
+
 test("state supports full-duplex overlap and an immediate local stop", () => {
   let state = initialState();
   state = reduceState(state, { type: "start", epoch: 1 });
