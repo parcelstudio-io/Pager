@@ -14,8 +14,9 @@ to the locally selected resting gaze before the next one.
 
 Research context:
 
-- Human eye movements use short fixations and rapid saccades; see Rayner's
-  review: https://pubmed.ncbi.nlm.nih.gov/9849112/
+- Natural-scene eye tracking shows that fixation timing varies with visual
+  selection rather than following one fixed cadence:
+  https://pubmed.ncbi.nlm.nih.gov/27627736/
 - Conversational gaze varies with speaking, listening, and noise rather than
   following a metronome: https://pmc.ncbi.nlm.nih.gov/articles/PMC6639257/
 
