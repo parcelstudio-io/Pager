@@ -141,14 +141,18 @@ body {
   border-radius: 50%;
   background: var(--cream);
   box-shadow: 0 0 28px rgba(255, 244, 218, 0.2);
+  clip-path: ellipse(50% 50% at 50% 50%);
   transform-origin: center;
-  animation: blink 5.8s infinite;
+  /* Two unevenly spaced blinks avoid a metronomic loop. Gaze-specific rules
+     add a second animation for the visible eye aperture. */
+  animation: blink 11.2s linear infinite;
   transition:
     width 220ms ease,
     height 220ms ease,
     opacity 220ms ease,
     background-color 220ms ease,
-    box-shadow 220ms ease;
+    box-shadow 220ms ease,
+    clip-path 90ms ease-out;
 }
 
 .pupil {
@@ -170,7 +174,7 @@ body {
   transition:
     width 180ms ease,
     height 180ms ease,
-    transform 180ms ease,
+    transform 80ms cubic-bezier(0.2, 0.8, 0.2, 1),
     opacity 180ms ease;
 }
 
@@ -179,11 +183,11 @@ body {
 }
 
 .pager-screen[data-face-activity="speaking"] .eye-rig {
-  animation: speak-eyes 420ms ease-in-out infinite alternate;
+  transform: translateY(-1px) scale(1.03);
 }
 
 .pager-screen[data-face-activity="duplex"] .eye-rig {
-  animation: duplex-eyes 360ms ease-in-out infinite alternate;
+  transform: translateY(-2px) scale(1.05);
 }
 
 .pager-screen[data-face-activity="connecting"] .eye-rig {
@@ -317,23 +321,47 @@ body {
 }
 
 .pager-screen[data-gaze-motion="thinking-scan"] .pupil {
-  animation: think 1.15s ease-in-out infinite alternate;
+  animation: think-saccades 3.4s linear 1 both;
+}
+
+.pager-screen[data-gaze-motion="thinking-scan"] .eye {
+  animation:
+    blink 11.2s linear infinite,
+    lid-thinking 3.4s linear 1 both;
 }
 
 .pager-screen[data-gaze-motion="look-up"] .pupil {
-  animation: curious-look-up 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: curious-look-up 1.6s linear 1;
+}
+
+.pager-screen[data-gaze-motion="look-up"] .eye {
+  animation:
+    blink 11.2s linear infinite,
+    lid-look-up 1.6s linear 1;
 }
 
 .pager-screen[data-gaze-motion="look-down"] .pupil {
-  animation: curious-look-down 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: curious-look-down 1.6s linear 1;
+}
+
+.pager-screen[data-gaze-motion="look-down"] .eye {
+  animation:
+    blink 11.2s linear infinite,
+    lid-look-down 1.6s linear 1;
 }
 
 .pager-screen[data-gaze-motion="look-around"][data-roll-direction="clockwise"] .pupil {
-  animation: curious-look-around-right 2s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: curious-look-around-right 2s linear 1;
 }
 
 .pager-screen[data-gaze-motion="look-around"][data-roll-direction="counterclockwise"] .pupil {
-  animation: curious-look-around-left 2s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: curious-look-around-left 2s linear 1;
+}
+
+.pager-screen[data-gaze-motion="look-around"] .eye {
+  animation:
+    blink 11.2s linear infinite,
+    lid-look-around 2s linear 1;
 }
 
 .pager-screen[data-gaze-motion="roll-around"][data-roll-direction="clockwise"] .pupil {
@@ -342,6 +370,18 @@ body {
 
 .pager-screen[data-gaze-motion="roll-around"][data-roll-direction="counterclockwise"] .pupil {
   animation: curious-roll-counterclockwise 2.4s linear;
+}
+
+.pager-screen[data-gaze-motion="roll-around"][data-roll-direction="clockwise"] .eye {
+  animation:
+    blink 11.2s linear infinite,
+    lid-roll-clockwise 2.4s linear 1;
+}
+
+.pager-screen[data-gaze-motion="roll-around"][data-roll-direction="counterclockwise"] .eye {
+  animation:
+    blink 11.2s linear infinite,
+    lid-roll-counterclockwise 2.4s linear 1;
 }
 
 .pager-screen[data-input="user_speaking"] .listening-halo {
@@ -436,8 +476,8 @@ audio {
 }
 
 @keyframes blink {
-  0%, 44%, 48%, 100% { transform: scaleY(1); }
-  46% { transform: scaleY(0.08); }
+  0%, 17%, 18.2%, 65%, 66.2%, 100% { transform: scaleY(1); }
+  17.6%, 65.6% { transform: scaleY(0.08); }
 }
 
 @keyframes breathe {
@@ -446,67 +486,121 @@ audio {
   to { transform: scale(0.96); }
 }
 
-@keyframes speak-eyes {
-  from { transform: translateY(1px) scale(0.97); }
-  to { transform: translateY(-2px) scale(1.04); }
-}
-
-@keyframes duplex-eyes {
-  from { transform: translateY(-2px) scale(1.02); }
-  to { transform: translateY(-5px) scale(1.07); }
-}
-
-@keyframes think {
-  from { transform: translate(calc(-50% - 14px), -50%); }
-  to { transform: translate(calc(-50% + 14px), -50%); }
+/* Human gaze is mostly fixation separated by brief, conjugate saccades. The
+   repeated coordinates below create holds; the narrow gaps create 50–100 ms
+   jumps instead of a continuous drift. Smooth pursuit belongs to a future
+   tracked-target behavior, not to ambient curiosity. */
+@keyframes think-saccades {
+  0%, 16% { transform: translate(-50%, -50%); }
+  19%, 44% { transform: translate(calc(-50% - 11px), calc(-50% - 4px)); }
+  47%, 67% { transform: translate(calc(-50% + 9px), calc(-50% - 2px)); }
+  70%, 82% { transform: translate(calc(-50% - 4px), calc(-50% + 3px)); }
+  85%, 100% { transform: translate(calc(-50% - 9px), calc(-50% - 3px)); }
 }
 
 @keyframes curious-look-up {
-  0%, 12%, 100% { transform: translate(-50%, -50%); }
-  30%, 58% { transform: translate(calc(-50% + 4px), calc(-50% - 14px)); }
-  72% { transform: translate(calc(-50% - 4px), calc(-50% - 12px)); }
+  0%, 10% { transform: translate(-50%, -50%); }
+  14%, 60% { transform: translate(calc(-50% + 3px), calc(-50% - 14px)); }
+  64%, 74% { transform: translate(calc(-50% - 3px), calc(-50% - 12px)); }
+  78%, 84% { transform: translate(calc(-50% + 1px), calc(-50% - 13px)); }
+  89%, 100% { transform: translate(-50%, -50%); }
 }
 
 @keyframes curious-look-down {
-  0%, 12%, 100% { transform: translate(-50%, -50%); }
-  30%, 58% { transform: translate(calc(-50% - 4px), calc(-50% + 13px)); }
-  72% { transform: translate(calc(-50% + 4px), calc(-50% + 11px)); }
+  0%, 10% { transform: translate(-50%, -50%); }
+  14%, 60% { transform: translate(calc(-50% - 3px), calc(-50% + 13px)); }
+  64%, 74% { transform: translate(calc(-50% + 3px), calc(-50% + 11px)); }
+  78%, 84% { transform: translate(calc(-50% - 1px), calc(-50% + 12px)); }
+  89%, 100% { transform: translate(-50%, -50%); }
 }
 
 @keyframes curious-look-around-right {
-  0%, 10%, 100% { transform: translate(-50%, -50%); }
-  28%, 48% { transform: translate(calc(-50% + 14px), calc(-50% - 2px)); }
-  62% { transform: translate(calc(-50% + 5px), calc(-50% + 5px)); }
-  76%, 86% { transform: translate(calc(-50% - 12px), calc(-50% + 2px)); }
+  0%, 10% { transform: translate(-50%, -50%); }
+  14%, 43% { transform: translate(calc(-50% + 14px), calc(-50% - 2px)); }
+  47%, 58% { transform: translate(calc(-50% + 7px), calc(-50% + 4px)); }
+  62%, 82% { transform: translate(calc(-50% - 12px), calc(-50% + 1px)); }
+  87%, 100% { transform: translate(-50%, -50%); }
 }
 
 @keyframes curious-look-around-left {
-  0%, 10%, 100% { transform: translate(-50%, -50%); }
-  28%, 48% { transform: translate(calc(-50% - 14px), calc(-50% - 2px)); }
-  62% { transform: translate(calc(-50% - 5px), calc(-50% + 5px)); }
-  76%, 86% { transform: translate(calc(-50% + 12px), calc(-50% + 2px)); }
+  0%, 10% { transform: translate(-50%, -50%); }
+  14%, 43% { transform: translate(calc(-50% - 14px), calc(-50% - 2px)); }
+  47%, 58% { transform: translate(calc(-50% - 7px), calc(-50% + 4px)); }
+  62%, 82% { transform: translate(calc(-50% + 12px), calc(-50% + 1px)); }
+  87%, 100% { transform: translate(-50%, -50%); }
 }
 
 @keyframes curious-roll-clockwise {
-  0%, 8%, 100% { transform: translate(-50%, -50%); }
-  18% { transform: translate(calc(-50% + 9px), calc(-50% - 11px)); }
-  30% { transform: translate(calc(-50% + 14px), -50%); }
-  42% { transform: translate(calc(-50% + 9px), calc(-50% + 10px)); }
-  54% { transform: translate(-50%, calc(-50% + 13px)); }
-  66% { transform: translate(calc(-50% - 9px), calc(-50% + 10px)); }
-  78% { transform: translate(calc(-50% - 14px), -50%); }
-  90% { transform: translate(calc(-50% - 9px), calc(-50% - 11px)); }
+  0%, 7% { transform: translate(-50%, -50%); }
+  10%, 20% { transform: translate(calc(-50% + 9px), calc(-50% - 11px)); }
+  23%, 34% { transform: translate(calc(-50% + 14px), -50%); }
+  37%, 47% { transform: translate(calc(-50% + 9px), calc(-50% + 10px)); }
+  50%, 60% { transform: translate(-50%, calc(-50% + 13px)); }
+  63%, 72% { transform: translate(calc(-50% - 9px), calc(-50% + 10px)); }
+  75%, 83% { transform: translate(calc(-50% - 14px), -50%); }
+  86%, 93% { transform: translate(calc(-50% - 9px), calc(-50% - 11px)); }
+  97%, 100% { transform: translate(-50%, -50%); }
 }
 
 @keyframes curious-roll-counterclockwise {
-  0%, 8%, 100% { transform: translate(-50%, -50%); }
-  18% { transform: translate(calc(-50% - 9px), calc(-50% - 11px)); }
-  30% { transform: translate(calc(-50% - 14px), -50%); }
-  42% { transform: translate(calc(-50% - 9px), calc(-50% + 10px)); }
-  54% { transform: translate(-50%, calc(-50% + 13px)); }
-  66% { transform: translate(calc(-50% + 9px), calc(-50% + 10px)); }
-  78% { transform: translate(calc(-50% + 14px), -50%); }
-  90% { transform: translate(calc(-50% + 9px), calc(-50% - 11px)); }
+  0%, 7% { transform: translate(-50%, -50%); }
+  10%, 20% { transform: translate(calc(-50% - 9px), calc(-50% - 11px)); }
+  23%, 34% { transform: translate(calc(-50% - 14px), -50%); }
+  37%, 47% { transform: translate(calc(-50% - 9px), calc(-50% + 10px)); }
+  50%, 60% { transform: translate(-50%, calc(-50% + 13px)); }
+  63%, 72% { transform: translate(calc(-50% + 9px), calc(-50% + 10px)); }
+  75%, 83% { transform: translate(calc(-50% + 14px), -50%); }
+  86%, 93% { transform: translate(calc(-50% + 9px), calc(-50% - 11px)); }
+  97%, 100% { transform: translate(-50%, -50%); }
+}
+
+/* The cream shape represents the visible aperture between the eyelids. The
+   eyeball does not squash; the aperture follows vertical gaze and narrows. */
+@keyframes lid-thinking {
+  0%, 16% { clip-path: ellipse(50% 50% at 50% 50%); }
+  19%, 44% { clip-path: ellipse(49% 47% at 49% 48%); }
+  47%, 67% { clip-path: ellipse(49% 48% at 51% 49%); }
+  70%, 82% { clip-path: ellipse(49% 46% at 49% 52%); }
+  85%, 100% { clip-path: ellipse(49% 47% at 49% 48%); }
+}
+
+@keyframes lid-look-up {
+  0%, 10%, 89%, 100% { clip-path: ellipse(50% 50% at 50% 50%); }
+  14%, 84% { clip-path: ellipse(50% 48% at 50% 47%); }
+}
+
+@keyframes lid-look-down {
+  0%, 10%, 89%, 100% { clip-path: ellipse(50% 50% at 50% 50%); }
+  14%, 84% { clip-path: ellipse(50% 43% at 50% 54%); }
+}
+
+@keyframes lid-look-around {
+  0%, 10%, 87%, 100% { clip-path: ellipse(50% 50% at 50% 50%); }
+  14%, 43% { clip-path: ellipse(48% 48% at 51% 50%); }
+  47%, 58% { clip-path: ellipse(49% 46% at 50% 52%); }
+  62%, 82% { clip-path: ellipse(48% 48% at 49% 50%); }
+}
+
+@keyframes lid-roll-clockwise {
+  0%, 7%, 97%, 100% { clip-path: ellipse(50% 50% at 50% 50%); }
+  10%, 20% { clip-path: ellipse(49% 48% at 51% 47%); }
+  23%, 34% { clip-path: ellipse(48% 49% at 52% 50%); }
+  37%, 47% { clip-path: ellipse(49% 45% at 51% 53%); }
+  50%, 60% { clip-path: ellipse(50% 43% at 50% 54%); }
+  63%, 72% { clip-path: ellipse(49% 45% at 49% 53%); }
+  75%, 83% { clip-path: ellipse(48% 49% at 48% 50%); }
+  86%, 93% { clip-path: ellipse(49% 48% at 49% 47%); }
+}
+
+@keyframes lid-roll-counterclockwise {
+  0%, 7%, 97%, 100% { clip-path: ellipse(50% 50% at 50% 50%); }
+  10%, 20% { clip-path: ellipse(49% 48% at 49% 47%); }
+  23%, 34% { clip-path: ellipse(48% 49% at 48% 50%); }
+  37%, 47% { clip-path: ellipse(49% 45% at 49% 53%); }
+  50%, 60% { clip-path: ellipse(50% 43% at 50% 54%); }
+  63%, 72% { clip-path: ellipse(49% 45% at 51% 53%); }
+  75%, 83% { clip-path: ellipse(48% 49% at 52% 50%); }
+  86%, 93% { clip-path: ellipse(49% 48% at 51% 47%); }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -420,6 +420,18 @@ test("browser assets contain one control and no provider credential name", async
   assert.equal(styles.includes("will-change: transform"), true);
   assert.equal(contents[4].includes("DEFAULT_CAPTION_SPEED_PX_PER_SECOND = 60"), true);
   assert.equal(styles.includes("@keyframes curious-roll-clockwise"), true);
+  assert.equal(styles.includes("@keyframes think-saccades"), true);
+  assert.equal(styles.includes("@keyframes lid-look-up"), true);
+  assert.equal(styles.includes("@keyframes lid-look-down"), true);
+  assert.equal(styles.includes("@keyframes lid-roll-clockwise"), true);
+  assert.equal(styles.includes("animation: speak-eyes"), false);
+  assert.equal(styles.includes("animation: duplex-eyes"), false);
+  const clockwiseRoll = styles.match(
+    /@keyframes curious-roll-clockwise \{([\s\S]*?)\n\}/,
+  )?.[1] || "";
+  assert.match(clockwiseRoll, /10%, 20%/);
+  assert.match(clockwiseRoll, /23%, 34%/);
+  assert.match(clockwiseRoll, /97%, 100%/);
   assert.equal(styles.includes('[data-gaze-motion="look-down"]'), true);
   assert.equal(styles.includes('[data-gaze-motion="center"]'), true);
   assert.equal(styles.includes('[data-energy="critical"][data-charging="true"]'), true);
