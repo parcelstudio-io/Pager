@@ -1,4 +1,8 @@
-import { PAGER_EMOTIONS } from "./emotion-contract.js";
+import { PAGER_EMOTIONS, PAGER_EYE_MOVEMENTS } from "./emotion-contract.js";
+import {
+  MAX_EYE_MOVEMENTS_PER_PLAN,
+  PAGER_EYE_MOVEMENT_INTERVAL_MS,
+} from "../../config/pager-expression.js";
 
 const SESSION_VALUES = new Set(["inactive", "connecting", "live", "error"]);
 const INPUT_VALUES = new Set(["gated", "quiet", "user_speaking"]);
@@ -17,6 +21,7 @@ export const MOODS = Object.freeze([
 
 const EMOTION_VALUES = new Set(EMOTIONS);
 const MOOD_VALUES = new Set(MOODS);
+const EYE_MOVEMENT_VALUES = new Set(PAGER_EYE_MOVEMENTS);
 const IDLE_MOODS = Object.freeze(["calm", "curious", "playful", "pensive"]);
 // Introduce the personality soon after startup, then leave the centered gaze
 // dominant so the face feels attentive instead of restless.
@@ -25,6 +30,7 @@ const FIRST_IDLE_DELAY_RANGE_MS = 2_000;
 const REPEAT_IDLE_DELAY_MIN_MS = 6_000;
 const REPEAT_IDLE_DELAY_RANGE_MS = 6_000;
 const GESTURE_DURATION_MS = Object.freeze({
+  center: 1_000,
   "look-up": 1_600,
   "look-upper-right": 1_900,
   "look-lower-right": 1_900,
@@ -34,6 +40,23 @@ const GESTURE_DURATION_MS = Object.freeze({
   "roll-around": 2_400,
   "look-down": 1_600,
 });
+
+export function modelGestureFor(command) {
+  if (!EYE_MOVEMENT_VALUES.has(command)) return null;
+  if (command === "look-around-clockwise") {
+    return { motion: "look-around", direction: "clockwise" };
+  }
+  if (command === "look-around-counterclockwise") {
+    return { motion: "look-around", direction: "counterclockwise" };
+  }
+  if (command === "roll-clockwise") {
+    return { motion: "roll-around", direction: "clockwise" };
+  }
+  if (command === "roll-counterclockwise") {
+    return { motion: "roll-around", direction: "counterclockwise" };
+  }
+  return { motion: command, direction: "none" };
+}
 
 const DEFAULT_CONTEXT = Object.freeze({
   session: "inactive",
@@ -141,7 +164,7 @@ function restingGazeFor(context, activity, energy) {
   return "center";
 }
 
-export function deriveFacePose(context = {}, idleGesture = null) {
+export function deriveFacePose(context = {}, idleGesture = null, modelGesture = null) {
   const normalized = normalizeContext(context);
   const activity = deriveActivity(normalized);
   const energy = batteryEnergy(normalized.batteryPercent);
@@ -154,6 +177,9 @@ export function deriveFacePose(context = {}, idleGesture = null) {
   if (!normalized.reducedMotion) {
     if (activity === "duplex" || activity === "listening") {
       gazeMotion = "attentive";
+    } else if (modelGesture) {
+      gazeMotion = modelGesture.motion;
+      rollDirection = modelGesture.direction || "none";
     } else if (activity === "thinking") {
       gazeMotion = "thinking-scan";
     } else if (activity === "speaking" || activity === "connecting") {
@@ -229,11 +255,14 @@ export class ExpressionDirector {
     // gesture, not by making the initial/resting gaze look upward.
     this.ambientMood = this.context.mood === "auto" ? "calm" : this.context.mood;
     this.idleGesture = null;
+    this.modelGesture = null;
     this.idleTimer = null;
     this.gestureTimer = null;
+    this.expressionPlanTimers = [];
     this.emotionTimer = null;
     this.generation = 0;
     this.emotionGeneration = 0;
+    this.expressionPlanGeneration = 0;
     this.hasShownIdleGesture = false;
     this.disposed = false;
     this.pose = null;
@@ -249,7 +278,11 @@ export class ExpressionDirector {
   }
 
   emitPose() {
-    this.pose = deriveFacePose(this.effectiveContext(), this.idleGesture);
+    this.pose = deriveFacePose(
+      this.effectiveContext(),
+      this.idleGesture,
+      this.modelGesture,
+    );
     this.onPose(this.pose);
     return this.pose;
   }
@@ -259,6 +292,13 @@ export class ExpressionDirector {
     if (this.gestureTimer !== null) this.cancel(this.gestureTimer);
     this.idleTimer = null;
     this.gestureTimer = null;
+  }
+
+  clearExpressionPlan() {
+    this.expressionPlanGeneration += 1;
+    for (const timer of this.expressionPlanTimers) this.cancel(timer);
+    this.expressionPlanTimers = [];
+    this.modelGesture = null;
   }
 
   scheduleIdleGesture() {
@@ -315,6 +355,15 @@ export class ExpressionDirector {
       this.emotionGeneration += 1;
     }
     const next = normalizeContext({ ...this.context, ...acceptedPatch }, this.context);
+    if (
+      next.session !== "live" ||
+      next.input === "user_speaking" ||
+      next.reducedMotion ||
+      !next.visible ||
+      batteryEnergy(next.batteryPercent) !== "normal"
+    ) {
+      this.clearExpressionPlan();
+    }
     if (contextsMatch(next, this.context)) return this.pose;
 
     if (
@@ -348,11 +397,72 @@ export class ExpressionDirector {
     return this.pose;
   }
 
+  setExpressionPlan(
+    emotion,
+    eyeMovements,
+    {
+      durationMs = 8_000,
+      intervalMs = PAGER_EYE_MOVEMENT_INTERVAL_MS,
+    } = {},
+  ) {
+    if (
+      !EMOTION_VALUES.has(emotion) ||
+      !Array.isArray(eyeMovements) ||
+      eyeMovements.length < 1 ||
+      eyeMovements.length > MAX_EYE_MOVEMENTS_PER_PLAN ||
+      eyeMovements.some((movement) => !EYE_MOVEMENT_VALUES.has(movement))
+    ) return this.pose;
+
+    this.setEmotion(emotion, { durationMs });
+    this.clearExpressionPlan();
+    if (
+      this.disposed ||
+      this.context.session !== "live" ||
+      this.context.input === "user_speaking" ||
+      this.context.reducedMotion ||
+      !this.context.visible ||
+      batteryEnergy(this.context.batteryPercent) !== "normal"
+    ) return this.pose;
+
+    this.clearMotionTimers();
+    this.idleGesture = null;
+    const token = this.expressionPlanGeneration;
+    const cadence = Math.max(1, Number(intervalMs) || PAGER_EYE_MOVEMENT_INTERVAL_MS);
+
+    const startGesture = (command, isLast) => {
+      if (this.disposed || token !== this.expressionPlanGeneration) return;
+      this.modelGesture = modelGestureFor(command);
+      this.emitPose();
+      const duration = GESTURE_DURATION_MS[this.modelGesture.motion] || 1_900;
+      const clearTimer = this.schedule(() => {
+        if (this.disposed || token !== this.expressionPlanGeneration) return;
+        this.modelGesture = null;
+        this.emitPose();
+        if (isLast) this.scheduleIdleGesture();
+      }, duration);
+      this.expressionPlanTimers.push(clearTimer);
+    };
+
+    eyeMovements.forEach((command, index) => {
+      if (index === 0) {
+        startGesture(command, eyeMovements.length === 1);
+        return;
+      }
+      const timer = this.schedule(
+        () => startGesture(command, index === eyeMovements.length - 1),
+        index * cadence,
+      );
+      this.expressionPlanTimers.push(timer);
+    });
+    return this.pose;
+  }
+
   dispose() {
     if (this.disposed) return;
     this.disposed = true;
     this.generation += 1;
     this.emotionGeneration += 1;
+    this.clearExpressionPlan();
     this.clearMotionTimers();
     if (this.emotionTimer !== null) this.cancel(this.emotionTimer);
     this.emotionTimer = null;

@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 
 import {
   PAGER_EMOTIONS,
+  PAGER_EYE_MOVEMENTS,
   PAGER_EMOTION_TOOL,
   parsePagerEmotionToolEvent,
 } from "../tools/device-simulator/emotion-contract.js";
@@ -11,11 +12,20 @@ import {
 test("pager emotion tool exposes a broad closed vocabulary", () => {
   assert.equal(PAGER_EMOTIONS.length, 28);
   assert.equal(PAGER_EMOTIONS.includes("happy"), true);
+  assert.equal(PAGER_EYE_MOVEMENTS.includes("look-upper-right"), true);
   assert.deepEqual(
     PAGER_EMOTION_TOOL.parameters.properties.emotion.enum,
     PAGER_EMOTIONS,
   );
   assert.equal(PAGER_EMOTION_TOOL.parameters.additionalProperties, false);
+  assert.deepEqual(
+    PAGER_EMOTION_TOOL.parameters.properties.eye_movements.items.enum,
+    PAGER_EYE_MOVEMENTS,
+  );
+  assert.deepEqual(PAGER_EMOTION_TOOL.parameters.required, [
+    "emotion",
+    "eye_movements",
+  ]);
 });
 
 test("pager emotion events parse and clamp duration", () => {
@@ -23,10 +33,16 @@ test("pager emotion events parse and clamp duration", () => {
     type: "response.function_call_arguments.done",
     name: "set_pager_emotion",
     call_id: "call_1",
-    arguments: JSON.stringify({ emotion: "happy", duration_ms: 90_000 }),
+    arguments: JSON.stringify({
+      emotion: "happy",
+      eye_movements: ["center", "look-upper-right"],
+      duration_ms: 90_000,
+    }),
   }), {
     callId: "call_1",
     emotion: "happy",
+    eyeMovements: ["center", "look-upper-right"],
+    eyeMovementIntervalMs: 4_000,
     durationMs: 30_000,
   });
 
@@ -34,10 +50,12 @@ test("pager emotion events parse and clamp duration", () => {
     type: "response.function_call_arguments.done",
     name: "set_pager_emotion",
     call_id: "call_2",
-    arguments: JSON.stringify({ emotion: "sleepy" }),
+    arguments: JSON.stringify({ emotion: "sleepy", eye_movements: ["look-down"] }),
   }), {
     callId: "call_2",
     emotion: "sleepy",
+    eyeMovements: ["look-down"],
+    eyeMovementIntervalMs: 4_000,
     durationMs: 8_000,
   });
 });
@@ -54,8 +72,14 @@ test("pager emotion parser rejects malformed and unrelated calls", () => {
     type: "response.function_call_arguments.done",
     name: "set_pager_emotion",
     call_id: "call_unknown",
-    arguments: JSON.stringify({ emotion: "invented" }),
+    arguments: JSON.stringify({ emotion: "invented", eye_movements: ["center"] }),
   }), { callId: "call_unknown", error: "unsupported_emotion" });
+  assert.deepEqual(parsePagerEmotionToolEvent({
+    type: "response.function_call_arguments.done",
+    name: "set_pager_emotion",
+    call_id: "call_bad_movement",
+    arguments: JSON.stringify({ emotion: "happy", eye_movements: ["teleport"] }),
+  }), { callId: "call_bad_movement", error: "unsupported_eye_movements" });
 });
 
 test("every non-neutral emotion has explicit eye geometry", async () => {

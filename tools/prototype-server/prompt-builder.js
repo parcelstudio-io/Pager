@@ -2,6 +2,8 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { PAGER_EXPRESSION_PROMPT_CONFIG } from "../../config/pager-expression.js";
+
 const CURRENT_FILE = fileURLToPath(import.meta.url);
 const REPO_ROOT = path.resolve(path.dirname(CURRENT_FILE), "../..");
 export const DEFAULT_PROMPT_TEMPLATE_PATH = path.join(
@@ -11,6 +13,7 @@ export const DEFAULT_PROMPT_TEMPLATE_PATH = path.join(
 
 const PLACEHOLDERS = Object.freeze([
   "companion_name",
+  "pager_expression_config_json",
   "user_context_json",
   "past_conversation_history_json",
   "retrieved_search_context_json",
@@ -370,6 +373,7 @@ export function renderRealtimeInstructions(compiledTemplate, promptContext = {})
   allowKeys(context, ["companionName", "history", "user", "retrieval", "device"], "promptContext");
   const values = {
     companion_name: normalizeCompanionName(context.companionName),
+    pager_expression_config_json: jsonForPrompt(PAGER_EXPRESSION_PROMPT_CONFIG),
     user_context_json: jsonForPrompt(normalizeUser(context.user || {})),
     past_conversation_history_json: jsonForPrompt(normalizeHistory(context.history || {})),
     retrieved_search_context_json: jsonForPrompt(normalizeRetrieval(context.retrieval || {})),

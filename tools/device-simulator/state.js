@@ -97,6 +97,16 @@ export function createGuardedOptionalController({ onUnavailable = () => {} } = {
       }
     },
 
+    setExpressionPlan(emotion, eyeMovements, options) {
+      if (!controller || typeof controller.setExpressionPlan !== "function") return false;
+      try {
+        controller.setExpressionPlan(emotion, eyeMovements, options);
+        return true;
+      } catch (error) {
+        return fail(error);
+      }
+    },
+
     dispose() {
       if (!controller) return true;
       const disposedController = controller;

@@ -62,6 +62,11 @@ test("session configuration is fixed server-side for full-duplex audio", () => {
   assert.equal(config.tools[0].name, "set_pager_emotion");
   assert.equal(config.tools[0].parameters.properties.emotion.enum.includes("happy"), true);
   assert.equal(config.tools[0].parameters.properties.emotion.enum.length >= 25, true);
+  assert.equal(
+    config.tools[0].parameters.properties.eye_movements.items.enum.includes("roll-clockwise"),
+    true,
+  );
+  assert.match(config.instructions, /"eyeMovementIntervalMs": 4000/);
   assert.deepEqual(config.audio.input.turn_detection, {
     type: "semantic_vad",
     eagerness: "auto",
@@ -363,6 +368,10 @@ test("static server exposes only the simulator allowlist", async () => {
     "audio-reactive-halo.js",
     "text/javascript; charset=utf-8",
   ]);
+  assert.deepEqual(staticAssetForPath("/config/pager-expression.js"), [
+    "../../config/pager-expression.js",
+    "text/javascript; charset=utf-8",
+  ]);
   assert.equal(staticAssetForPath("/.env"), null);
   assert.equal(staticAssetForPath("/../.env"), null);
 
@@ -382,6 +391,10 @@ test("static server exposes only the simulator allowlist", async () => {
     const promptAttempt = await fetch(`${baseUrl}/prompt/mochi-realtime.ftl`);
     assert.equal(promptAttempt.status, 404);
     assert.equal((await promptAttempt.text()).includes("You are a companion"), false);
+
+    const expressionConfig = await fetch(`${baseUrl}/config/pager-expression.js`);
+    assert.equal(expressionConfig.status, 200);
+    assert.match(await expressionConfig.text(), /PAGER_EYE_MOVEMENT_INTERVAL_MS = 4_000/);
   });
 });
 

@@ -16,9 +16,14 @@ test("the versioned prompt starts with the companion identity and truthful defau
   assert.equal(prompt.startsWith("You are a companion named Mochi"), true);
   assert.match(prompt, /Reconstructed past conversation history/);
   assert.match(prompt, /Other context, including search and retrieval/);
+  assert.match(prompt, /pager_expression_config_json/);
+  assert.match(prompt, /"eyeMovementIntervalMs": 4000/);
+  assert.match(prompt, /"look-upper-right"/);
+  assert.match(prompt, /"delighted"/);
   assert.match(prompt, /"status": "unavailable"/);
   assert.match(prompt, /"status": "not_requested"/);
   assert.equal(prompt.includes("${companion_name}"), false);
+  assert.equal(prompt.includes("${pager_expression_config_json}"), false);
 });
 
 test("the renderer reconstructs allowlisted history, user, search, and device context", () => {

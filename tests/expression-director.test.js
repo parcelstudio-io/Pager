@@ -322,3 +322,39 @@ test("validated emotion hints expire even while activity changes", () => {
   assert.equal(poses.at(-1).expression, "neutral");
   director.dispose();
 });
+
+test("model expression plans execute supported gaze commands at local cadence", () => {
+  const clock = new FakeClock();
+  const poses = [];
+  const director = new ExpressionDirector({
+    context: {
+      session: "live",
+      input: "quiet",
+      output: "playing",
+      mood: "calm",
+    },
+    onPose: (pose) => poses.push(pose),
+    schedule: clock.schedule,
+    cancel: clock.cancel,
+  });
+
+  director.setExpressionPlan(
+    "delighted",
+    ["look-upper-right", "roll-counterclockwise"],
+    { intervalMs: 4_000, durationMs: 10_000 },
+  );
+  assert.equal(poses.at(-1).expression, "delighted");
+  assert.equal(poses.at(-1).gazeMotion, "look-upper-right");
+
+  clock.advance(1_900);
+  assert.equal(poses.at(-1).gazeMotion, "center");
+  clock.advance(2_100);
+  assert.equal(poses.at(-1).gazeMotion, "roll-around");
+  assert.equal(poses.at(-1).rollDirection, "counterclockwise");
+
+  director.update({ input: "user_speaking" });
+  assert.equal(poses.at(-1).gazeMotion, "attentive");
+  clock.advance(10_000);
+  assert.equal(poses.at(-1).gazeMotion, "attentive");
+  director.dispose();
+});

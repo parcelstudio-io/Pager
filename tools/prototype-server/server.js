@@ -21,6 +21,7 @@ const STATIC_ASSETS = Object.freeze({
   "/caption-motion.js": ["caption-motion.js", "text/javascript; charset=utf-8"],
   "/expression-director.js": ["expression-director.js", "text/javascript; charset=utf-8"],
   "/emotion-contract.js": ["emotion-contract.js", "text/javascript; charset=utf-8"],
+  "/config/pager-expression.js": ["../../config/pager-expression.js", "text/javascript; charset=utf-8"],
   "/audio-reactive-halo.js": ["audio-reactive-halo.js", "text/javascript; charset=utf-8"],
   "/media.js": ["media.js", "text/javascript; charset=utf-8"],
   "/styles.css": ["styles.css", "text/css; charset=utf-8"],

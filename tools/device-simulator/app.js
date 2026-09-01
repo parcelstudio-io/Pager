@@ -211,14 +211,19 @@ function handlePagerEmotionTool(session, event) {
   const toolCall = parsePagerEmotionToolEvent(event);
   if (!toolCall) return false;
 
-  const accepted = !toolCall.error && faceController.setEmotion(
+  const accepted = !toolCall.error && faceController.setExpressionPlan(
     toolCall.emotion,
-    { durationMs: toolCall.durationMs },
+    toolCall.eyeMovements,
+    {
+      durationMs: toolCall.durationMs,
+      intervalMs: toolCall.eyeMovementIntervalMs,
+    },
   );
   const output = accepted
     ? {
         ok: true,
         emotion: toolCall.emotion,
+        eye_movements: toolCall.eyeMovements,
         next: "speak_response_without_another_emotion_call",
       }
     : {

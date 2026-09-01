@@ -94,6 +94,29 @@ test("the optional controller safely forwards allowlisted emotion cues", () => {
   assert.equal(optional.setEmotion("sad"), false);
 });
 
+test("the optional controller safely forwards expression plans", () => {
+  const calls = [];
+  const optional = createGuardedOptionalController();
+  optional.attach({
+    update() {},
+    setExpressionPlan(emotion, movements, options) {
+      calls.push({ emotion, movements, options });
+    },
+    dispose() {},
+  });
+
+  assert.equal(optional.setExpressionPlan(
+    "curious",
+    ["look-up", "center"],
+    { intervalMs: 4_000 },
+  ), true);
+  assert.deepEqual(calls, [{
+    emotion: "curious",
+    movements: ["look-up", "center"],
+    options: { intervalMs: 4_000 },
+  }]);
+});
+
 test("state supports full-duplex overlap and an immediate local stop", () => {
   let state = initialState();
   state = reduceState(state, { type: "start", epoch: 1 });
