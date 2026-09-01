@@ -242,8 +242,10 @@ body {
 }
 
 .eye {
+  position: relative;
   width: 100%;
   height: 100%;
+  overflow: hidden;
   border-radius: inherit;
   background: var(--cream);
   box-shadow: 0 0 30px rgba(255, 244, 218, 0.24);
@@ -253,6 +255,57 @@ body {
     opacity 220ms ease,
     box-shadow 220ms ease,
     clip-path 90ms ease-out;
+}
+
+.pupil {
+  --pupil-x: 0px;
+  --pupil-y: 0px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--ink);
+  transform: translate(
+    calc(-50% + var(--pupil-x)),
+    calc(-50% + var(--pupil-y))
+  );
+  transition:
+    width 180ms ease,
+    height 180ms ease,
+    transform 75ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 180ms ease;
+}
+
+.pager-screen[data-expression="happy"] .pupil,
+.pager-screen[data-expression="delighted"] .pupil,
+.pager-screen[data-expression="joyful"] .pupil,
+.pager-screen[data-expression="curious"] .pupil,
+.pager-screen[data-expression="affectionate"] .pupil {
+  width: 23px;
+  height: 23px;
+}
+
+.pager-screen[data-expression="excited"] .pupil,
+.pager-screen[data-expression="surprised"] .pupil,
+.pager-screen[data-expression="startled"] .pupil {
+  width: 25px;
+  height: 25px;
+}
+
+.pager-screen[data-expression="angry"] .pupil,
+.pager-screen[data-expression="frustrated"] .pupil,
+.pager-screen[data-expression="focused"] .pupil,
+.pager-screen[data-expression="determined"] .pupil {
+  width: 17px;
+  height: 17px;
+}
+
+.pager-screen[data-expression="sleepy"] .pupil,
+.pager-screen[data-expression="bored"] .pupil {
+  width: 15px;
+  height: 15px;
 }
 
 .pager-screen[data-face-activity="listening"] .eye-rig {
@@ -558,8 +611,16 @@ body {
   --gaze-y: -8px;
 }
 
+.pager-screen[data-rest-gaze="up"] .pupil {
+  --pupil-y: -14px;
+}
+
 .pager-screen[data-rest-gaze="down"] .eye-motion {
   --gaze-y: 9px;
+}
+
+.pager-screen[data-rest-gaze="down"] .pupil {
+  --pupil-y: 14px;
 }
 
 .pager-screen[data-rest-gaze="side"] .eye-motion {
@@ -567,17 +628,35 @@ body {
   --gaze-y: 1px;
 }
 
+.pager-screen[data-rest-gaze="side"] .pupil {
+  --pupil-x: 14px;
+  --pupil-y: 2px;
+}
+
 .pager-screen[data-gaze-motion="center"] .eye-motion {
   --gaze-x: 0px;
   --gaze-y: 0px;
+}
+
+.pager-screen[data-gaze-motion="center"] .pupil {
+  --pupil-x: 0px;
+  --pupil-y: 0px;
 }
 
 .pager-screen[data-gaze-motion="up"] .eye-motion {
   --gaze-y: -8px;
 }
 
+.pager-screen[data-gaze-motion="up"] .pupil {
+  --pupil-y: -14px;
+}
+
 .pager-screen[data-gaze-motion="down"] .eye-motion {
   --gaze-y: 9px;
+}
+
+.pager-screen[data-gaze-motion="down"] .pupil {
+  --pupil-y: 14px;
 }
 
 .pager-screen[data-gaze-motion="side"] .eye-motion {
@@ -585,9 +664,19 @@ body {
   --gaze-y: 1px;
 }
 
+.pager-screen[data-gaze-motion="side"] .pupil {
+  --pupil-x: 14px;
+  --pupil-y: 2px;
+}
+
 .pager-screen[data-gaze-motion="attentive"] .eye-left .eye-motion {
   --gaze-x: 5px;
   --gaze-y: -3px;
+}
+
+.pager-screen[data-gaze-motion="attentive"] .eye-left .pupil {
+  --pupil-x: 7px;
+  --pupil-y: -3px;
 }
 
 .pager-screen[data-gaze-motion="attentive"] .eye-right .eye-motion {
@@ -595,12 +684,25 @@ body {
   --gaze-y: -3px;
 }
 
+.pager-screen[data-gaze-motion="attentive"] .eye-right .pupil {
+  --pupil-x: -7px;
+  --pupil-y: -3px;
+}
+
 .pager-screen[data-gaze-motion="thinking-scan"] .eye-motion {
   animation: think-eye-saccades 3.4s linear 1 both;
 }
 
+.pager-screen[data-gaze-motion="thinking-scan"] .pupil {
+  animation: pupil-think-saccades 3.4s linear 1 both;
+}
+
 .pager-screen[data-gaze-motion="look-up"] .eye-motion {
   animation: whole-eye-look-up 1.6s linear 1;
+}
+
+.pager-screen[data-gaze-motion="look-up"] .pupil {
+  animation: pupil-look-up 1.6s linear 1;
 }
 
 .pager-screen[data-gaze-motion="look-up"] .eye {
@@ -613,6 +715,49 @@ body {
   animation: whole-eye-look-down 1.6s linear 1;
 }
 
+.pager-screen[data-gaze-motion="look-down"] .pupil {
+  animation: pupil-look-down 1.6s linear 1;
+}
+
+.pager-screen[data-gaze-motion="look-upper-right"] .eye-motion {
+  animation: whole-eye-upper-right 1.9s linear 1;
+}
+
+.pager-screen[data-gaze-motion="look-upper-right"] .pupil {
+  animation: pupil-upper-right 1.9s linear 1;
+}
+
+.pager-screen[data-gaze-motion="look-lower-right"] .eye-motion {
+  animation: whole-eye-lower-right 1.9s linear 1;
+}
+
+.pager-screen[data-gaze-motion="look-lower-right"] .pupil {
+  animation: pupil-lower-right 1.9s linear 1;
+}
+
+.pager-screen[data-gaze-motion="look-lower-left"] .eye-motion {
+  animation: whole-eye-lower-left 1.9s linear 1;
+}
+
+.pager-screen[data-gaze-motion="look-lower-left"] .pupil {
+  animation: pupil-lower-left 1.9s linear 1;
+}
+
+.pager-screen[data-gaze-motion="look-upper-left"] .eye-motion {
+  animation: whole-eye-upper-left 1.9s linear 1;
+}
+
+.pager-screen[data-gaze-motion="look-upper-left"] .pupil {
+  animation: pupil-upper-left 1.9s linear 1;
+}
+
+.pager-screen[data-gaze-motion^="look-upper-"] .eye,
+.pager-screen[data-gaze-motion^="look-lower-"] .eye {
+  animation:
+    blink 11.2s linear infinite,
+    aperture-corner-look 1.9s linear 1;
+}
+
 .pager-screen[data-gaze-motion="look-down"] .eye {
   animation:
     blink 11.2s linear infinite,
@@ -623,8 +768,16 @@ body {
   animation: whole-eye-look-around-right 2s linear 1;
 }
 
+.pager-screen[data-gaze-motion="look-around"][data-roll-direction="clockwise"] .pupil {
+  animation: pupil-look-around-right 2s linear 1;
+}
+
 .pager-screen[data-gaze-motion="look-around"][data-roll-direction="counterclockwise"] .eye-motion {
   animation: whole-eye-look-around-left 2s linear 1;
+}
+
+.pager-screen[data-gaze-motion="look-around"][data-roll-direction="counterclockwise"] .pupil {
+  animation: pupil-look-around-left 2s linear 1;
 }
 
 .pager-screen[data-gaze-motion="look-around"] .eye {
@@ -637,8 +790,16 @@ body {
   animation: whole-eye-roll-clockwise 2.4s linear;
 }
 
+.pager-screen[data-gaze-motion="roll-around"][data-roll-direction="clockwise"] .pupil {
+  animation: pupil-roll-clockwise 2.4s linear 1;
+}
+
 .pager-screen[data-gaze-motion="roll-around"][data-roll-direction="counterclockwise"] .eye-motion {
   animation: whole-eye-roll-counterclockwise 2.4s linear;
+}
+
+.pager-screen[data-gaze-motion="roll-around"][data-roll-direction="counterclockwise"] .pupil {
+  animation: pupil-roll-counterclockwise 2.4s linear 1;
 }
 
 .pager-screen[data-gaze-motion="roll-around"][data-roll-direction="clockwise"] .eye {
@@ -755,8 +916,9 @@ audio {
   to { transform: scale(0.96); }
 }
 
-/* Human gaze is mostly fixation separated by brief, conjugate saccades. With
-   no pupils, both complete ivory apertures jump together and then hold. */
+/* Human gaze is mostly fixation separated by brief, conjugate saccades. Both
+   pupils jump together; the ivory apertures follow with a larger head-like
+   shift so a corner target reads clearly on the small display. */
 @keyframes think-eye-saccades {
   0%, 16% { transform: translate3d(0, 0, 0); }
   19%, 44% { transform: translate3d(-8px, -3px, 0); }
@@ -778,6 +940,38 @@ audio {
   14%, 60% { transform: translate3d(-2px, 10px, 0); }
   64%, 74% { transform: translate3d(2px, 9px, 0); }
   78%, 84% { transform: translate3d(-1px, 10px, 0); }
+  89%, 100% { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes whole-eye-upper-right {
+  0%, 10% { transform: translate3d(0, 0, 0); }
+  14%, 57% { transform: translate3d(14px, -12px, 0); }
+  61%, 72% { transform: translate3d(12px, -14px, 0); }
+  76%, 84% { transform: translate3d(15px, -12px, 0); }
+  89%, 100% { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes whole-eye-lower-right {
+  0%, 10% { transform: translate3d(0, 0, 0); }
+  14%, 57% { transform: translate3d(14px, 12px, 0); }
+  61%, 72% { transform: translate3d(12px, 14px, 0); }
+  76%, 84% { transform: translate3d(15px, 12px, 0); }
+  89%, 100% { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes whole-eye-lower-left {
+  0%, 10% { transform: translate3d(0, 0, 0); }
+  14%, 57% { transform: translate3d(-14px, 12px, 0); }
+  61%, 72% { transform: translate3d(-12px, 14px, 0); }
+  76%, 84% { transform: translate3d(-15px, 12px, 0); }
+  89%, 100% { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes whole-eye-upper-left {
+  0%, 10% { transform: translate3d(0, 0, 0); }
+  14%, 57% { transform: translate3d(-14px, -12px, 0); }
+  61%, 72% { transform: translate3d(-12px, -14px, 0); }
+  76%, 84% { transform: translate3d(-15px, -12px, 0); }
   89%, 100% { transform: translate3d(0, 0, 0); }
 }
 
@@ -821,6 +1015,92 @@ audio {
   97%, 100% { transform: translate3d(0, 0, 0); }
 }
 
+@keyframes pupil-think-saccades {
+  0%, 16% { transform: translate(-50%, -50%); }
+  19%, 44% { transform: translate(calc(-50% - 15px), calc(-50% - 5px)); }
+  47%, 67% { transform: translate(calc(-50% + 14px), calc(-50% - 3px)); }
+  70%, 82% { transform: translate(calc(-50% - 5px), calc(-50% + 5px)); }
+  85%, 100% { transform: translate(calc(-50% - 12px), calc(-50% - 4px)); }
+}
+
+@keyframes pupil-look-up {
+  0%, 10%, 89%, 100% { transform: translate(-50%, -50%); }
+  14%, 60% { transform: translate(calc(-50% + 3px), calc(-50% - 18px)); }
+  64%, 74% { transform: translate(calc(-50% - 3px), calc(-50% - 16px)); }
+  78%, 84% { transform: translate(calc(-50% + 1px), calc(-50% - 18px)); }
+}
+
+@keyframes pupil-look-down {
+  0%, 10%, 89%, 100% { transform: translate(-50%, -50%); }
+  14%, 60% { transform: translate(calc(-50% - 3px), calc(-50% + 18px)); }
+  64%, 74% { transform: translate(calc(-50% + 3px), calc(-50% + 16px)); }
+  78%, 84% { transform: translate(calc(-50% - 1px), calc(-50% + 18px)); }
+}
+
+@keyframes pupil-upper-right {
+  0%, 10%, 89%, 100% { transform: translate(-50%, -50%); }
+  14%, 57% { transform: translate(calc(-50% + 19px), calc(-50% - 18px)); }
+  61%, 72% { transform: translate(calc(-50% + 17px), calc(-50% - 19px)); }
+  76%, 84% { transform: translate(calc(-50% + 19px), calc(-50% - 17px)); }
+}
+
+@keyframes pupil-lower-right {
+  0%, 10%, 89%, 100% { transform: translate(-50%, -50%); }
+  14%, 57% { transform: translate(calc(-50% + 19px), calc(-50% + 18px)); }
+  61%, 72% { transform: translate(calc(-50% + 17px), calc(-50% + 19px)); }
+  76%, 84% { transform: translate(calc(-50% + 19px), calc(-50% + 17px)); }
+}
+
+@keyframes pupil-lower-left {
+  0%, 10%, 89%, 100% { transform: translate(-50%, -50%); }
+  14%, 57% { transform: translate(calc(-50% - 19px), calc(-50% + 18px)); }
+  61%, 72% { transform: translate(calc(-50% - 17px), calc(-50% + 19px)); }
+  76%, 84% { transform: translate(calc(-50% - 19px), calc(-50% + 17px)); }
+}
+
+@keyframes pupil-upper-left {
+  0%, 10%, 89%, 100% { transform: translate(-50%, -50%); }
+  14%, 57% { transform: translate(calc(-50% - 19px), calc(-50% - 18px)); }
+  61%, 72% { transform: translate(calc(-50% - 17px), calc(-50% - 19px)); }
+  76%, 84% { transform: translate(calc(-50% - 19px), calc(-50% - 17px)); }
+}
+
+@keyframes pupil-look-around-right {
+  0%, 10%, 87%, 100% { transform: translate(-50%, -50%); }
+  14%, 43% { transform: translate(calc(-50% + 20px), calc(-50% - 3px)); }
+  47%, 58% { transform: translate(calc(-50% + 10px), calc(-50% + 6px)); }
+  62%, 82% { transform: translate(calc(-50% - 19px), calc(-50% + 2px)); }
+}
+
+@keyframes pupil-look-around-left {
+  0%, 10%, 87%, 100% { transform: translate(-50%, -50%); }
+  14%, 43% { transform: translate(calc(-50% - 20px), calc(-50% - 3px)); }
+  47%, 58% { transform: translate(calc(-50% - 10px), calc(-50% + 6px)); }
+  62%, 82% { transform: translate(calc(-50% + 19px), calc(-50% + 2px)); }
+}
+
+@keyframes pupil-roll-clockwise {
+  0%, 7%, 97%, 100% { transform: translate(-50%, -50%); }
+  10%, 20% { transform: translate(calc(-50% + 14px), calc(-50% - 15px)); }
+  23%, 34% { transform: translate(calc(-50% + 20px), -50%); }
+  37%, 47% { transform: translate(calc(-50% + 14px), calc(-50% + 15px)); }
+  50%, 60% { transform: translate(-50%, calc(-50% + 19px)); }
+  63%, 72% { transform: translate(calc(-50% - 14px), calc(-50% + 15px)); }
+  75%, 83% { transform: translate(calc(-50% - 20px), -50%); }
+  86%, 93% { transform: translate(calc(-50% - 14px), calc(-50% - 15px)); }
+}
+
+@keyframes pupil-roll-counterclockwise {
+  0%, 7%, 97%, 100% { transform: translate(-50%, -50%); }
+  10%, 20% { transform: translate(calc(-50% - 14px), calc(-50% - 15px)); }
+  23%, 34% { transform: translate(calc(-50% - 20px), -50%); }
+  37%, 47% { transform: translate(calc(-50% - 14px), calc(-50% + 15px)); }
+  50%, 60% { transform: translate(-50%, calc(-50% + 19px)); }
+  63%, 72% { transform: translate(calc(-50% + 14px), calc(-50% + 15px)); }
+  75%, 83% { transform: translate(calc(-50% + 20px), -50%); }
+  86%, 93% { transform: translate(calc(-50% + 14px), calc(-50% - 15px)); }
+}
+
 @keyframes aperture-look-up {
   0%, 10%, 89%, 100% { clip-path: ellipse(50% 50% at 50% 50%); }
   14%, 84% { clip-path: ellipse(50% 48% at 50% 47%); }
@@ -829,6 +1109,12 @@ audio {
 @keyframes aperture-look-down {
   0%, 10%, 89%, 100% { clip-path: ellipse(50% 50% at 50% 50%); }
   14%, 84% { clip-path: ellipse(50% 43% at 50% 54%); }
+}
+
+@keyframes aperture-corner-look {
+  0%, 10%, 89%, 100% { clip-path: ellipse(50% 50% at 50% 50%); }
+  14%, 57% { clip-path: ellipse(49% 47% at 50% 49%); }
+  61%, 84% { clip-path: ellipse(48% 46% at 50% 49%); }
 }
 
 @keyframes aperture-look-around {
@@ -923,6 +1209,7 @@ audio {
   .eye-life,
   .eye-shape,
   .eye,
+  .pupil,
   .listening-halo {
     animation: none !important;
     transition: none !important;

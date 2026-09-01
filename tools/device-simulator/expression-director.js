@@ -26,6 +26,10 @@ const REPEAT_IDLE_DELAY_MIN_MS = 6_000;
 const REPEAT_IDLE_DELAY_RANGE_MS = 6_000;
 const GESTURE_DURATION_MS = Object.freeze({
   "look-up": 1_600,
+  "look-upper-right": 1_900,
+  "look-lower-right": 1_900,
+  "look-lower-left": 1_900,
+  "look-upper-left": 1_900,
   "look-around": 2_000,
   "roll-around": 2_400,
   "look-down": 1_600,
@@ -190,9 +194,13 @@ function clampRandom(value) {
 function chooseIdleGesture(random) {
   const gestureRoll = clampRandom(random());
   let motion = "look-down";
-  if (gestureRoll < 0.24) motion = "look-up";
-  else if (gestureRoll < 0.50) motion = "look-around";
-  else if (gestureRoll < 0.80) motion = "roll-around";
+  if (gestureRoll < 0.14) motion = "look-up";
+  else if (gestureRoll < 0.28) motion = "look-upper-right";
+  else if (gestureRoll < 0.42) motion = "look-lower-right";
+  else if (gestureRoll < 0.56) motion = "look-lower-left";
+  else if (gestureRoll < 0.70) motion = "look-upper-left";
+  else if (gestureRoll < 0.82) motion = "look-around";
+  else if (gestureRoll < 0.94) motion = "roll-around";
 
   return {
     motion,

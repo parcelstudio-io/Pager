@@ -409,7 +409,7 @@ test("browser assets contain one control and no provider credential name", async
   assert.ok(html.indexOf('class="face"') < html.indexOf('id="caption-viewport"'));
   assert.equal(html.includes('class="mouth"'), false);
   assert.equal((html.match(/class="eye-rig /g) || []).length, 2);
-  assert.equal(html.includes("pupil"), false);
+  assert.equal((html.match(/class="pupil"/g) || []).length, 2);
   assert.equal((html.match(/class="eye-motion"/g) || []).length, 2);
   assert.equal((html.match(/class="eye-life"/g) || []).length, 2);
   assert.equal(html.includes('data-expression="neutral"'), true);
@@ -429,9 +429,13 @@ test("browser assets contain one control and no provider credential name", async
   assert.equal(styles.includes(".caption-empty"), false);
   assert.equal(styles.includes("will-change: transform"), true);
   assert.equal(contents[4].includes("DEFAULT_CAPTION_SPEED_PX_PER_SECOND = 60"), true);
-  assert.equal(styles.includes(".pupil"), false);
+  assert.equal(styles.includes(".pupil"), true);
   assert.equal(styles.includes("background: var(--cream)"), true);
   assert.equal(styles.includes("@keyframes whole-eye-roll-clockwise"), true);
+  assert.equal(styles.includes("@keyframes whole-eye-upper-right"), true);
+  assert.equal(styles.includes("@keyframes whole-eye-lower-left"), true);
+  assert.equal(styles.includes("@keyframes pupil-upper-right"), true);
+  assert.equal(styles.includes("@keyframes pupil-lower-left"), true);
   assert.equal(styles.includes("@keyframes think-eye-saccades"), true);
   assert.equal(styles.includes("@keyframes aperture-look-up"), true);
   assert.equal(styles.includes("@keyframes aperture-look-down"), true);

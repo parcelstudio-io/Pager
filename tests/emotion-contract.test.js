@@ -58,7 +58,7 @@ test("pager emotion parser rejects malformed and unrelated calls", () => {
   }), { callId: "call_unknown", error: "unsupported_emotion" });
 });
 
-test("every non-neutral emotion has explicit pupil-free eye geometry", async () => {
+test("every non-neutral emotion has explicit eye geometry", async () => {
   const styles = await readFile("tools/device-simulator/styles.css", "utf8");
   for (const emotion of PAGER_EMOTIONS.filter((value) => value !== "neutral")) {
     assert.equal(
@@ -67,6 +67,6 @@ test("every non-neutral emotion has explicit pupil-free eye geometry", async () 
       `missing CSS geometry for ${emotion}`,
     );
   }
-  assert.equal(styles.includes(".pupil"), false);
+  assert.equal(styles.includes(".pupil"), true);
   assert.equal(styles.includes("background: var(--cream)"), true);
 });

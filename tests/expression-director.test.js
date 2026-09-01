@@ -146,7 +146,7 @@ test("idle curiosity starts centered, performs a gesture, and returns to center"
     schedule: clock.schedule,
     cancel: clock.cancel,
     // first delay=3s, gesture=roll-around clockwise, next mood=curious
-    random: sequence([0, 0.6, 0.2, 0.3, 0]),
+    random: sequence([0, 0.9, 0.2, 0.3, 0]),
   });
 
   assert.equal(poses.at(-1).activity, "idle");
@@ -179,7 +179,7 @@ test("the first idle gesture appears within five seconds, then pauses up to twel
     schedule: clock.schedule,
     cancel: clock.cancel,
     // Max first delay, roll, direction, mood, max repeat delay, then roll again.
-    random: sequence([0.999999, 0.6, 0.2, 0, 0.999999, 0.6, 0.2]),
+    random: sequence([0.999999, 0.9, 0.2, 0, 0.999999, 0.9, 0.2]),
   });
 
   clock.advance(4_999);
@@ -198,10 +198,14 @@ test("the first idle gesture appears within five seconds, then pauses up to twel
 
 test("the idle random bands reach every curious gaze path", () => {
   for (const [gestureRoll, expectedMotion] of [
-    [0.1, "look-up"],
-    [0.3, "look-around"],
-    [0.6, "roll-around"],
-    [0.9, "look-down"],
+    [0.05, "look-up"],
+    [0.20, "look-upper-right"],
+    [0.35, "look-lower-right"],
+    [0.50, "look-lower-left"],
+    [0.63, "look-upper-left"],
+    [0.76, "look-around"],
+    [0.88, "roll-around"],
+    [0.97, "look-down"],
   ]) {
     const clock = new FakeClock();
     let pose;
@@ -225,7 +229,7 @@ test("speech cancels an active idle gesture and stale callbacks cannot revive it
     schedule: clock.schedule,
     // Deliberately leave cleared callbacks in the queue; generation tokens must reject them.
     cancel: () => {},
-    random: sequence([0, 0.6, 0.8, 0.1]),
+    random: sequence([0, 0.9, 0.8, 0.1]),
   });
 
   clock.advance(3_000);
@@ -268,13 +272,21 @@ test("low battery, hidden pages, and reduced motion schedule no idle roll", () =
       onPose: (nextPose) => { pose = nextPose; },
       schedule: clock.schedule,
       cancel: clock.cancel,
-      random: sequence([0, 0.6, 0]),
+      random: sequence([0, 0.9, 0]),
     });
     clock.advance(3_000);
     assert.equal(pose.gazeMotion, "roll-around");
     director.update(patch);
     assert.equal(
-      ["look-up", "roll-around", "look-down"].includes(pose.gazeMotion),
+      [
+        "look-up",
+        "look-upper-right",
+        "look-lower-right",
+        "look-lower-left",
+        "look-upper-left",
+        "roll-around",
+        "look-down",
+      ].includes(pose.gazeMotion),
       false,
     );
     assert.equal(clock.jobs.size, 0);

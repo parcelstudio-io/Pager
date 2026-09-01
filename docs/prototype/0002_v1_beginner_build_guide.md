@@ -146,7 +146,7 @@ http://localhost:3000
 
 Use `localhost`; do not open the HTML file directly with a `file://` URL. The first page should show the Mochi face, one conversation start/stop control, and a private/idle state. The caption position below the eyes is intentionally invisible while empty: there is no “Captions appear here” prompt, border, or tinted panel.
 
-Before starting, confirm that both pupil-free ivory eyes are calm and centered with subtle alive motion. The first large idle gesture should begin after 3–5 seconds. After it returns to center, later gestures wait 6–12 seconds. Both complete eyes move together: they may look up, look down, scan side to side, or make a 1.6–2.4 second clockwise/counterclockwise scan, and every path ends at center. The injected-randomness tests cover every gesture family and both timing bands, so a short manual watch need not sample them all. There is no mouth.
+Before starting, confirm that both dark pupils are centered inside calm ivory eyes with subtle outer-eye motion. The first large idle gesture should begin after 3–5 seconds. After it returns to center, later gestures wait 6–12 seconds. Both pupils and apertures move together: they may look up, down, side to side, toward any of four screen corners, or make a 1.6–2.4 second clockwise/counterclockwise scan, and every path ends at center. The injected-randomness tests cover every gesture family and both timing bands, so a short manual watch need not sample them all. There is no mouth.
 
 Face animation is optional: the conversation button is wired first, and a failed animation import or initialization leaves a static centered face rather than breaking Start/Stop. A later cosmetic fault likewise cannot remove that already-wired control. Enable the operating system/browser reduced-motion preference and reload once: idle gestures should stop and poses should become static. Turn that preference back off for the remaining motion test if desired. If the browser exposes the optional Battery Status API, a low host battery intentionally produces a dim, downward, less-active face; otherwise automated tests are the V1-A battery evidence. The CoreS3 port will use its PMIC/fuel gauge instead.
 
@@ -161,7 +161,7 @@ Face animation is optional: the conversation button is wired first, and a failed
 
 The microphone remains available while assistant audio plays. That simultaneous input/output behavior—not alternating turns—is the experiment.
 
-Watch the face as well: listening draws the complete eyes attentively inward, thinking uses one side-to-side saccade sequence, and assistant speech changes the subtle alive rhythm. A model-selected allowlisted emotion should change eye height, width, tilt, spacing, asymmetry, and motion without speaking or captioning its control metadata. Starting speech must immediately cancel any large idle gesture, while the cyan/amber/off indicator remains the only listening truth.
+Watch the face as well: listening draws the pupils attentively inward, thinking uses one side-to-side saccade sequence, and assistant speech changes the subtle alive rhythm. A model-selected allowlisted emotion should change aperture height, width, tilt, spacing, asymmetry, pupil size, and motion without speaking or captioning its control metadata. Starting speech must immediately cancel any large idle gesture, while the cyan/amber/off indicator remains the only listening truth.
 
 ### Step 7: test voice interruption
 
@@ -265,7 +265,7 @@ BLE onboarding, the mobile app, cloud history sync, physical SIM/APN configurati
 - [ ] `npm test` passes on Node.js 20 or newer.
 - [ ] `npm start` serves `http://localhost:3000` without exposing the standard API key to browser source or logs.
 - [ ] The first screen is private/idle and does not capture automatically.
-- [ ] With normal battery/motion settings, the pupil-free ivory eyes begin centered with subtle continuous motion, start a first synchronized large gesture after 3–5 seconds, return to center, and use 6–12 second pauses thereafter. Automated tests cover look-up, look-down, side-to-side look-around, clockwise/counterclockwise scan selection, and conversation cancellation.
+- [ ] With normal battery/motion settings, the dark pupils begin centered in ivory eyes with subtle continuous outer-eye motion, start a first synchronized large gesture after 3–5 seconds, return to center, and use 6–12 second pauses thereafter. Automated tests cover look-up, look-down, all four corners, side-to-side look-around, clockwise/counterclockwise scan selection, and conversation cancellation.
 - [ ] Start/Stop remains independent of the optional face controller; automated receiver/load-order checks verify that import or initialization failure leaves a static centered fallback and that later cosmetic faults cannot remove the already-wired conversation control.
 - [ ] Reduced-motion preference suppresses curious idle gestures. If the optional browser battery API exposes a low state, verify its subdued face; otherwise rely on the deterministic low/critical/charging tests. Battery treatment never changes or impersonates the capture indicator.
 - [ ] The face contains exactly two large round eyes and no mouth or lips; attentive, thinking, and speaking cues remain visually distinguishable, and battery cues do too when the host exposes a battery signal.
