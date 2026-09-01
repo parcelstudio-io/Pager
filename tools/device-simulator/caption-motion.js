@@ -1,5 +1,6 @@
 export const DEFAULT_CAPTION_SPEED_PX_PER_SECOND = 60;
 export const DEFAULT_MAX_FRAME_DELTA_MS = 250;
+export const DEFAULT_EXIT_DURATION_MS = 750;
 
 export function captionOffset(contentWidth, viewportWidth) {
   const content = Number.isFinite(contentWidth) ? Math.max(0, contentWidth) : 0;
@@ -28,8 +29,9 @@ export function advanceCaptionOffset(
   const frameElapsed = elapsed <= frameLimit ? elapsed : 0;
   const travel = speed * frameElapsed / 1000;
 
-  if (target >= current) return target;
-  return Math.max(target, current - travel);
+  if (target > current) return Math.min(target, current + travel);
+  if (target < current) return Math.max(target, current - travel);
+  return target;
 }
 
 export class CaptionMotion {
@@ -38,6 +40,7 @@ export class CaptionMotion {
     viewport,
     speedPxPerSecond = DEFAULT_CAPTION_SPEED_PX_PER_SECOND,
     maxFrameDeltaMs = DEFAULT_MAX_FRAME_DELTA_MS,
+    exitDurationMs = DEFAULT_EXIT_DURATION_MS,
     reducedMotion = () => globalThis.matchMedia?.(
       "(prefers-reduced-motion: reduce)",
     ).matches ?? false,
@@ -52,6 +55,9 @@ export class CaptionMotion {
     this.viewport = viewport;
     this.speedPxPerSecond = speedPxPerSecond;
     this.maxFrameDeltaMs = maxFrameDeltaMs;
+    this.exitDurationMs = Number.isFinite(exitDurationMs) && exitDurationMs > 0
+      ? exitDurationMs
+      : DEFAULT_EXIT_DURATION_MS;
     this.reducedMotion = typeof reducedMotion === "function"
       ? reducedMotion
       : () => Boolean(reducedMotion);
@@ -64,7 +70,8 @@ export class CaptionMotion {
     this.lastTimestamp = null;
     this.needsMeasure = false;
     this.hasCaption = false;
-    this.isFrozen = false;
+    this.isExiting = false;
+    this.exitSpeedPxPerSecond = this.speedPxPerSecond;
     this.resizeObserver = resizeObserverFactory?.(() => this.remeasure()) ?? null;
     this.resizeObserver?.observe(this.viewport);
   }
@@ -88,7 +95,7 @@ export class CaptionMotion {
     }
 
     this.hasCaption = true;
-    this.isFrozen = false;
+    this.isExiting = false;
     this.needsMeasure = true;
     this.ensureFrame();
   }
@@ -113,7 +120,7 @@ export class CaptionMotion {
       this.targetOffset = measuredTarget;
       this.needsMeasure = false;
 
-      if (this.currentOffset < this.targetOffset) {
+      if (!this.isExiting && this.currentOffset < this.targetOffset) {
         this.currentOffset = this.targetOffset;
         this.lastTimestamp = null;
         this.applyOffset();
@@ -124,13 +131,7 @@ export class CaptionMotion {
       this.currentOffset = this.targetOffset;
       this.lastTimestamp = null;
       this.applyOffset();
-      return;
-    }
-
-    if (this.currentOffset <= this.targetOffset) {
-      this.currentOffset = this.targetOffset;
-      this.lastTimestamp = null;
-      this.applyOffset();
+      if (this.isExiting) this.finishExit();
       return;
     }
 
@@ -141,15 +142,20 @@ export class CaptionMotion {
         this.currentOffset,
         this.targetOffset,
         timestamp - this.lastTimestamp,
-        this.speedPxPerSecond,
+        this.isExiting ? this.exitSpeedPxPerSecond : this.speedPxPerSecond,
         this.maxFrameDeltaMs,
       );
+      if (Math.abs(this.currentOffset - this.targetOffset) < 0.001) {
+        this.currentOffset = this.targetOffset;
+      }
       this.lastTimestamp = timestamp;
       this.applyOffset();
     }
 
-    if (this.currentOffset > this.targetOffset) {
+    if (this.currentOffset !== this.targetOffset) {
       this.ensureFrame();
+    } else if (this.isExiting) {
+      this.finishExit();
     } else {
       this.lastTimestamp = null;
     }
@@ -163,18 +169,28 @@ export class CaptionMotion {
     );
   }
 
-  freeze() {
+  complete() {
+    if (!this.hasCaption || this.isExiting) return;
     this.generation += 1;
     this.cancelPendingFrame();
-    this.targetOffset = this.currentOffset;
-    this.lastTimestamp = null;
     this.needsMeasure = false;
-    this.isFrozen = true;
-    this.applyOffset();
+    this.isExiting = true;
+    this.caption.dataset.motion = "exiting";
+    this.targetOffset = Math.max(0, this.viewport.clientWidth);
+    const distance = Math.abs(this.targetOffset - this.currentOffset);
+    this.exitSpeedPxPerSecond = distance * 1000 / this.exitDurationMs;
+    this.lastTimestamp = null;
+    this.ensureFrame();
+  }
+
+  finishExit() {
+    this.caption.textContent = "";
+    this.caption.dataset.motion = "idle";
+    this.resetMotion();
   }
 
   remeasure() {
-    if (!this.hasCaption || this.isFrozen) return;
+    if (!this.hasCaption) return;
     this.needsMeasure = true;
     this.ensureFrame();
   }
@@ -187,7 +203,7 @@ export class CaptionMotion {
     this.lastTimestamp = null;
     this.needsMeasure = false;
     this.hasCaption = false;
-    this.isFrozen = false;
+    this.isExiting = false;
     this.applyOffset();
   }
 
@@ -203,7 +219,7 @@ export class CaptionMotion {
     this.lastTimestamp = null;
     this.needsMeasure = false;
     this.hasCaption = false;
-    this.isFrozen = true;
+    this.isExiting = false;
     this.resizeObserver?.disconnect();
   }
 }

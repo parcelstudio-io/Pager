@@ -66,6 +66,7 @@ test("caption offset advances at one constant, clamped pixel rate", () => {
   assert.equal(advanceCaptionOffset(20, -200, 5_000, 60, 250), 20);
   assert.equal(advanceCaptionOffset(20, -200, -10, 60, 50), 20);
   assert.equal(advanceCaptionOffset(20, -200, Number.NaN, 60, 50), 20);
+  assert.equal(advanceCaptionOffset(-200, 320, 250, 100, 250), -175);
 });
 
 test("caption keeps a constant velocity when the target grows mid-scroll", () => {
@@ -144,7 +145,7 @@ test("caption reset cancels motion and rejects a stale frame", () => {
   motion.dispose();
 });
 
-test("caption freeze stops an interrupted response at its rendered position", () => {
+test("completed caption exits fully right and clears after a bounded slide", () => {
   const caption = fakeCaption();
   const frames = fakeFrames();
   const motion = new CaptionMotion({
@@ -152,25 +153,26 @@ test("caption freeze stops an interrupted response at its rendered position", ()
     viewport: { clientWidth: 320 },
     speedPxPerSecond: 100,
     maxFrameDeltaMs: 250,
+    exitDurationMs: 750,
     requestFrame: (callback) => frames.requestFrame(callback),
     cancelFrame: (handle) => frames.cancelFrame(handle),
   });
 
-  motion.render("A response that will be interrupted while it scrolls");
+  motion.render("A completed caption leaves through the right edge");
   frames.run(frames.nextHandle(), 0);
   frames.run(frames.nextHandle(), 250);
-  const staleCallback = frames.pending.get(frames.nextHandle());
-  motion.freeze();
-
-  assert.equal(caption.properties.get("--caption-offset"), "295px");
-  assert.equal(motion.targetOffset, 295);
-  assert.equal(frames.pending.size, 0);
-
-  motion.freeze();
   assert.equal(caption.properties.get("--caption-offset"), "295px");
 
-  staleCallback(500);
-  assert.equal(caption.properties.get("--caption-offset"), "295px");
+  motion.complete();
+  assert.equal(caption.dataset.motion, "exiting");
+  frames.run(frames.nextHandle(), 500);
+  frames.run(frames.nextHandle(), 750);
+  frames.run(frames.nextHandle(), 1_000);
+  frames.run(frames.nextHandle(), 1_250);
+
+  assert.equal(caption.textContent, "");
+  assert.equal(caption.dataset.motion, "idle");
+  assert.equal(caption.properties.get("--caption-offset"), "0px");
   assert.equal(frames.pending.size, 0);
 });
 

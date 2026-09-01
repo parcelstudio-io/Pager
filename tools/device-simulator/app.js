@@ -1,5 +1,6 @@
 import { CaptionPacer } from "./caption-pacer.js";
 import { CaptionMotion } from "./caption-motion.js";
+import { AudioReactiveHalo } from "./audio-reactive-halo.js";
 import { closeMediaSession, watchAudioTrackEnds } from "./media.js";
 import { parsePagerEmotionToolEvent } from "./emotion-contract.js";
 import {
@@ -17,6 +18,7 @@ const indicator = document.querySelector("#indicator");
 const button = document.querySelector("#conversation-button");
 const captionViewport = document.querySelector("#caption-viewport");
 const caption = document.querySelector("#caption");
+const listeningHalo = document.querySelector(".listening-halo");
 const remoteAudio = document.querySelector("#remote-audio");
 const READY_TIMEOUT_MS = 30_000;
 
@@ -38,6 +40,11 @@ const faceController = createGuardedOptionalController({
       name: errorName,
     });
   },
+});
+
+const audioHalo = new AudioReactiveHalo({
+  element: listeningHalo,
+  reducedMotion: () => motionPreference.matches,
 });
 
 function applyFacePose(pose) {
@@ -127,6 +134,9 @@ function setTracksEnabled(stream, enabled) {
 }
 
 function closeResources(session) {
+  if (session?.remoteStream && remoteAudio.srcObject === session.remoteStream) {
+    audioHalo.stop();
+  }
   closeMediaSession(session, remoteAudio);
 }
 
@@ -172,7 +182,6 @@ function activeResponseIdFor(session, event) {
 
 function interruptCaption() {
   captionPacer.interrupt();
-  captionMotion.freeze();
 }
 
 function maybeOpenCapture(session) {
@@ -281,6 +290,7 @@ function handleRealtimeEvent(session, event) {
 
     case "output_audio_buffer.stopped":
       captionPacer.flush(activeResponseIdFor(session, event));
+      captionMotion.complete();
       dispatch({ type: "output_stopped", epoch });
       break;
 
@@ -341,6 +351,7 @@ async function startSession() {
       if (!isCurrent(session)) return;
       session.remoteStream = event.streams[0];
       remoteAudio.srcObject = session.remoteStream;
+      audioHalo.attach(session.remoteStream);
       remoteAudio.play().catch(() => {
         failSession(session, "Browser blocked assistant audio playback");
       });

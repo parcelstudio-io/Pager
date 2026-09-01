@@ -167,7 +167,7 @@ Watch the face as well: listening draws the pupils attentively inward, thinking 
 
 While the assistant is speaking, say a clear new sentence such as “Wait—let me correct that.” The audible assistant output should stop promptly, should not resume from the cancelled response, and the caption should not continue presenting unheard words. Continue speaking without pressing the button again.
 
-This first pass is an observation, not the final 250 ms p95 barge-in measurement. The cancelled caption should freeze immediately rather than continuing its slow crawl. Record whether interruption felt immediate, whether the laptop heard its own speaker, and whether any old audio or caption text returned.
+This first pass is an observation, not the final 250 ms p95 barge-in measurement. The cancelled caption should disappear immediately rather than continuing its slow crawl. Record whether interruption felt immediate, whether the laptop heard its own speaker, and whether any old audio or caption text returned.
 
 ### Step 8: stop locally
 
@@ -251,7 +251,7 @@ Keep this order; each item removes one uncertainty before the next is added:
 3. Prove local simultaneous microphone capture and speaker playback using the CoreS3's synchronized audio/reference path.
 4. Add and measure AEC before connecting live model audio.
 5. Run Espressif's direct WebRTC/OpenAI reference path using a short-lived client credential minted by a server that retains the standard key. Treat this as the canonical V1-B media reference, not the final product gateway.
-6. Connect the real Realtime session and repeat start, ten exchanges, voice interruption, caption trim, and stop. On the K128, also record the active response/output IDs, rendered-caption cursor, first-caption latency, one-segment lead limit, heard-boundary trim, and 2-inch legibility required by PR-07.
+6. Connect the real Realtime session and repeat start, ten exchanges, voice interruption, caption clear, and stop. On the K128, also record the active response/output IDs, rendered-caption cursor, first-caption latency, one-segment lead limit, completion exit, immediate interruption clear, reliable heard-boundary accounting, and 2-inch legibility required by PR-07.
 7. After the direct reference works, stream known audio through the ADR 0003 product-gateway adapter in both directions and compare its added latency. Do not make the beginner's first device conversation depend on finishing account/history/tool infrastructure.
 8. Only after those pass, consider the product-like illuminated button, latching power switch, relocatable acoustic parts, and temporary enclosure.
 9. Only after the enclosed Wi-Fi gate passes, decide whether to buy the separate cellular mule.
@@ -276,7 +276,7 @@ BLE onboarding, the mobile app, cloud history sync, physical SIM/APN configurati
 - [ ] The user can speak while assistant audio is playing.
 - [ ] Clear near-end speech interrupts assistant playback and cancelled audio does not resume.
 - [ ] A sliding assistant caption is directly below the face; its first text enters from beyond the right edge and moves left at a fixed 60 CSS px/s without easing or per-word speed changes, and transcript additions queue ahead without retargeting that motion.
-- [ ] Interruption freezes the active caption track; caption reset snaps to its zero position; with the browser/OS reduced-motion preference enabled, position changes snap rather than animate; and the caption does not continue with obviously unheard cancelled text.
+- [ ] Completed playback slides the entire caption through the right edge before clearing it; interruption clears it immediately; caption reset snaps to its zero position; with the browser/OS reduced-motion preference enabled, position changes snap rather than animate; and late cancelled text does not return.
 - [ ] Stop during idle and stop during playback both return locally to private/idle.
 - [ ] Talking after stop creates no response.
 - [ ] Refresh/restart does not auto-start capture.

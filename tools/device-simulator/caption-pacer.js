@@ -82,7 +82,7 @@ export class CaptionPacer {
     if (responseId !== this.activeResponseId) return;
 
     this.pending = [];
-    this.visible = this.visible.trimEnd();
+    this.visible = "";
     this.playbackStarted = false;
     this.stopTimer();
     this.onUpdate(this.visible);

@@ -38,7 +38,8 @@ test("interruption discards pending text and rejects late deltas", () => {
   pacer.push("response-1", "five six");
   assert.equal(updates.length, updatesAfterInterrupt);
   assert.equal(pacer.pending.length, 0);
-  assert.equal(pacer.visible, "One");
+  assert.equal(pacer.visible, "");
+  assert.equal(updates.at(-1), "");
 
   pacer.begin("response-2");
   pacer.push("response-2", "Fresh answer");

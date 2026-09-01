@@ -359,6 +359,10 @@ test("static server exposes only the simulator allowlist", async () => {
     "emotion-contract.js",
     "text/javascript; charset=utf-8",
   ]);
+  assert.deepEqual(staticAssetForPath("/audio-reactive-halo.js"), [
+    "audio-reactive-halo.js",
+    "text/javascript; charset=utf-8",
+  ]);
   assert.equal(staticAssetForPath("/.env"), null);
   assert.equal(staticAssetForPath("/../.env"), null);
 
@@ -391,6 +395,7 @@ test("browser assets contain one control and no provider credential name", async
     "caption-motion.js",
     "expression-director.js",
     "emotion-contract.js",
+    "audio-reactive-halo.js",
     "media.js",
     "styles.css",
   ];
@@ -399,6 +404,7 @@ test("browser assets contain one control and no provider credential name", async
   );
   const html = contents[0];
   const app = contents[1];
+  const captionMotion = contents[4];
   const styles = contents.at(-1);
   const captionRule = styles.match(/\.caption \{([\s\S]*?)\n\}/)?.[1] || "";
   const captionViewportRule = styles.match(
@@ -468,7 +474,13 @@ test("browser assets contain one control and no provider credential name", async
     app,
     /onUnavailable: \(errorName\)[\s\S]*?faceController = "unavailable"[\s\S]*?name: errorName/,
   );
-  assert.match(app, /function interruptCaption\(\)[\s\S]*?captionMotion\.freeze\(\)/);
+  assert.match(app, /input_audio_buffer\.speech_started[\s\S]*?interruptCaption\(\)/);
+  assert.equal(captionMotion.includes("freeze()"), false);
+  assert.match(app, /output_audio_buffer\.stopped[\s\S]*?captionMotion\.complete\(\)/);
+  assert.equal(app.includes("audioHalo.attach(session.remoteStream)"), true);
+  assert.equal(app.includes("audioHalo.attach(session.stream)"), false);
+  assert.equal(styles.includes("border-color: var(--cream)"), true);
+  assert.equal(styles.includes("border-color: var(--cyan)"), false);
   assert.equal(app.includes("button.dataset.indicator = view.indicator"), true);
   assert.match(app, /pagehide[\s\S]*stopSession\(\)/);
   assert.equal(styles.includes('[data-indicator="amber"]'), true);

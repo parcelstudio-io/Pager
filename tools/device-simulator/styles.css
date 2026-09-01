@@ -108,19 +108,34 @@ body {
 }
 
 .listening-halo {
+  --halo-scale-x: 1;
+  --halo-scale-y: 1;
+  --halo-shift-x: 0px;
+  --halo-rotation: 0deg;
+  --halo-border-width: 2px;
+  --halo-glow: 10px;
   position: absolute;
   width: 210px;
   height: 120px;
   border-radius: 50%;
-  border: 2px solid transparent;
+  border: var(--halo-border-width) solid transparent;
   opacity: 0;
+  transform: translate3d(var(--halo-shift-x), 0, 0)
+    rotate(var(--halo-rotation))
+    scaleX(var(--halo-scale-x))
+    scaleY(var(--halo-scale-y));
   transition: opacity 180ms ease, border-color 180ms ease;
+  will-change: transform, border-width, box-shadow;
 }
 
 .pager-screen[data-session="live"] .listening-halo {
-  opacity: 0.38;
-  border-color: var(--cyan);
-  animation: breathe 2.3s ease-in-out infinite;
+  opacity: 0.42;
+  border-color: var(--cream);
+  box-shadow: 0 0 var(--halo-glow) rgba(255, 244, 218, 0.3);
+}
+
+.pager-screen[data-output="playing"] .listening-halo {
+  opacity: 0.82;
 }
 
 .eye-rig {
@@ -815,8 +830,7 @@ body {
 }
 
 .pager-screen[data-input="user_speaking"] .listening-halo {
-  opacity: 0.8;
-  border-width: 3px;
+  opacity: 0.6;
 }
 
 .caption-viewport {
