@@ -46,6 +46,30 @@ function sequence(values, fallback = 0.5) {
   return () => remaining.shift() ?? fallback;
 }
 
+test("timer callbacks are invoked without binding them to the director", () => {
+  const clock = new FakeClock();
+  let scheduleReceiver;
+  let cancelReceiver;
+
+  function browserLikeSchedule(callback, delay) {
+    scheduleReceiver = this;
+    return clock.schedule(callback, delay);
+  }
+
+  function browserLikeCancel(timer) {
+    cancelReceiver = this;
+    clock.cancel(timer);
+  }
+
+  const director = new ExpressionDirector({
+    schedule: browserLikeSchedule,
+    cancel: browserLikeCancel,
+  });
+  assert.equal(scheduleReceiver, undefined);
+  director.dispose();
+  assert.equal(cancelReceiver, undefined);
+});
+
 test("face pose keeps activity, affect, and battery priorities independent", () => {
   const duplex = deriveFacePose({
     session: "live",
@@ -73,7 +97,7 @@ test("face pose keeps activity, affect, and battery priorities independent", () 
     session: "connecting",
     mood: "curious",
   });
-  assert.equal(connecting.restGaze, "up");
+  assert.equal(connecting.restGaze, "center");
   assert.equal(connecting.gazeMotion, "center");
 
   const explicit = deriveFacePose({
@@ -106,36 +130,69 @@ test("battery bands remain truthful while charging is an independent signal", ()
   assert.equal(chargingCritical.charging, true);
 });
 
-test("idle curiosity looks up, rolls, or looks down on an injected clock", () => {
+test("idle curiosity starts centered, performs a gesture, and returns to center", () => {
   const clock = new FakeClock();
   const poses = [];
   const director = new ExpressionDirector({
     onPose: (pose) => poses.push(pose),
     schedule: clock.schedule,
     cancel: clock.cancel,
-    // delay=5s, gesture=roll-around clockwise, next mood=curious
-    random: sequence([0, 0.5, 0.2, 0.3, 0]),
+    // first delay=3s, gesture=roll-around clockwise, next mood=curious
+    random: sequence([0, 0.6, 0.2, 0.3, 0]),
   });
 
   assert.equal(poses.at(-1).activity, "idle");
+  assert.equal(poses.at(-1).expression, "neutral");
+  assert.equal(poses.at(-1).restGaze, "center");
+  assert.equal(poses.at(-1).gazeMotion, "center");
   assert.equal(clock.jobs.size, 1);
-  clock.advance(5_000);
-  assert.equal(poses.at(-1).mood, "curious");
+  clock.advance(2_999);
+  assert.equal(poses.at(-1).gazeMotion, "center");
+  clock.advance(1);
+  assert.equal(poses.at(-1).mood, "calm");
   assert.equal(poses.at(-1).gazeMotion, "roll-around");
   assert.equal(poses.at(-1).rollDirection, "clockwise");
 
-  clock.advance(2_200);
-  assert.equal(poses.at(-1).gazeMotion, "up");
+  clock.advance(2_400);
+  assert.equal(poses.at(-1).mood, "curious");
+  assert.equal(poses.at(-1).gazeMotion, "center");
+  assert.equal(poses.at(-1).restGaze, "center");
   assert.equal(poses.at(-1).rollDirection, "none");
   assert.equal(clock.jobs.size, 1);
   director.dispose();
   assert.equal(clock.jobs.size, 0);
 });
 
+test("the first idle gesture appears within five seconds, then pauses up to twelve", () => {
+  const clock = new FakeClock();
+  let pose;
+  const director = new ExpressionDirector({
+    onPose: (nextPose) => { pose = nextPose; },
+    schedule: clock.schedule,
+    cancel: clock.cancel,
+    // Max first delay, roll, direction, mood, max repeat delay, then roll again.
+    random: sequence([0.999999, 0.6, 0.2, 0, 0.999999, 0.6, 0.2]),
+  });
+
+  clock.advance(4_999);
+  assert.equal(pose.gazeMotion, "center");
+  clock.advance(1);
+  assert.equal(pose.gazeMotion, "roll-around");
+
+  clock.advance(2_400);
+  assert.equal(pose.gazeMotion, "center");
+  clock.advance(11_999);
+  assert.equal(pose.gazeMotion, "center");
+  clock.advance(1);
+  assert.equal(pose.gazeMotion, "roll-around");
+  director.dispose();
+});
+
 test("the idle random bands reach every curious gaze path", () => {
   for (const [gestureRoll, expectedMotion] of [
     [0.1, "look-up"],
-    [0.5, "roll-around"],
+    [0.3, "look-around"],
+    [0.6, "roll-around"],
     [0.9, "look-down"],
   ]) {
     const clock = new FakeClock();
@@ -146,7 +203,7 @@ test("the idle random bands reach every curious gaze path", () => {
       cancel: clock.cancel,
       random: sequence([0, gestureRoll, 0, 0]),
     });
-    clock.advance(5_000);
+    clock.advance(3_000);
     assert.equal(pose.gazeMotion, expectedMotion);
     director.dispose();
   }
@@ -160,10 +217,10 @@ test("speech cancels an active idle gesture and stale callbacks cannot revive it
     schedule: clock.schedule,
     // Deliberately leave cleared callbacks in the queue; generation tokens must reject them.
     cancel: () => {},
-    random: sequence([0, 0.5, 0.8, 0.1]),
+    random: sequence([0, 0.6, 0.8, 0.1]),
   });
 
-  clock.advance(5_000);
+  clock.advance(3_000);
   assert.equal(poses.at(-1).gazeMotion, "roll-around");
   director.update({ session: "live", input: "user_speaking", output: "idle" });
   assert.equal(poses.at(-1).activity, "listening");
@@ -203,9 +260,9 @@ test("low battery, hidden pages, and reduced motion schedule no idle roll", () =
       onPose: (nextPose) => { pose = nextPose; },
       schedule: clock.schedule,
       cancel: clock.cancel,
-      random: sequence([0, 0.5, 0]),
+      random: sequence([0, 0.6, 0]),
     });
-    clock.advance(5_000);
+    clock.advance(3_000);
     assert.equal(pose.gazeMotion, "roll-around");
     director.update(patch);
     assert.equal(

@@ -23,12 +23,17 @@ export const MOODS = Object.freeze([
 const EMOTION_VALUES = new Set(EMOTIONS);
 const MOOD_VALUES = new Set(MOODS);
 const IDLE_MOODS = Object.freeze(["calm", "curious", "playful", "pensive"]);
-const IDLE_DELAY_MIN_MS = 5_000;
-const IDLE_DELAY_RANGE_MS = 4_000;
+// Introduce the personality soon after startup, then leave the centered gaze
+// dominant so the face feels attentive instead of restless.
+const FIRST_IDLE_DELAY_MIN_MS = 3_000;
+const FIRST_IDLE_DELAY_RANGE_MS = 2_000;
+const REPEAT_IDLE_DELAY_MIN_MS = 6_000;
+const REPEAT_IDLE_DELAY_RANGE_MS = 6_000;
 const GESTURE_DURATION_MS = Object.freeze({
-  "look-up": 1_700,
-  "roll-around": 2_200,
-  "look-down": 1_700,
+  "look-up": 1_600,
+  "look-around": 2_000,
+  "roll-around": 2_400,
+  "look-down": 1_600,
 });
 
 const DEFAULT_CONTEXT = Object.freeze({
@@ -115,13 +120,24 @@ function staticGazeFor(expression) {
   return "center";
 }
 
+function restingGazeFor(context, activity, energy) {
+  if (energy !== "normal" || activity === "fault") return "down";
+
+  // An explicit, short-lived emotion is allowed to carry a gaze. Ambient moods
+  // only change the eye shape; otherwise they made the idle pupils park upward
+  // between gestures instead of returning to a calm, centered resting pose.
+  if (context.emotion !== "neutral") return staticGazeFor(context.emotion);
+  if (activity === "thinking") return "side";
+  return "center";
+}
+
 export function deriveFacePose(context = {}, idleGesture = null) {
   const normalized = normalizeContext(context);
   const activity = deriveActivity(normalized);
   const energy = batteryEnergy(normalized.batteryPercent);
   const expression = deriveExpression(normalized, activity, energy);
 
-  const restGaze = staticGazeFor(expression);
+  const restGaze = restingGazeFor(normalized, activity, energy);
   let gazeMotion = restGaze;
   let rollDirection = "none";
 
@@ -168,8 +184,9 @@ function clampRandom(value) {
 function chooseIdleGesture(random) {
   const gestureRoll = clampRandom(random());
   let motion = "look-down";
-  if (gestureRoll < 0.34) motion = "look-up";
-  else if (gestureRoll < 0.72) motion = "roll-around";
+  if (gestureRoll < 0.24) motion = "look-up";
+  else if (gestureRoll < 0.50) motion = "look-around";
+  else if (gestureRoll < 0.80) motion = "roll-around";
 
   return {
     motion,
@@ -187,17 +204,23 @@ export class ExpressionDirector {
   } = {}) {
     this.onPose = onPose;
     this.random = random;
-    this.schedule = schedule;
-    this.cancel = cancel;
+    // Browser timer functions require their native receiver in some engines.
+    // Calling a stored setTimeout as `this.schedule()` changes that receiver, so
+    // keep our own methods as wrappers and invoke the supplied callbacks unbound.
+    this.schedule = (callback, delay) => schedule(callback, delay);
+    this.cancel = (timer) => cancel(timer);
     // Affect is transient by contract; setEmotion() is its only ingress.
     this.context = normalizeContext({ ...context, emotion: "neutral" });
-    this.ambientMood = this.context.mood === "auto" ? "curious" : this.context.mood;
+    // Auto mood begins calm. Curiosity is expressed by the first scheduled eye
+    // gesture, not by making the initial/resting gaze look upward.
+    this.ambientMood = this.context.mood === "auto" ? "calm" : this.context.mood;
     this.idleGesture = null;
     this.idleTimer = null;
     this.gestureTimer = null;
     this.emotionTimer = null;
     this.generation = 0;
     this.emotionGeneration = 0;
+    this.hasShownIdleGesture = false;
     this.disposed = false;
     this.pose = null;
 
@@ -229,12 +252,15 @@ export class ExpressionDirector {
     if (!idleEligible(this.context, pose) || this.disposed) return;
 
     const token = this.generation;
-    const delay = IDLE_DELAY_MIN_MS + clampRandom(this.random()) * IDLE_DELAY_RANGE_MS;
+    const delay = this.hasShownIdleGesture
+      ? REPEAT_IDLE_DELAY_MIN_MS + clampRandom(this.random()) * REPEAT_IDLE_DELAY_RANGE_MS
+      : FIRST_IDLE_DELAY_MIN_MS + clampRandom(this.random()) * FIRST_IDLE_DELAY_RANGE_MS;
     this.idleTimer = this.schedule(() => {
       this.idleTimer = null;
       if (this.disposed || token !== this.generation) return;
       if (!idleEligible(this.context, this.pose)) return;
 
+      this.hasShownIdleGesture = true;
       this.idleGesture = chooseIdleGesture(this.random);
       this.emitPose();
       const duration = GESTURE_DURATION_MS[this.idleGesture.motion];

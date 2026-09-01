@@ -402,6 +402,10 @@ test("browser assets contain one control and no provider credential name", async
   assert.equal(html.includes('class="mouth"'), false);
   assert.equal((html.match(/class="eye-rig /g) || []).length, 2);
   assert.equal((html.match(/class="pupil"/g) || []).length, 2);
+  assert.equal(html.includes('data-expression="neutral"'), true);
+  assert.equal(html.includes('data-mood="calm"'), true);
+  assert.equal(html.includes('data-rest-gaze="center"'), true);
+  assert.equal(html.includes('data-gaze-motion="center"'), true);
   assert.equal(html.includes('id="battery-status"'), true);
   assert.equal(html.includes('role="status"'), true);
   assert.equal(styles.includes(".mouth"), false);
@@ -420,6 +424,20 @@ test("browser assets contain one control and no provider credential name", async
   assert.equal(styles.includes('[data-gaze-motion="center"]'), true);
   assert.equal(styles.includes('[data-energy="critical"][data-charging="true"]'), true);
   assert.equal(app.includes("new ExpressionDirector"), true);
+  assert.equal(
+    app.includes('import { ExpressionDirector } from "./expression-director.js"'),
+    false,
+  );
+  assert.equal(app.includes('import("./expression-director.js")'), true);
+  assert.ok(
+    app.indexOf('button.addEventListener("click"') <
+      app.lastIndexOf("initializeFaceController();"),
+  );
+  assert.equal(app.includes("createGuardedOptionalController"), true);
+  assert.match(
+    app,
+    /onUnavailable: \(errorName\)[\s\S]*?faceController = "unavailable"[\s\S]*?name: errorName/,
+  );
   assert.match(app, /function interruptCaption\(\)[\s\S]*?captionMotion\.freeze\(\)/);
   assert.equal(app.includes("button.dataset.indicator = view.indicator"), true);
   assert.match(app, /pagehide[\s\S]*stopSession\(\)/);

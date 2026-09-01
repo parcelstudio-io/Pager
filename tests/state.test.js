@@ -5,10 +5,79 @@ import {
   INPUT,
   OUTPUT,
   SESSION,
+  createGuardedOptionalController,
   deriveView,
   initialState,
   reduceState,
 } from "../tools/device-simulator/state.js";
+
+test("an optional controller update failure is isolated and cleaned up", () => {
+  let updates = 0;
+  let disposals = 0;
+  const failures = [];
+  const adapter = createGuardedOptionalController({
+    onUnavailable: (errorName) => failures.push(errorName),
+  });
+  adapter.attach({
+    update() {
+      updates += 1;
+      const error = new Error("private animation details");
+      error.name = "RangeError";
+      throw error;
+    },
+    dispose() {
+      disposals += 1;
+      throw new Error("cleanup details");
+    },
+  });
+
+  assert.doesNotThrow(() => adapter.update({ mood: "curious" }));
+  assert.equal(updates, 1);
+  assert.equal(disposals, 1);
+  assert.deepEqual(failures, ["RangeError"]);
+
+  assert.equal(adapter.update({ mood: "calm" }), false);
+  assert.equal(updates, 1);
+  assert.equal(adapter.dispose(), true);
+  assert.equal(disposals, 1);
+});
+
+test("an optional controller dispose failure is sanitized and never rethrown", () => {
+  const failures = [];
+  const adapter = createGuardedOptionalController({
+    onUnavailable: (errorName) => failures.push(errorName),
+  });
+  adapter.attach({
+    update() {},
+    dispose() {
+      const error = new Error("credential-like private value");
+      error.name = "private-value";
+      throw error;
+    },
+  });
+
+  let disposeResult;
+  assert.doesNotThrow(() => { disposeResult = adapter.dispose(); });
+  assert.equal(disposeResult, false);
+  assert.deepEqual(failures, ["Error"]);
+  assert.equal(adapter.dispose(), true);
+});
+
+test("an optional controller diagnostic callback is isolated too", () => {
+  const adapter = createGuardedOptionalController({
+    onUnavailable() {
+      throw new Error("diagnostic UI failed");
+    },
+  });
+  adapter.attach({
+    update() {
+      throw new TypeError("animation failed");
+    },
+    dispose() {},
+  });
+
+  assert.doesNotThrow(() => adapter.update({}));
+});
 
 test("state supports full-duplex overlap and an immediate local stop", () => {
   let state = initialState();

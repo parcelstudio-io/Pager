@@ -17,6 +17,95 @@ export const OUTPUT = Object.freeze({
   PLAYING: "playing",
 });
 
+const SAFE_OPTIONAL_ERROR_NAMES = new Set([
+  "Error",
+  "AbortError",
+  "EvalError",
+  "InvalidStateError",
+  "NotSupportedError",
+  "RangeError",
+  "ReferenceError",
+  "SyntaxError",
+  "TypeError",
+  "URIError",
+]);
+
+function safeOptionalErrorName(error) {
+  return SAFE_OPTIONAL_ERROR_NAMES.has(error?.name) ? error.name : "Error";
+}
+
+// Optional presentation code must never take down the conversation controls.
+// This adapter deliberately exposes no controller reference, clears it before
+// cleanup, and reports only an allowlisted error class rather than a message.
+export function createGuardedOptionalController({ onUnavailable = () => {} } = {}) {
+  let controller = null;
+
+  function reportUnavailable(error) {
+    try {
+      onUnavailable(safeOptionalErrorName(error));
+    } catch {
+      // A diagnostic callback is optional too and must stay outside core state.
+    }
+  }
+
+  function fail(error) {
+    const failedController = controller;
+    controller = null;
+    try {
+      failedController?.dispose?.();
+    } catch {
+      // Cleanup is best-effort; preserve the original sanitized failure class.
+    }
+    reportUnavailable(error);
+    return false;
+  }
+
+  return Object.freeze({
+    attach(nextController) {
+      try {
+        if (
+          !nextController ||
+          typeof nextController.update !== "function" ||
+          typeof nextController.dispose !== "function"
+        ) {
+          return fail(new TypeError("Invalid optional controller"));
+        }
+      } catch (error) {
+        return fail(error);
+      }
+      controller = nextController;
+      return true;
+    },
+
+    update(patch) {
+      if (!controller) return false;
+      try {
+        controller.update(patch);
+        return true;
+      } catch (error) {
+        return fail(error);
+      }
+    },
+
+    dispose() {
+      if (!controller) return true;
+      const disposedController = controller;
+      controller = null;
+      try {
+        disposedController.dispose();
+        return true;
+      } catch (error) {
+        reportUnavailable(error);
+        return false;
+      }
+    },
+
+    markUnavailable(error) {
+      return fail(error);
+    },
+  });
+}
+
 export function initialState() {
   return {
     epoch: 0,

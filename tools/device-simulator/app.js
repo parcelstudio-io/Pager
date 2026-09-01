@@ -1,9 +1,9 @@
 import { CaptionPacer } from "./caption-pacer.js";
 import { CaptionMotion } from "./caption-motion.js";
-import { ExpressionDirector } from "./expression-director.js";
 import { closeMediaSession, watchAudioTrackEnds } from "./media.js";
 import {
   SESSION,
+  createGuardedOptionalController,
   deriveView,
   initialState,
   reduceState,
@@ -22,7 +22,22 @@ const READY_TIMEOUT_MS = 30_000;
 let state = initialState();
 let nextEpoch = 0;
 let activeSession = null;
+let pageDisposed = false;
 const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+let faceContext = {
+  mood: "auto",
+  visible: !document.hidden,
+  reducedMotion: motionPreference.matches,
+};
+
+const faceController = createGuardedOptionalController({
+  onUnavailable: (errorName) => {
+    screen.dataset.faceController = "unavailable";
+    console.warn("Optional face animation is unavailable", {
+      name: errorName,
+    });
+  },
+});
 
 function applyFacePose(pose) {
   screen.dataset.faceActivity = pose.activity;
@@ -45,14 +60,36 @@ function applyFacePose(pose) {
   }
 }
 
-const expressionDirector = new ExpressionDirector({
-  onPose: applyFacePose,
-  context: {
-    mood: "auto",
-    visible: !document.hidden,
-    reducedMotion: motionPreference.matches,
-  },
-});
+function updateFaceContext(patch) {
+  faceContext = { ...faceContext, ...patch };
+  faceController.update(patch);
+}
+
+async function initializeFaceController() {
+  screen.dataset.faceController = "loading";
+
+  try {
+    const { ExpressionDirector } = await import("./expression-director.js");
+    if (pageDisposed) return;
+
+    const controller = new ExpressionDirector({
+      onPose: applyFacePose,
+      context: faceContext,
+    });
+    if (pageDisposed) {
+      faceController.attach(controller);
+      faceController.dispose();
+      return;
+    }
+
+    if (!faceController.attach(controller)) return;
+    screen.dataset.faceController = "ready";
+    render();
+  } catch (error) {
+    if (pageDisposed) return;
+    faceController.markUnavailable(error);
+  }
+}
 
 const captionMotion = new CaptionMotion({ caption, viewport: captionViewport });
 const captionPacer = new CaptionPacer({
@@ -68,7 +105,7 @@ function render() {
   screen.dataset.session = state.session;
   screen.dataset.input = state.input;
   screen.dataset.output = state.output;
-  expressionDirector.update({
+  updateFaceContext({
     session: state.session,
     input: state.input,
     output: state.output,
@@ -352,23 +389,22 @@ button.addEventListener("click", () => {
 });
 
 function syncMotionPreference() {
-  expressionDirector.update({ reducedMotion: motionPreference.matches });
+  updateFaceContext({ reducedMotion: motionPreference.matches });
 }
 
 function syncVisibility() {
-  expressionDirector.update({ visible: !document.hidden });
+  updateFaceContext({ visible: !document.hidden });
 }
 
 motionPreference.addEventListener("change", syncMotionPreference);
 document.addEventListener("visibilitychange", syncVisibility);
 
 let releaseBatteryMonitor = () => {};
-let pageDisposed = false;
 if (typeof navigator.getBattery === "function") {
   navigator.getBattery().then((battery) => {
     if (pageDisposed) return;
     const syncBattery = () => {
-      expressionDirector.update({
+      updateFaceContext({
         batteryPercent: battery.level * 100,
         charging: battery.charging,
       });
@@ -390,10 +426,11 @@ window.addEventListener("pagehide", () => {
   stopSession();
   captionPacer.dispose();
   captionMotion.dispose();
-  expressionDirector.dispose();
+  faceController.dispose();
   releaseBatteryMonitor();
   motionPreference.removeEventListener("change", syncMotionPreference);
   document.removeEventListener("visibilitychange", syncVisibility);
 });
 
 render();
+initializeFaceController();
