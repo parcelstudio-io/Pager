@@ -35,7 +35,7 @@ The face must never wait on the network to acknowledge a physical action. A loca
 | Booting | Eyes stretch awake; short progress arc | Device |
 | Private idle | Conversation-button light off; calm centered gaze at first, a curious gesture after 3–5 seconds, then centered rests of 6–12 seconds between gestures | Capture gate + local expression director |
 | Connecting/reconnecting | Conversation button and connection arc amber; microphone uplink gated | Network/session manager + capture gate |
-| Live session | Persistent cyan status mark and conversation-button light; a separate ivory oval surrounds the eyes | Local capture/session state + cosmetic face renderer |
+| Live session | Top-left ivory dot fills and glows; it is an empty ivory outline whenever capture is gated. The conversation-button light remains the hardware-coupled capture truth; a separate ivory oval surrounds the eyes | Local capture/session state + cosmetic face renderer |
 | User speech | Ivory eyes widen and dark pupils turn slightly inward together | Local VAD |
 | Thinking | Pupils make a restrained side-to-side scan only while input is quiet and output is generating | Response state |
 | Assistant speech | Large round eyes subtly pulse; the ivory oval changes displacement, thickness, and glow with remote-audio loudness and spectral balance | Local assistant audio output |

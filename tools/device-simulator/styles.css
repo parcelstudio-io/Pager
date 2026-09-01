@@ -67,11 +67,6 @@ body {
   z-index: 4;
   display: flex;
   align-items: center;
-  gap: 9px;
-  color: rgba(255, 249, 236, 0.78);
-  font-size: clamp(11px, 3vw, 14px);
-  font-weight: 650;
-  letter-spacing: 0.01em;
 }
 
 .indicator {
@@ -79,23 +74,17 @@ body {
   height: 10px;
   flex: 0 0 auto;
   border-radius: 50%;
-  background: #5a514b;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04);
+  border: 1.5px solid var(--cream);
+  background: transparent;
+  box-shadow: none;
+  transition: background 180ms ease, box-shadow 180ms ease;
 }
 
-.indicator[data-color="amber"] {
-  background: var(--amber);
-  box-shadow: 0 0 14px rgba(255, 180, 59, 0.9);
-}
-
-.indicator[data-color="cyan"] {
-  background: var(--cyan);
-  box-shadow: 0 0 15px rgba(89, 230, 234, 0.95);
-}
-
-.indicator[data-color="red"] {
-  background: var(--red);
-  box-shadow: 0 0 14px rgba(255, 113, 106, 0.75);
+.indicator[data-listening="true"] {
+  background: var(--cream);
+  box-shadow:
+    0 0 6px rgba(255, 244, 218, 0.9),
+    0 0 14px rgba(255, 244, 218, 0.42);
 }
 
 .face {

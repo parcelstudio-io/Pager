@@ -107,7 +107,7 @@ The implementation uses parallel regions rather than a turn-based `LISTENING`/`S
 | Input | `gated`, `quiet`, `user_speaking` | Input can be `user_speaking` while output is `playing`. |
 | Output | `idle`, `generating`, `playing` | Output state never disables the microphone track. |
 
-The face is a projection of these facts using only two large round eyes: amber while connecting, cyan while live, attentive eyes for user speech, a subtle eye pulse for assistant playback, and a calm centered resting face with brief curious gestures while inactive. No mouth or lips are rendered. The caption remains spatially separate below the eyes, but its idle state has no placeholder text, border, or tinted background.
+The face is a projection of these facts using only two large round eyes: the top-left ivory dot remains an empty outline while capture is gated and fills with a restrained ivory glow only while listening is live; connecting/error wording remains available to assistive technology rather than occupying the face. User speech produces attentive eyes, assistant playback produces a subtle eye pulse, and private idle begins with a calm centered face before brief curious gestures. No mouth or lips are rendered. The caption remains spatially separate below the eyes, but its idle state has no placeholder text, border, or tinted background.
 
 ### Expression behavior
 

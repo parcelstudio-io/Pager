@@ -423,6 +423,8 @@ test("browser assets contain one control and no provider credential name", async
   assert.equal(html.includes('data-rest-gaze="center"'), true);
   assert.equal(html.includes('data-gaze-motion="center"'), true);
   assert.equal(html.includes('id="battery-status"'), true);
+  assert.equal(html.includes('id="status" class="visually-hidden"'), true);
+  assert.equal(html.includes('data-listening="false"'), true);
   assert.equal(html.includes('role="status"'), true);
   assert.equal(styles.includes(".mouth"), false);
   assert.equal(styles.includes("--caption-height: 58px"), true);
@@ -481,6 +483,11 @@ test("browser assets contain one control and no provider credential name", async
   assert.equal(app.includes("audioHalo.attach(session.stream)"), false);
   assert.equal(styles.includes("border-color: var(--cream)"), true);
   assert.equal(styles.includes("border-color: var(--cyan)"), false);
+  assert.match(styles, /\.indicator \{[\s\S]*?border: 1\.5px solid var\(--cream\);[\s\S]*?background: transparent;/);
+  assert.match(styles, /\.indicator\[data-listening="true"\] \{[\s\S]*?background: var\(--cream\);[\s\S]*?box-shadow:/);
+  assert.equal(styles.includes('.indicator[data-color="cyan"]'), false);
+  assert.equal(app.includes("indicator.dataset.listening"), true);
+  assert.equal(app.includes("indicator.dataset.color"), false);
   assert.equal(app.includes("button.dataset.indicator = view.indicator"), true);
   assert.match(app, /pagehide[\s\S]*stopSession\(\)/);
   assert.equal(styles.includes('[data-indicator="amber"]'), true);

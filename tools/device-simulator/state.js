@@ -226,15 +226,15 @@ export function deriveView(state) {
   }
 
   if (state.session === SESSION.LIVE) {
-    let status = "Live · full duplex";
+    let status = "Listening";
     if (state.input === INPUT.USER_SPEAKING && state.output === OUTPUT.PLAYING) {
-      status = "Live · interrupting";
+      status = "Listening · interrupting";
     } else if (state.input === INPUT.USER_SPEAKING) {
-      status = "Live · you are speaking";
+      status = "Listening · you are speaking";
     } else if (state.output === OUTPUT.PLAYING) {
-      status = "Live · Mochi is speaking";
+      status = "Listening · Mochi is speaking";
     } else if (state.output === OUTPUT.GENERATING) {
-      status = "Live · thinking";
+      status = "Listening · thinking";
     }
 
     return {
@@ -247,6 +247,6 @@ export function deriveView(state) {
   return {
     indicator: "off",
     buttonLabel: "Start listening",
-    status: "Private · not listening",
+    status: "Not listening",
   };
 }

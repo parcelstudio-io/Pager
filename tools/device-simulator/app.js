@@ -107,7 +107,7 @@ const captionPacer = new CaptionPacer({
 function render() {
   const view = deriveView(state);
   status.textContent = view.status;
-  indicator.dataset.color = view.indicator;
+  indicator.dataset.listening = String(state.session === SESSION.LIVE);
   button.textContent = view.buttonLabel;
   button.dataset.indicator = view.indicator;
   screen.dataset.session = state.session;

@@ -108,7 +108,7 @@ test("state supports full-duplex overlap and an immediate local stop", () => {
   assert.equal(state.input, INPUT.USER_SPEAKING);
   assert.equal(state.output, OUTPUT.PLAYING);
   assert.equal(deriveView(state).indicator, "cyan");
-  assert.equal(deriveView(state).status, "Live · interrupting");
+  assert.equal(deriveView(state).status, "Listening · interrupting");
 
   state = reduceState(state, { type: "stop", epoch: 2 });
   assert.deepEqual(state, {
