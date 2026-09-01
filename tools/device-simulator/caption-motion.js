@@ -1,6 +1,5 @@
 export const DEFAULT_CAPTION_SPEED_PX_PER_SECOND = 60;
 export const DEFAULT_MAX_FRAME_DELTA_MS = 250;
-export const DEFAULT_EXIT_DURATION_MS = 750;
 
 export function captionOffset(contentWidth, viewportWidth) {
   const content = Number.isFinite(contentWidth) ? Math.max(0, contentWidth) : 0;
@@ -40,7 +39,6 @@ export class CaptionMotion {
     viewport,
     speedPxPerSecond = DEFAULT_CAPTION_SPEED_PX_PER_SECOND,
     maxFrameDeltaMs = DEFAULT_MAX_FRAME_DELTA_MS,
-    exitDurationMs = DEFAULT_EXIT_DURATION_MS,
     reducedMotion = () => globalThis.matchMedia?.(
       "(prefers-reduced-motion: reduce)",
     ).matches ?? false,
@@ -55,9 +53,6 @@ export class CaptionMotion {
     this.viewport = viewport;
     this.speedPxPerSecond = speedPxPerSecond;
     this.maxFrameDeltaMs = maxFrameDeltaMs;
-    this.exitDurationMs = Number.isFinite(exitDurationMs) && exitDurationMs > 0
-      ? exitDurationMs
-      : DEFAULT_EXIT_DURATION_MS;
     this.reducedMotion = typeof reducedMotion === "function"
       ? reducedMotion
       : () => Boolean(reducedMotion);
@@ -71,7 +66,6 @@ export class CaptionMotion {
     this.needsMeasure = false;
     this.hasCaption = false;
     this.isExiting = false;
-    this.exitSpeedPxPerSecond = this.speedPxPerSecond;
     this.resizeObserver = resizeObserverFactory?.(() => this.remeasure()) ?? null;
     this.resizeObserver?.observe(this.viewport);
   }
@@ -142,7 +136,7 @@ export class CaptionMotion {
         this.currentOffset,
         this.targetOffset,
         timestamp - this.lastTimestamp,
-        this.isExiting ? this.exitSpeedPxPerSecond : this.speedPxPerSecond,
+        this.speedPxPerSecond,
         this.maxFrameDeltaMs,
       );
       if (Math.abs(this.currentOffset - this.targetOffset) < 0.001) {
@@ -176,9 +170,7 @@ export class CaptionMotion {
     this.needsMeasure = false;
     this.isExiting = true;
     this.caption.dataset.motion = "exiting";
-    this.targetOffset = Math.max(0, this.viewport.clientWidth);
-    const distance = Math.abs(this.targetOffset - this.currentOffset);
-    this.exitSpeedPxPerSecond = distance * 1000 / this.exitDurationMs;
+    this.targetOffset = -Math.max(0, this.caption.scrollWidth);
     this.lastTimestamp = null;
     this.ensureFrame();
   }

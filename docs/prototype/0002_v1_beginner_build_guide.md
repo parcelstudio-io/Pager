@@ -276,7 +276,7 @@ BLE onboarding, the mobile app, cloud history sync, physical SIM/APN configurati
 - [ ] The user can speak while assistant audio is playing.
 - [ ] Clear near-end speech interrupts assistant playback and cancelled audio does not resume.
 - [ ] A sliding assistant caption is directly below the face; its first text enters from beyond the right edge and moves left at a fixed 60 CSS px/s without easing or per-word speed changes, and transcript additions queue ahead without retargeting that motion.
-- [ ] Completed playback slides the entire caption through the right edge before clearing it; interruption clears it immediately; caption reset snaps to its zero position; with the browser/OS reduced-motion preference enabled, position changes snap rather than animate; and late cancelled text does not return.
+- [ ] Completed playback keeps the caption moving left at 60 CSS px/s until it is fully beyond the left edge; it never reverses toward the right. Interruption clears it immediately; caption reset snaps to its zero position; with the browser/OS reduced-motion preference enabled, position changes snap rather than animate; and late cancelled text does not return.
 - [ ] Stop during idle and stop during playback both return locally to private/idle.
 - [ ] Talking after stop creates no response.
 - [ ] Refresh/restart does not auto-start capture.
