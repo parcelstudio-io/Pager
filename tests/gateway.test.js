@@ -452,11 +452,6 @@ test("browser assets contain one control and no provider credential name", async
   assert.equal(contents[4].includes("DEFAULT_CAPTION_SPEED_PX_PER_SECOND = 60"), true);
   assert.equal(styles.includes(".pupil"), true);
   assert.equal(styles.includes("background: var(--cream)"), true);
-  const eyeRule = styles.match(/\.eye \{([\s\S]*?)\n\}/)?.[1] || "";
-  assert.equal(eyeRule.includes("box-shadow"), false);
-  assert.equal(styles.includes('data-expression="curious"] .eye {'), false);
-  assert.equal(styles.includes('data-expression="joyful"] .eye {'), false);
-  assert.equal(styles.includes('data-charging="true"] .eye {'), false);
   assert.equal(styles.includes("@keyframes whole-eye-roll-clockwise"), true);
   assert.equal(styles.includes("@keyframes whole-eye-upper-right"), true);
   assert.equal(styles.includes("@keyframes whole-eye-lower-left"), true);
@@ -478,8 +473,7 @@ test("browser assets contain one control and no provider credential name", async
   assert.match(clockwiseRoll, /97%, 100%/);
   assert.equal(styles.includes('[data-gaze-motion="look-down"]'), true);
   assert.equal(styles.includes('[data-gaze-motion="center"]'), true);
-  assert.equal(styles.includes('[data-energy="critical"] .eye {'), true);
-  assert.equal(styles.includes('[data-energy="critical"][data-charging="true"]'), false);
+  assert.equal(styles.includes('[data-energy="critical"][data-charging="true"]'), true);
   assert.equal(app.includes("new ExpressionDirector"), true);
   assert.equal(
     app.includes('import { ExpressionDirector } from "./expression-director.js"'),

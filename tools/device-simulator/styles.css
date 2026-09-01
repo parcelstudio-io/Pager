@@ -252,10 +252,12 @@ body {
   overflow: hidden;
   border-radius: inherit;
   background: var(--cream);
+  box-shadow: 0 0 30px rgba(255, 244, 218, 0.24);
   transform-origin: center;
   animation: blink 11.2s linear infinite;
   transition:
     opacity 220ms ease,
+    box-shadow 220ms ease,
     clip-path 90ms ease-out;
 }
 
@@ -326,6 +328,10 @@ body {
   opacity: 0.82;
 }
 
+.pager-screen[data-expression="curious"] .eye {
+  box-shadow: 0 0 38px rgba(255, 255, 255, 0.3);
+}
+
 .pager-screen[data-expression="curious"] .eye-shape {
   width: 82px;
   height: 88px;
@@ -349,6 +355,10 @@ body {
 .pager-screen[data-expression="happy"] .eye-right .eye-shape,
 .pager-screen[data-expression="joyful"] .eye-right .eye-shape {
   transform: rotate(5deg);
+}
+
+.pager-screen[data-expression="joyful"] .eye {
+  box-shadow: 0 0 44px rgba(255, 255, 255, 0.38);
 }
 
 .pager-screen[data-expression="excited"] .eye-shape {
@@ -571,6 +581,12 @@ body {
   height: 50px;
 }
 
+.pager-screen[data-charging="true"] .eye {
+  box-shadow:
+    0 0 30px rgba(255, 255, 255, 0.22),
+    0 0 24px rgba(89, 230, 234, 0.24);
+}
+
 .pager-screen[data-energy="low"] .eye-shape {
   height: 62px;
 }
@@ -585,6 +601,14 @@ body {
 
 .pager-screen[data-energy="critical"] .eye {
   opacity: 0.58;
+  box-shadow: 0 0 16px rgba(255, 113, 106, 0.18);
+}
+
+.pager-screen[data-energy="low"][data-charging="true"] .eye,
+.pager-screen[data-energy="critical"][data-charging="true"] .eye {
+  box-shadow:
+    0 0 16px rgba(255, 113, 106, 0.18),
+    0 0 26px rgba(89, 230, 234, 0.3);
 }
 
 .pager-screen[data-rest-gaze="up"] .eye-motion {
