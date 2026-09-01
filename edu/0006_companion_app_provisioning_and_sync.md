@@ -1,121 +1,300 @@
-# 0006 — Companion app, BLE provisioning, and cloud sync
+# 0006 — Companion apps, Bluetooth setup, and synchronization from first principles
 
-A connected device without a keyboard needs a safe way to receive secrets it cannot type: a home Wi-Fi password, a cellular profile, and proof that a signed-in person may claim it. The companion app also gives the user a place to inspect settings and opt-in history. Those jobs need different authorities and transports:
+## Before you start
 
-| Job | Authority and path |
-|---|---|
-| Nearby setup and recovery | Foreground mobile app ↔ protocomm Security 2 over BLE ↔ pager |
-| Custom Wi-Fi and cellular credentials | Pager's encrypted local credential store; never Mochi cloud or persistent app storage |
-| Public signed carrier-preset catalog | May ship in the app/pager or synchronize from Mochi cloud; it contains no user credential |
-| Ownership, consent, and non-secret settings | Gateway, synchronized to pager and authenticated app clients |
-| Opt-in conversation history | Gateway's durable store, synchronized to an encrypted app cache |
-| Live audio and working context | Pager ↔ gateway ↔ OpenAI Realtime; never BLE and never the history database |
+Read [0000: IoT and electrical fundamentals](0000_start_here_iot_and_electrical_fundamentals.md) first. [0004](0004_cellular_rf_power_and_certification.md) explains modems and cellular profiles, while [0005](0005_realtime_voice_memory_and_privacy.md) separates working context, user memory, and conversation history.
 
-This hybrid split is the central design choice. BLE solves the chicken-and-egg problem before the pager has internet access. Cloud sync keeps operation and history independent of phone proximity. The complete contract lives in the [companion-app and synchronization architecture](../docs/design/0002_companion_app_and_sync_architecture.md).
+This lesson assumes you understand mobile apps, HTTP APIs, authentication, and databases. It does not assume Bluetooth or embedded-device experience.
 
-## The chicken-and-egg of provisioning
+By the end, you should be able to explain:
 
-Before provisioning, the device has no network. Two common escape hatches exist:
+- why a new IoT device cannot simply download its Wi-Fi password;
+- what Bluetooth Low Energy advertising, connections, services, and characteristics are;
+- the difference between provisioning, claiming, authentication, and authorization;
+- why nearby secrets and cloud-synchronized settings use different paths;
+- how revision numbers, idempotency keys, cursors, and tombstones make offline sync predictable.
 
-- **SoftAP / captive portal:** the device becomes a temporary Wi-Fi access point; the phone joins it and posts credentials locally. It can work without a native app, but the phone must leave its current network, operating-system UX varies, and the product still has to authenticate and encrypt the temporary channel.
-- **BLE:** the phone remains on its current network while it configures the nearby device. It also supports Mochi-specific fields such as a cellular profile and a short-lived claim token.
+## 1. Why a companion app exists
 
-Mochi uses BLE only for foreground commissioning, recovery, network tests, and bounded diagnostics. Mobile operating systems constrain background BLE differently, and the pager must remain useful when the phone is absent, so BLE never becomes a live-audio relay or a history-sync channel. General accessory Bluetooth—headphones, keyboards, watches, or arbitrary pairing—is deferred beyond the MVP.
+A new pager has no keyboard and does not yet know the home Wi-Fi password. It cannot call the cloud to ask for that password because it needs the password to reach the cloud.
 
-BLE's unit of interaction is a GATT service: the device exposes characteristics that the phone reads or writes. Designing a proprietary secure protocol would mean owning key exchange, transcript binding, replay resistance, and two mobile implementations. Espressif's current `network_provisioning` component supplies a GATT transport, the protocomm session protocol, official Android/iOS libraries, and custom protected endpoints. Mochi uses the standard Wi-Fi messages plus `/cell-config`, `/claim`, `/info`, and `/network-test`. See Espressif's [network provisioning component](https://components.espressif.com/components/espressif/network_provisioning) and [protocomm documentation](https://docs.espressif.com/projects/esp-idf/en/stable/esp32s3/api-reference/provisioning/protocomm.html).
+This is a bootstrap problem, similar to deploying a server that cannot fetch its configuration until it has network credentials.
 
-## Exactly two controls, including setup and recovery
+The phone already has three useful capabilities:
 
-The shipping pager has only an illuminated conversation button and a latching power switch. The conversation button always starts or stops a full-duplex session in normal operation; there is no user-facing push-to-talk or fallback mode.
+1. a screen and keyboard for entering setup data;
+2. a nearby radio that can reach the unconfigured pager;
+3. an internet connection and a signed-in user account.
 
-Setup and recovery never weaken the hardware boundary. The capture-enable command is biased inactive before GPIO configuration and through reset, boot, crash/watchdog, recovery, and OTA. The latching switch's off path must keep the system and microphone rails de-energized even with USB charging, debug, or modem connections attached; none may back-power the pager.
+The companion app bridges those capabilities. It is not required to relay every conversation. Once configured, the pager should work without the phone nearby.
 
-Setup does not require a hidden third button:
+## 2. Four words that should not be mixed together
 
-1. A factory-fresh, unclaimed pager enters capture-gated setup automatically on boot.
-2. A claimed pager may reopen setup from the app only while it is online and private-idle: the signed-in app sends an authenticated request to the gateway, which authorizes a short BLE-advertising window on that pager. The app does not directly unlock setup over an unsolicited local connection.
-3. If normal online entry is unavailable, the owner may use the touchscreen while private-idle or hold the conversation button while sliding power on for eight seconds. Firmware recognizes the chord only during boot and enters setup with the cyan capture indicator off.
+- **Provisioning** gives a device what it needs to operate, such as Wi-Fi credentials and a cellular access point name.
+- **Claiming** records that a particular account owns or controls a particular device.
+- **Authentication** proves an identity, such as "this is device 42" or "this is Jae's signed-in app."
+- **Authorization** decides what that authenticated identity may do.
 
-The boot chord is evidence of physical presence, not ownership authority. The chord plus the current binding's recovery proof may repair local network credentials, but an owned pager remains unclaimable. Factory-package proof is single-use bootstrap for first unclaimed setup and is disabled after initial claim. The current owner releases the pager in the app before resale. If that account is unavailable, transfer requires a server-authorized account/support recovery with account verification and physical proof: after the app proves the current recovery secret locally over Security 2, the pager signs a fresh server challenge/request ID, device and requested-account IDs, `setup_epoch`, `recovery_epoch`, expected `binding_generation`, current `claim_nonce`, and expiry with its immutable factory key. The server bounds and audits attempts, applies the notification/cooldown policy, and compare-and-swaps generation/nonce/recovery epoch during the atomic binding change; no recovery secret goes to the gateway.
-
-After release or authorized recovery advances the binding generation, the pager gates capture, closes any live session, and purges the prior binding's credentials, recovery verifier, configuration cache, captions, playback/media queues, working context, volatile transcripts, Wi-Fi credentials, and custom cellular/APN/authentication profile before returning to capture-gated setup; only immutable factory identity remains. The new binding generates a new recovery secret, installs only its verifier with a new `recovery_epoch`, and delivers the secret once over Security 2 for the new owner to save. The prior owner's retained cloud history stays with that account and is never exposed to the new binding. This replaces the earlier idea of a generic long-press reclaim, which was too easy to trigger or abuse.
-
-## Why “encrypted BLE” is not enough
-
-BLE link-layer pairing is not sufficient authentication for a screen-constrained product. Mochi uses protocomm Security 2, which Espressif defines as SRP6a key exchange followed by AES-GCM protection. Production builds compile out or reject Security 0 and Security 1 instead of relying on SDK defaults that may change across releases.
-
-Security 2 is a password-authenticated key exchange: the device proves knowledge of a verifier and the app proves knowledge of the per-device setup secret without sending that secret as plaintext. A passive observer cannot derive it from a captured handshake. That does not eliminate online guessing or copied-label risk, so the device rate-limits failures, advertises only in an intentional setup state under a randomized identifier, and binds each attempt to a fresh session plus a short-lived single-use claim token.
-
-Manufacturing installs the bootstrap salt/verifier on the pager; the packaged QR carries only the unit identifier and corresponding single-use factory bootstrap secret. That verifier is disabled after first claim and cannot recover a later owner binding. Because a verifier cannot reconstruct its secret, the pager never pretends to redisplay that factory or an earlier active/recovery secret. An on-screen setup QR contains a newly generated active secret only when the pager atomically installs its new salt/verifier and increments `setup_epoch`; the screen also supplies a fresh expiring challenge for that epoch. Each successful claim/new binding separately generates a random binding-recovery secret, installs only its verifier with a new `recovery_epoch`, and shows/delivers the secret once inside Security 2 for explicit save/export. Plaintext remains only until bounded acknowledgement/timeout; interrupted delivery requires authenticated owner rotation. The app keeps entered custom Wi-Fi/APN credentials only in memory, length-checks every field, sends them inside Security 2, and discards them after the pager acknowledges a bounded success or failure result. The pager never makes those values readable back. Provisioning is unavailable while a conversation is connecting, live, or reconnecting, and the BLE stack shuts down after setup to release radio and RAM resources.
-
-## Claiming: binding a device to an account
-
-BLE proximity and cloud ownership are separate proofs. The signed-in app requests a short-lived, audience-bound, single-use claim token containing the account, immutable device identity, current `setup_epoch`, expected `binding_generation`, and current server `claim_nonce`, then writes it through the protected `/claim` endpoint. The pager redeems it over TLS using its factory identity. In one atomic compare-and-swap the gateway checks generation and nonce, invalidates all outstanding claim tokens, rotates `claim_nonce`, binds the device, and advances `binding_generation`. Claim/new binding also rotates `recovery_epoch` and installs the new verifier; claim, release, recovery, and revoke invalidate stale tokens, credentials, streams, and prior recovery proofs.
-
-Notice the boundaries:
-
-- Wi-Fi passwords, user-entered/custom APNs, derived modem profiles, cellular usernames/passwords, and SIM secrets never enter Mochi cloud; a signed public carrier-preset catalog may.
-- The claim token is encrypted on BLE, expires quickly, and cannot claim an already-owned pager.
-- The OpenAI API key exists only in the gateway.
-- Releasing, revoking, or recovering a pager changes gateway ownership without granting access to another account's history.
-
-## What “configure 4G” actually means
-
-The app cannot make an arbitrary modem work with an arbitrary carrier. Before setup, the modem SKU, supported bands, carrier acceptance, antennas, SIM/eSIM, subscription, and launch country must already be compatible. For the physical-SIM EVT, most users choose a local carrier preset; advanced fields are:
-
-| Field | MVP handling |
-|---|---|
-| Carrier/profile name | Signed public preset identifier and metadata; may ship locally or synchronize from Mochi cloud |
-| APN | Public preset value or validated manual entry; user-entered/custom values remain BLE-local |
-| PDP type | `IPv4`, `IPv6`, or `IPv4v6`, limited to carrier/modem support |
-| Authentication | None, PAP, or CHAP when required |
-| Username/password | Optional BLE-only credentials; never logged or cloud-synced |
-| Roaming | Explicit local choice with a cost warning |
-| SIM PIN | Disabled for EVT; later support needs a secure cold-boot unlock design |
-
-The SIM normally carries subscriber identity; activation, plan choice, billing, and cancellation remain in the carrier's portal. Cloud release cannot deactivate a physical card. Resale therefore requires confirmation that the SIM was removed or carrier-deactivated; loss/account deletion direct the owner to deactivate the line. A future managed eSIM design needs its own explicit profile deactivation/transfer operation. A signed public carrier-preset catalog is metadata, not a credential, and may be distributed through the app, pager image, or cloud. User-entered/custom APNs, derived modem profiles, authentication values, and any future SIM PIN remain memory-only in the app, travel only through the protected BLE session, and live only in the pager's protected credential store.
-
-Consumer eSIM provisioning is not a generic QR field Mochi can invent. A later IoT eSIM design should use an eUICC/modem vendor and the GSMA SGP.32 model for remotely managed, UI- and network-constrained IoT devices. See [GSMA SGP.32](https://www.gsma.com/solutions-and-impact/technologies/esim/gsma_resources/sgp-32-v1-3/).
-
-A standard Starlink terminal is not a pager radio. Starlink Direct to Cell is a different, conditional carrier path: Starlink currently advertises IoT plans through participating mobile operators and compatibility with qualifying Release-10-or-newer Cat-1, Cat-1 bis, and Cat-4 modems on the required bands. That makes it a carrier/SIM/coverage experiment—not a universal `Starlink` APN and not the MVP baseline. Mochi must validate the exact partner operator, country, modem bands, plan, data allowance, and Realtime latency before selecting it. See [Starlink Direct to Cell](https://www.starlink.com/business/direct-to-cell).
-
-## Non-secret configuration synchronization
-
-Volume, model/voice profile, prompt-profile version, history-retention consent, retained-history-context consent, and structured-memory consent are cloud settings. They live in one gateway document scoped to `(account_id, device_id, binding_generation)` with a monotonically assigned `config_revision`; custom network credentials do not. Both app and pager mutations carry `client_mutation_id`, the current binding generation, and `If-Match: config_revision`. The gateway either commits the next revision or returns the current document as a conflict. Claim, transfer, or recovery starts a fresh document with all three consents off and rejects stale-generation writes. Phone clocks never decide which value wins. A touchscreen volume change may apply locally while offline but remains visibly pending with its base revision; on reconnect it follows the same pager-origin mutation path, and a conflict resolves to the gateway document with an explicit notice. Consent never changes before server acknowledgement. The pager clears prior binding-scoped preferences and acknowledges each revision it applies.
-
-Capture state is not configuration. The app may display device status, but it cannot remotely press the conversation button or assert that the microphone is live.
-
-## Conversation-history synchronization
-
-History is a separate, explicit opt-in that defaults off. When future saving is off, Mochi's gateway/history stores create no new durable transcript; previously retained records remain viewable until the user separately deletes them. When saving is on, machine input transcription can run even if user captions are hidden, and the gateway is the sole writer that commits only user-visible finalized records:
+Software analogy:
 
 ```text
-account_id, device_id, binding_generation, conversation_id
-history_event_id, session_epoch, source_item_id
-server_seq, kind, role, finalized_text
-interrupted, heard_through_ms, created_at, deleted_at
+provisioning    ~= installing runtime configuration
+claiming        ~= inserting an account_device ownership row
+authentication ~= validating a session or client certificate
+authorization  ~= evaluating an access-control policy
 ```
 
-The gateway deduplicates source commits on the stable conversation/session/source identity before assigning an immutable `history_event_id`. It assigns account-scoped `server_seq` values transactionally and publishes a change cursor. An app fetches `changes?after=<opaque_cursor>` over authenticated HTTPS; a live stream or push notification is only an invalidation hint that triggers the same cursor fetch. This avoids CRDT complexity and wall-clock last-write-wins bugs while allowing two phones, duplicate deliveries, and long offline periods to converge.
+One successful Bluetooth connection does not automatically prove all four.
 
-History contains finalized machine transcripts, not live deltas. For an interrupted assistant response, it stores only the prefix aligned to samples actually rendered; if a trustworthy text boundary cannot be established, it marks the item `interrupted` instead of claiming the generated suffix was heard. Tool entries contain a sanitized user-visible action and status, never raw provider/tool payloads, tokens, or unrelated results. Raw microphone and output audio are not retained by default, even when transcript history is enabled.
+## 3. Bluetooth Low Energy in plain language
 
-Delete-item, delete-conversation, and delete-all mutations carry `client_mutation_id` plus the expected record version. The server removes content and emits a content-free tombstone; a tombstone is not a hidden transcript. It exposes `oldest_available_seq`, retains tombstones through the maximum valid cursor age, and rejects any cursor older than that boundary. That client must authenticate and fully reconcile before showing a restored cache, so an indefinitely offline or restored installation cannot miss a deletion and resurrect content. Turning future saving off is a separate choice from deleting existing history, and retained history stays accessible while saving is off. Offline deletes are visibly pending until acknowledged, and exports come from the server authority rather than one possibly stale phone.
+**Bluetooth Low Energy (BLE)** is a short-range radio protocol designed for small, intermittent exchanges. It is distinct from Bluetooth Classic audio profiles used by many headphones.
 
-Structured memory and history remain separate consents, but deletion has a provenance rule: every fact derived from transcript history carries its source event IDs. Deleting those sources defaults to cascading the derived fact; keeping an individually confirmed fact requires an explicit choice. Disabling future history saving alone does not silently disable memory consent.
+During Mochi setup, the pager is the **peripheral** and the phone is the **central**:
 
-The app keeps only an encrypted, account-scoped cache. Its database key is device-bound and non-synchronizing in iOS Keychain or non-exportable Android Keystore-backed storage where supported; authentication tokens use the corresponding secure store, and both cache and key are excluded from OS cloud/device backup. A restored database without its key is discarded. A reinstall, restore, or cursor older than `oldest_available_seq` must authenticate and fully reconcile before displaying restored content. Offline display requires a signed, installation-bound authorization lease lasting at most 24 hours and renewable only through authenticated server contact. Same-boot validation uses monotonic elapsed time and wall time; clock rollback or boot/time discontinuity without rollback-resistant platform time locks the cache until contact. Sign-out or account switch erases the prior account's cache. The pager retains neither history nor a second sync log, and BLE carries no audio or transcript content.
+1. The pager **advertises** a small public packet saying that a setup-capable device is nearby.
+2. The phone **scans** and sees that advertisement.
+3. The phone opens a BLE **connection** to that specific pager.
+4. The two sides establish an authenticated encrypted session.
+5. The app writes bounded setup messages and reads acknowledgements.
+6. The pager stops advertising when setup finishes.
 
-Account deletion requires reauthentication and explicit confirmation. The gateway immediately revokes and unbinds devices, advances generations/nonces/recovery epochs, closes streams, cancels pending exports, and deletes account/config/history/memory content under the published server-side SLA. Connected apps purge on the server signal; offline pagers are unauthorized at the gateway immediately and, on reconnect, purge binding/recovery state plus local Wi-Fi/custom cellular credentials before capture-gated setup. A disconnected phone cannot receive an instant remote wipe, so it may display already authorized cached history only until its current authorization lease expires—at most 24 hours. It then locks the cache; the next server contact that returns an authoritative deletion/revocation or revoked-credential response causes key/cache purge instead of lease renewal. The deletion UI must distinguish the server SLA, connected-replica purge, offline lease/erasure limit, required carrier-SIM action, and separate provider-retention boundary.
+BLE application data is commonly organized using the **Generic Attribute Profile (GATT)**:
 
-## Realtime state and provider retention are different
+- A **service** groups one capability, such as network provisioning.
+- A **characteristic** is a typed value or message endpoint within that service.
+- The phone may read, write, or subscribe to a characteristic, depending on its permissions.
 
-OpenAI describes each Realtime Session as a stateful live interaction containing a Conversation and its Items/Responses, with a current 60-minute session limit. Mochi treats this as ephemeral working state and uses its own opt-in gateway store for cross-session history. It should not use OpenAI `/v1/conversations` as an accidental product database: OpenAI documents that those application-state endpoints retain data until deletion and are not Zero Data Retention eligible. See [Realtime conversations](https://developers.openai.com/api/docs/guides/realtime-conversations) and [OpenAI data controls](https://developers.openai.com/api/docs/guides/your-data).
+An imperfect but useful analogy is a tiny local API:
 
-“Mochi stores no history” is only a statement about Mochi-controlled durable storage. OpenAI states that API data is not used to train models unless the customer opts in, but default abuse-monitoring logs may retain content for up to 30 days; eligible customers can apply for Modified Abuse Monitoring or Zero Data Retention. The launch privacy notice and acceptance evidence must state the project's actual provider controls rather than promise zero provider retention by inference.
+```text
+service        ~= API namespace
+characteristic ~= endpoint or field
+read/write     ~= request method
+notification   ~= server-pushed event
+```
 
-## App stack notes
+The analogy has limits. GATT messages are small, discovery and connection state matter, and mobile operating systems impose Bluetooth permission and background-execution rules.
 
-React Native is a reasonable cross-platform UI candidate, but it is not yet an architectural commitment. The provisioning spike should bridge Espressif's maintained native Android/iOS libraries and verify Security 2, custom endpoints, Bluetooth permissions, foreground lifecycle, recovery, memory use, and licenses on real phones. A third-party React Native wrapper may accelerate the spike, but it is not a dependency to freeze before those checks pass. Keep app code in `src/app/`, and treat every BLE or cloud payload as untrusted input: length-check it, schema-validate it, and never log secrets or conversation content.
+## 4. Encryption is not the same as trust
 
-See [ADR 0007](../docs/decisions/0007_use_companion_app_and_cloud_history_sync.md), [ADR 0008](../docs/decisions/0008_use_exactly_two_physical_controls.md), the companion-app requirements, and the memory taxonomy in [primer 0005](0005_realtime_voice_memory_and_privacy.md).
+An encrypted channel prevents a passive observer from reading bytes. It does not by itself answer:
+
+- Did the phone connect to the intended physical pager?
+- Is the peer an authorized owner or merely someone nearby?
+- Is this message fresh, or was an old setup message replayed?
+- Is the user seeing the same device identity that the server will claim?
+
+A protected provisioning protocol therefore needs:
+
+- a way for both sides to derive or exchange session keys;
+- authentication tied to a device-specific proof or fresh setup challenge;
+- integrity protection so messages cannot be modified silently;
+- replay resistance using a **nonce**—a fresh value intended for one setup attempt—plus counters or short-lived tokens, so an old valid message cannot simply be sent again;
+- explicit length and schema validation;
+- a clean end state that erases temporary secrets from memory.
+
+Mochi uses Espressif's protocomm **Security 2** mode rather than inventing a new cryptographic handshake. "Security 2" is the product/library mode name; it does not mean "version 2 of all Bluetooth security." Exact protocol choices belong in the architecture documents, not in this mental model.
+
+## 5. Nearby path versus cloud path
+
+Not all configuration belongs in the same database.
+
+### Nearby secret path
+
+The phone sends custom network secrets directly to the nearby pager over the protected BLE session:
+
+```text
+phone --protected BLE--> pager's encrypted credential storage
+```
+
+Examples include:
+
+- Wi-Fi network name and password;
+- a custom cellular access point name (APN);
+- cellular username/password if the carrier requires them.
+
+The app should discard these after the pager acknowledges storage. They do not need to pass through Mochi's cloud.
+
+### Cloud synchronization path
+
+Non-secret account state uses authenticated internet APIs:
+
+**Hypertext Transfer Protocol Secure (HTTPS)** is ordinary web HTTP protected by **Transport Layer Security (TLS)**. TLS encrypts the connection and lets the client verify the server's identity.
+
+```text
+phone app ----HTTPS----> gateway <----TLS---- pager
+```
+
+Examples include:
+
+- device ownership;
+- volume or voice preference;
+- consent settings;
+- prompt/profile version;
+- opt-in conversation history.
+
+The cloud path works when the phone is far away and gives all clients one ordering authority. The BLE path solves local bootstrap and keeps network secrets nearby. Calling both paths "sync" hides this important trust boundary.
+
+## 6. What cellular configuration actually means
+
+A **subscriber identity module (SIM)**, whether physical or embedded, contains carrier identity credentials. It is not normally programmed by the Mochi app.
+
+The app may need to collect a carrier data profile:
+
+- **APN (access point name):** selects the carrier's packet-data network;
+- internet protocol choice, usually IPv4, IPv6, or both;
+- optional username and password;
+- roaming policy;
+- modem-specific profile selection.
+
+Many consumer SIMs configure these automatically. If a user chooses a known carrier, the app can select signed public preset metadata. A custom profile is treated as a secret and travels only through protected BLE.
+
+"Starlink" is not a generic APN. Satellite direct-to-cell availability depends on country, partner carrier, plan, device/modem support, and permitted data use. It must be tested as a specific carrier path, not represented as a universal toggle.
+
+## 7. Claiming a physical device
+
+Provisioning gets a device online. Claiming binds it to an account.
+
+A simplified first-claim flow is:
+
+1. The app signs the user in through the gateway.
+2. The pager shows or advertises a fresh setup identity/challenge.
+3. The app asks the gateway for a short-lived, single-use claim token for that device and account.
+4. The app sends the token to the nearby pager over the protected BLE session.
+5. The pager connects to the gateway using its own device identity and redeems the token.
+6. The gateway atomically creates the account-device binding.
+7. The pager and app receive confirmation, then temporary claim material is erased.
+
+Why make the pager redeem the token? It proves that the cloud-visible device and the nearby physical device participate in the same flow. If the phone simply announced "I own serial 42," a copied serial number could be enough to attack ownership.
+
+A token should be bound to the intended account, device, setup attempt, expiry, and current ownership generation. It should have one effect even if a retry sends it twice.
+
+## 8. Setup access is not ownership transfer
+
+Physical proximity can justify opening a setup screen, but it is weaker than account ownership.
+
+Mochi has two physical controls: a conversation button and a latching power switch. A new device can enter capture-gated setup automatically. An owned device can reopen network repair from its touchscreen, through an authenticated online app request while private-idle, or through a deliberate boot-only chord when offline.
+
+None of those actions alone transfers ownership. Transfer requires the existing owner's release or a server-authorized recovery flow. On an ownership change, old account credentials, recovery proofs, cached context, and local Wi-Fi/custom cellular secrets must be purged before the next owner can use the pager.
+
+The detailed nonce and generation rules are intentionally left to the [companion-app architecture](../docs/design/0002_companion_app_and_sync_architecture.md). Learn the boundary first: **nearby setup repairs operation; cloud authority decides ownership**.
+
+## 9. Synchronization starts with an authority decision
+
+Suppose the phone changes volume while the pager is offline, and the pager changes it locally before reconnecting. Which value wins?
+
+Using timestamps sounds easy, but phone and device clocks can be wrong. Instead, Mochi's gateway owns an ordered configuration document.
+
+The document has a **revision number**, similar to an optimistic-lock version:
+
+```json
+{
+  "config_revision": 18,
+  "volume": 0.65,
+  "voice": "marin"
+}
+```
+
+A client sends the revision it edited:
+
+```text
+update volume to 0.75 if config_revision is still 18
+```
+
+The gateway either:
+
+- commits revision 19; or
+- rejects the write with the newer document so the UI can show a conflict.
+
+Each mutation also has a **client mutation ID**, which is an idempotency key. Retrying the same request after a timeout produces one logical change, not two.
+
+The **binding generation** identifies the current ownership era. After transfer, writes from an old owner's generation are rejected even if their revision number once existed.
+
+## 10. History synchronization is an event log
+
+Conversation history is different from a settings document. It grows as a sequence of events:
+
+```text
+server_seq 101  user message
+server_seq 102  assistant heard response
+server_seq 103  tool result summary
+server_seq 104  delete event 101
+```
+
+The gateway assigns `server_seq`; client clocks do not define order.
+
+The app asks for records after an opaque **cursor**:
+
+```text
+GET /history?after=<opaque-cursor>
+```
+
+The server returns the next page and another cursor. "Opaque" means the client stores and returns it without decoding internal fields.
+
+A deletion is propagated as a **tombstone**: an event saying a record was deleted without repeating its content. This prevents an offline cache from re-uploading or redisplaying an old copy. If a client has been offline longer than the server can safely honor its cursor, it must perform a full authenticated reconciliation.
+
+The phone's history database is an encrypted cache. The gateway remains the authority. BLE carries neither transcript history nor live conversation audio.
+
+## 11. One complete onboarding trace
+
+```text
+User enters Wi-Fi password in app
+        |
+        v
+App finds advertising pager over BLE
+        |
+        v
+App and pager establish protected setup session
+        |
+        +--> app writes Wi-Fi/custom APN directly to pager
+        |
+        +--> app writes short-lived claim token
+        v
+Pager tests network and connects to gateway
+        |
+        v
+Pager redeems token with its own device identity
+        |
+        v
+Gateway commits ownership generation 1
+        |
+        v
+Pager acknowledges; app discards local network secrets
+        |
+        v
+BLE advertising and setup session stop
+```
+
+At no point does the app remotely start microphone capture. Setup remains capture-gated, and normal listening still requires the local conversation button.
+
+## 12. Debug each boundary separately
+
+When onboarding fails, do not debug "Bluetooth" as one blob.
+
+1. **Discovery:** Did the phone see the intended advertisement and device identifier?
+2. **Connection:** Did BLE connect and remain in the foreground?
+3. **Secure session:** Did both peers authenticate the same setup attempt?
+4. **Schema:** Were message version, type, and length accepted?
+5. **Credential storage:** Did the pager persist the network profile without logging it?
+6. **Link:** Did it associate with Wi-Fi or attach to cellular?
+7. **Reachability:** Did Domain Name System (DNS), time, and Transport Layer Security (TLS) work?
+8. **Claim:** Did the gateway accept the one-time token and device identity?
+9. **Cleanup:** Did the app erase temporary secrets and did the pager stop advertising?
+
+This is the hardware equivalent of separating DNS, **Transmission Control Protocol (TCP)**, TLS, authentication, and application errors instead of reporting every backend failure as "network error."
+
+## Check your understanding
+
+1. Why can the pager not fetch its initial Wi-Fi password from the cloud?
+2. What is the difference between BLE advertising and a BLE connection?
+3. Why does an encrypted channel not automatically prove ownership?
+4. Which path should carry a custom APN: protected nearby BLE or cloud configuration sync?
+5. Why is a revision number safer than client timestamps for settings conflicts?
+6. What problem does a deletion tombstone solve?
+
+Answers: (1) reaching the cloud already requires network credentials; (2) advertising announces presence with tiny public packets, while a connection supports an ongoing exchange; (3) encryption protects a peer-to-peer channel but does not define who the peer is authorized to act for; (4) protected nearby BLE; (5) the authoritative server orders writes without trusting clocks; (6) it prevents stale replicas from resurrecting deleted content.
+
+## Where Mochi's exact decisions live
+
+This primer teaches the mental model. Exact claim tokens, recovery proofs, consent fields, cache leases, deletion service levels, and platform choices live in [ADR 0007](../docs/decisions/0007_use_companion_app_and_cloud_history_sync.md), [ADR 0008](../docs/decisions/0008_use_exactly_two_physical_controls.md), the [companion-app and synchronization architecture](../docs/design/0002_companion_app_and_sync_architecture.md), and the [MVP requirements](../docs/requirements/0001_mvp_requirements.md). Espressif's [network provisioning component](https://components.espressif.com/components/espressif/network_provisioning) and [protocomm documentation](https://docs.espressif.com/projects/esp-idf/en/stable/esp32s3/api-reference/provisioning/protocomm.html) are implementation references, not substitutes for the concepts above.

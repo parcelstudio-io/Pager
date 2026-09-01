@@ -1,115 +1,253 @@
-# 0005 — Realtime voice, memory, and privacy
+# 0005 — Realtime voice, memory, and privacy from first principles
 
-A convincing voice companion is a streaming distributed system. It cannot wait to upload a whole recording, run batch speech recognition, generate a paragraph, synthesize the paragraph, and download a file. Audio and state move incrementally while turn detection, interruption, tools, safety, and UI remain coordinated.
+## Before you start
 
-## The realtime pipeline
+Read [0000: IoT and electrical fundamentals](0000_start_here_iot_and_electrical_fundamentals.md) first. [0001](0001_system_architecture.md) introduces local-versus-cloud boundaries, and [0002](0002_modules_buses_and_audio.md) explains the microphone and speaker wiring.
 
-At a high level:
+This lesson assumes you understand HTTP requests, streams, queues, and databases. It does not assume audio or machine-learning experience.
+
+By the end, you should be able to explain:
+
+- how sound becomes a stream of numbers;
+- why a live voice system is different from uploading an audio file;
+- what full duplex, voice activity detection, echo cancellation, and barge-in mean;
+- why Mochi needs a gateway between the device and OpenAI;
+- why working context, user memory, and conversation history are different data stores;
+- which privacy promises the hardware can enforce and which depend on services.
+
+## 1. Sound becomes an array of numbers
+
+Air pressure moves a microphone membrane. The microphone and its electronics turn that movement into an electrical signal. An **analog-to-digital converter (ADC)** measures the signal repeatedly and produces numbers called **samples**.
+
+Two settings describe the raw stream:
+
+- **Sample rate** is the number of measurements per second. `16 kHz` means 16,000 samples per second.
+- **Bit depth** is the number of bits used for each sample. `16-bit` audio uses two bytes per sample.
+
+For one **mono** channel, meaning one channel rather than separate left and right channels:
 
 ```text
-microphone -> AEC/VAD -> framing/codec -> secure uplink -> realtime model
-               ^                                           -> tools/memory policy
-               | rendered reference
-speaker   <- jitter/codec  <- secure downlink <- streamed audio
-caption   <- paced text    <- secure downlink <- transcript deltas
+16,000 samples/second × 16 bits/sample = 256,000 bits/second
 ```
 
-Important concepts:
+That is 256 kilobits per second (`kbit/s`), before packet headers or encryption. This calculation is the audio equivalent of estimating an event stream's data rate before selecting a message broker.
 
-- **VAD (voice activity detection):** estimates when speech starts/stops. It is not a wake word and can trigger on noise.
-- **Turn detection:** segments continuous session audio when the user appears to have yielded. It remains necessary even when the UI never asks for a per-turn button press.
-- **Barge-in:** lets new user speech interrupt assistant output. It requires post-AEC local detection, immediate generation-scoped playback clearing, upstream response cancellation, and removal of unheard output from conversation context. Tool work has separate transaction semantics and is not automatically rolled back.
-- **Jitter buffer:** smooths uneven packet arrival by holding a small amount of audio. More depth resists jitter but increases latency.
-- **AEC:** removes the known speaker signal from the microphone path so the system can hear the user while speaking.
-- **Backpressure:** defines what happens when a consumer is slower than the incoming stream. Bounded queues must drop, cancel, or degrade intentionally rather than exhaust memory.
+The speaker path reverses the process. A **digital-to-analog converter (DAC)** turns samples into a changing voltage, an amplifier supplies enough current, and the speaker turns that electrical signal back into pressure waves.
 
-For EVT, one deliberate button press opens a visibly live session and another closes it. Capture and playback remain concurrent inside that window; local AEC/VAD and provider semantic VAD support automatic endpointing and barge-in. There is no user-facing hold-to-talk or fallback mode: if full duplex becomes untrustworthy, firmware closes the session and returns to private idle. A developer fixture may still gate capture for controlled AEC comparisons, but that behavior is neither shipping interaction nor acceptance path.
+**Pulse-code modulation (PCM)** is the common name for this direct sequence of sample values. A **codec** is an encoder/decoder that changes the representation, often compressing audio to use less network bandwidth.
 
-While `LIVE`, the display slides a live caption below the face (PR-07). Assistant captions ride the provider's incremental transcript events (`response.output_audio_transcript.delta`/`.done`); optional user captions require enabling input transcription via the session's `audio.input.transcription` configuration (model `gpt-live-transcribe` for streaming deltas, `gpt-transcribe` for post-turn accuracy). The gateway forwards these as versioned caption events keyed to the active response. Two subtleties: transcript deltas can run ahead of rendered audio, so the device paces the caption against the playback cursor; and on barge-in the device trims the caption to the heard boundary itself, because the provider removes unplayed transcript from its context but does not send a truncated transcript back.
+## 2. Batch audio versus streaming audio
 
-The user's button-latched live intent is not the same object as one provider connection. OpenAI documents a Realtime Session as stateful interaction containing a current Conversation and its Items/Responses, and currently limits a session to 60 minutes. That provider state is ephemeral working context, not Mochi's product database. A longer live window must renew early under a new `session_epoch`: show amber and gate/discard input during the authenticated handoff, carry forward only committed context, then restore cyan `LIVE`. A failed renewal returns to private idle rather than silently listening or buffering speech. See the official [Realtime conversations guide](https://developers.openai.com/api/docs/guides/realtime-conversations).
+A simple voice feature can work like a batch job:
 
-## Why a gateway belongs between device and model
+```text
+record a whole file
+    -> upload it
+    -> transcribe it
+    -> generate a complete answer
+    -> synthesize another file
+    -> download and play it
+```
 
-A standard OpenAI API key is a powerful server secret. MCU flash and firmware images are physically obtainable, so the device instead authenticates to our gateway with a unique, revocable identity. The gateway holds the provider key and creates the server-to-server Realtime connection.
+This is easy to reason about but feels slow. The system cannot respond until several complete stages finish.
 
-The gateway also provides:
+A realtime system moves small chunks while later chunks are still being created:
 
-- device authorization, quotas, and abuse controls;
-- a stable versioned device protocol;
-- audio format/resampling/codec adaptation;
-- prompt, voice, model, and rollout configuration;
-- tool allowlists, argument validation, timeouts, and audit;
-- independent input-segment, response-generation, playback-cursor, interruption, and health metrics;
-- memory consent and retention enforcement;
-- opt-in conversation-history storage and companion-app sync under the same consent rules ([ADR 0007](../docs/decisions/0007_use_companion_app_and_cloud_history_sync.md)).
+```text
+microphone frames -> secure network stream -> model
+speaker frames    <- secure network stream <- model
+```
 
-It adds a hop, so deploy it near the model service and measure its processing/queue time. Keep it horizontally scalable where possible, but recognize that a live conversation has session state. A connection/session coordinator can route a reconnect or reconstruct only the minimum needed context.
+For a software engineer, batch audio resembles `await process(wholeFile)`. Realtime audio resembles two long-lived asynchronous iterators running at the same time. If either consumer stalls, a queue grows or data is lost.
 
-OpenAI documents WebSockets for server-to-server Realtime use and says standard API keys should be kept on a secure backend. Browser/mobile clients usually use WebRTC with short-lived client credentials; that pattern can be evaluated later but does not remove device policy/tool concerns.
+An audio **frame** is a short block of samples processed together. At 16 kHz, a 20 ms mono frame contains:
 
-## Model behavior versus device behavior
+```text
+16,000 samples/second × 0.020 seconds = 320 samples
+```
 
-The model owns language, voice, and constrained affect suggestions. The device owns truthful operational state. This separation prevents hallucinated UI: the model cannot claim a microphone is live, override the capture gate, conceal offline status, or fabricate battery/location state.
+Short frames reduce waiting time but create more scheduling and packet overhead. Long frames are efficient but add latency. There is no free setting.
 
-Prompts should describe the persona, verbosity, interruption style, and tool boundaries. Test them in the Realtime Playground before hardware. Keep prompts/model names server-configured and versioned. Evaluate with a repeatable conversation set, not only a charming demo.
+## 3. Half duplex and full duplex
 
-Tool calls are requests, never authority. For every tool:
+**Duplex** describes which directions may carry data at the same time.
 
-1. Define a narrow JSON schema and reject unknown fields.
-2. Bind permissions to user and device, not model prose.
-3. Make side effects idempotent or require confirmation.
-4. Set timeout, retry, and maximum result size.
-5. Return sanitized structured results.
-6. Audit the decision without storing unrelated conversation content.
+| Mode | Network analogy | Voice behavior |
+|---|---|---|
+| Simplex | One-way log shipping | Only one side ever sends |
+| Half duplex | A shared lock around send/receive | User and assistant take turns |
+| Full duplex | Independent request and response streams | Both may speak at the same time |
 
-## Four kinds of “memory”
+Mochi's conversation button opens one full-duplex session. It is not a push-to-talk button for each sentence. While Mochi plays audio, the microphone path remains active so the user can interrupt.
 
-The word hides different systems:
+That creates an acoustic feedback loop:
+
+```text
+assistant samples -> speaker -> air -> microphone -> input samples
+```
+
+Without treatment, Mochi may hear its own voice and interpret it as the user.
+
+## 4. AEC, VAD, turn detection, and barge-in
+
+These terms solve different problems:
+
+- **Acoustic echo cancellation (AEC)** estimates the portion of microphone input caused by the known speaker output and removes as much of it as possible. It needs a time-aligned copy of what was actually rendered to the speaker.
+- **Voice activity detection (VAD)** estimates whether an audio region contains speech. It can make mistakes with music, fans, or the device's remaining echo.
+- **Turn detection** decides when the user has probably finished an utterance. A pause inside a sentence must not always end the turn.
+- **Barge-in** is the whole behavior when new user speech interrupts assistant playback: detect speech, stop local playback, cancel the matching remote response, discard late chunks, and remove unheard output from the model's working context.
+
+AEC is not the same as noise suppression. Noise suppression targets unrelated background sound. AEC targets a signal the device itself produced.
+
+A useful software analogy is cancellation of a streamed job. Stopping the local UI spinner is insufficient. You must cancel the producer, reject late messages from the old generation, and decide which partial results were actually committed.
+
+## 5. The minimum streaming pipeline
+
+```text
+                                      +-------------------+
+microphone -> AEC -> VAD -> uplink -->| realtime service  |
+                 ^                    | and model         |
+                 |                    +-------------------+
+                 |                              |
+                 | rendered reference           | audio + text deltas
+                 |                              v
+speaker   <- playback queue <- decoder <- secure downlink
+caption   <- playback-paced text queue <--------+
+```
+
+A **rendered reference** is the speaker signal at the point it was truly played, not merely downloaded. A **playback cursor** counts how many samples have actually reached the output. Mochi uses that cursor to keep captions near heard speech and to know where interruption occurred.
+
+A **jitter buffer** is a small queue that smooths uneven network arrival times. It trades latency for resilience:
+
+- too small: the speaker starves and clicks;
+- too large: the reply feels delayed and interruption clears more queued audio.
+
+**Backpressure** is the policy for a slower consumer. A bounded audio queue must intentionally block, drop, cancel, or degrade. An unbounded queue merely converts a latency problem into a memory failure.
+
+## 6. Track identity, not only bytes
+
+Packets from an old answer may arrive after the user interrupts it. Therefore, chunks need identity such as:
+
+```text
+session_epoch = 12
+response_id   = "resp_47"
+sequence      = 103
+```
+
+`session_epoch` is a locally increasing generation for one live connection attempt. `response_id` identifies one assistant answer. `sequence` orders chunks within a stream.
+
+This is the same reason a frontend ignores the result of an obsolete search request. Audio makes the consequence audible: accepting an old chunk means the cancelled assistant starts talking again.
+
+## 7. Why Mochi uses a gateway
+
+The pager does not contain the standard OpenAI API key. Physical devices can be lost, opened, and have firmware copied. A secret shared by every device would eventually escape.
+
+Instead, the pager authenticates to a Mochi-controlled **gateway**, which is a backend service placed between devices and the model provider:
+
+```text
+pager --device credential--> Mochi gateway --provider key--> OpenAI
+```
+
+The gateway behaves like an API gateway plus a session coordinator. It can:
+
+- revoke one lost device without rotating every device;
+- enforce account and device permissions;
+- select prompts, models, voices, and rollout versions;
+- validate tool requests before side effects occur;
+- enforce usage limits and timeouts;
+- normalize provider events into a stable device protocol;
+- measure each latency and queue boundary;
+- apply memory and history consent.
+
+The extra hop has a cost, so its queue and processing time must be measured. It is still the right trust boundary: the model may propose an action, but only application code with authenticated policy may authorize it.
+
+## 8. Model state is not device truth
+
+The model can choose words and voice style. It may offer a constrained expression hint such as `curious` or `concerned`. It cannot determine whether the microphone circuit is powered, whether the network is connected, or whether the battery is actually low.
+
+Mochi therefore separates two categories:
+
+- **Operational truth:** power, capture gate, live indicator, connection, battery, and playback state. Local hardware and deterministic software own this.
+- **Generative suggestion:** language, tone, and allowlisted expression accents. The model may suggest these, but they cannot override operational truth.
+
+This is similar to keeping database authorization out of generated UI text. A sentence saying "you are an administrator" does not change the authorization record.
+
+## 9. Four different things called memory
+
+Treating all memory as one array leads to privacy and synchronization bugs.
+
+| Kind | Software analogy | Lifetime | Example |
+|---|---|---|---|
+| Working context | Request/session state | Current live session | The previous few exchanges |
+| User memory | Small preference table | Across sessions, with consent | Preferred name or units |
+| Conversation history | User-visible event log | Across sessions, opt-in | A readable transcript |
+| Device storage | Configuration and firmware | Until changed/reset | Wi-Fi credential or volume |
 
 ### Working context
 
-Recent conversation content needed to make the current exchange coherent. It is sent with or retained in the live Realtime session and has token/cost limits. Mochi treats it as session-scoped and reconstructs only committed context after renewal or reconnect; it is never the cross-session history authority.
+Working context helps the current conversation stay coherent. It is bounded because model context has cost and size limits. On reconnect, Mochi reconstructs only settled conversation items; it does not replay raw audio or half-completed tool actions.
 
 ### User memory
 
-Durable facts such as preferred name, units, or favorite briefing style. Store small structured facts or summaries only after opt-in. Associate each item with provenance, creation time, purpose, deletion state, and any source history-event IDs. Deleting the source history defaults to cascading a derived fact; preserving an individually confirmed fact requires an explicit keep choice. Turning future history saving off does not silently toggle the separate memory consent. Avoid treating model-generated summaries as unquestionable truth.
+User memory is a small set of structured facts. Each fact needs a source, purpose, creation time, and deletion behavior. A model-generated guess is not automatically a fact.
 
 ### Conversation history
 
-Readable transcripts of past sessions. This is neither working context, nor distilled user facts, nor device data — it is its own durable class with its own opt-in (default off). When future saving is enabled, it lives server-side behind the gateway, keyed per account, and the companion app reads it over authenticated HTTPS with inspect, export, forget, and disable controls. Turning future saving off prevents new durable transcript records; existing retained history remains viewable until the user separately deletes it.
-
-The gateway is the sole durable writer. It commits finalized machine transcripts and, for interrupted assistant speech, only the prefix known to have been heard (or an `interrupted` marker when alignment is uncertain). Tool history is a sanitized user-visible action/status, never an arbitrary provider payload. Each event has a stable idempotency ID and gateway-assigned `server_seq`; apps fetch changes after an opaque cursor. Deletes remove content and propagate content-free tombstones. The server retains those tombstones through the maximum valid cursor age, exposes `oldest_available_seq`, and rejects an older cursor so the client must authenticate and fully reconcile before showing restored data. This prevents a long-offline or restored cache from resurrecting a deletion without relying on device clocks or last-write-wins guesses.
-
-The app cache is encrypted per account with a device-bound, non-synchronizing database key held in iOS Keychain or Android Keystore-backed storage where supported; both cache and key are excluded from OS backup. A restored database without its key is discarded, and any restored/expired cursor reconciles from the server before content is shown. Account deletion revokes server access immediately, but no service can instantly erase bytes on a disconnected phone. An offline app may display an already authorized cache only until its signed, installation-bound authorization lease expires—at most 24 hours. Same-boot validation uses monotonic elapsed time and wall time; clock rollback or boot/time discontinuity without rollback-resistant platform time fails closed. The app then locks the cache until server contact and purges it when an authoritative deletion/revocation or revoked-credential response arrives. Product copy must disclose that reconnect/lease boundary rather than promise instantaneous remote erasure.
-
-Mochi-controlled storage and provider-side handling are separate promises. OpenAI states that API data is not used to train models unless the customer opts in, while default abuse-monitoring logs may retain content for up to 30 days; eligible customers can apply for Modified Abuse Monitoring or Zero Data Retention. Product privacy copy must describe the project's actual OpenAI data-control status and must not turn “Mochi stores no history” into a claim of zero provider retention. See OpenAI's [data-controls guide](https://developers.openai.com/api/docs/guides/your-data).
+History is a readable, durable record and needs its own default-off consent. Interrupted assistant output must store only the heard portion, or clearly mark uncertainty. The gateway is the authoritative writer; the phone holds an encrypted cache, not an independent history database.
 
 ### Device storage
 
-Firmware, expression assets, non-secret configuration, locally encrypted network credentials, update metadata, and a bounded content-free diagnostic ring. It is not the right place for a long transcript: the device can be lost, flash has finite endurance, and local data is harder to govern centrally. Durable history therefore lives behind the gateway and syncs to the app's encrypted, account-scoped cache — never over BLE, which carries only nearby provisioning/recovery and bounded diagnostics. BLE carries neither conversation audio nor transcript content, and general Bluetooth accessories are deferred beyond the MVP.
+The pager stores firmware, configuration, and local network credentials. It should not become the durable transcript authority: it can be lost, flash wears out, and central deletion is difficult while it is offline.
 
-Raw audio is especially sensitive and expensive. The baseline is to stream it for the live interaction and not retain it in our service — a rule the history opt-in does not change: consented history is committed transcript text, never raw audio by default. If debugging requires samples, use an explicit, time-bounded diagnostic consent flow and aggressive deletion.
+Retention by Mochi and processing by a model provider are separate facts. Provider policies and eligibility can change, so product copy must link the current provider terms and state Mochi's actual configuration rather than promise zero retention by inference.
 
-## Privacy as visible product behavior
+## 10. Privacy as a data-flow review
 
-Privacy is credible when users can perceive and control it:
+For every data type, answer five questions:
 
-- exactly two physical controls ([ADR 0008](../docs/decisions/0008_use_exactly_two_physical_controls.md)): the conversation button, and a latching power switch whose off position physically de-energizes the device — power-off is the hardware microphone kill, USB/debug/modem paths must not back-power it, and power-on never resumes capture without a fresh button press;
-- a capture-enable command net on the carrier that is biased inactive before GPIO configuration and through reset, boot, crash/watchdog, recovery, and OTA, and that gates the microphone path and drives the cyan light from the same command so firmware cannot assert them independently; electrical/component faults still require tests, and only verified hard power-off is hardware-certain;
-- no camera in MVP;
-- a deliberate conversation button that opens/closes a persistently indicated live session, with continuous uplink only during cyan `LIVE`;
-- no remote-listen command and no alternate button gesture: the app cannot start capture, and a full-duplex failure closes the session;
-- a clear difference between off, offline, and listening faces;
-- inspect/export/forget/disable controls for durable memory and for opt-in conversation history, exposed in the companion app;
-- location absent or disabled until a feature needs it;
-- no secrets, raw audio, or transcript content in routine logs;
-- per-device credentials that can be revoked after loss.
+1. Where is it created?
+2. Where is it sent?
+3. Where is it stored?
+4. Who can read or change it?
+5. What event deletes or invalidates it?
 
-Encryption in transit is necessary but incomplete. Minimize what exists, constrain who can access it, set deletion/retention rules, and test deletion. Keep telemetry useful by storing timestamps, frame counts, codec, network metrics, error codes, and latency rather than content.
+Example:
 
-## What to measure
+| Data | Created at | Sent to | Durable storage | Deletion boundary |
+|---|---|---|---|---|
+| Raw microphone audio | Pager | Gateway/provider during live use | None in Mochi baseline | Stream ends and buffers clear |
+| Wi-Fi password | Phone during setup | Nearby pager over protected Bluetooth Low Energy (BLE) | Encrypted pager storage | Network reset or ownership change |
+| Transcript history | Gateway after finalization | Opted-in app | Gateway + encrypted app cache | User deletion and replica reconciliation |
+| Capture state | Pager hardware/session logic | UI and metrics | Not a remotely writable setting | Physical/local Stop |
 
-For each input segment and response record local/server speech start/end, AEC reference delay and residual echo, gateway receive, provider response/first audio, device receipt, first and last rendered sample, caption first-render latency and caption/audio drift, cancellation/truncation acknowledgement, independent queue depths, bytes, route, and errors. For the product record false and missed barge-ins, stale-output count, forced-private-idle transitions, reconnect time, data per live minute, current, and thermal state. These measurements connect a subjective “it talks over me” or “it feels slow” report to an actionable subsystem.
+Encryption protects data in transit or at rest. It does not answer whether the data should exist, how long it remains, or who is authorized. Data minimization and deletion rules are separate controls.
 
-See [ADR 0003](../docs/decisions/0003_use_secure_realtime_gateway.md), [ADR 0006](../docs/decisions/0006_use_button_started_full_duplex_sessions.md), the [companion-app and synchronization architecture](../docs/design/0002_companion_app_and_sync_architecture.md), and the [product concept](../docs/design/0001_mochi_pager_product_concept.md).
+## 11. Trace one interruption
+
+Suppose Mochi is saying "The weather tomorrow will be..." and the user says "Actually, tell me about Friday."
+
+1. The speaker has rendered 0.8 seconds of the assistant response.
+2. AEC removes most of that known speaker signal from the microphone stream.
+3. Local VAD sees new speech in the cleaned signal.
+4. The pager stops the current response queue immediately.
+5. It freezes the caption at the heard boundary.
+6. The gateway cancels the matching `response_id`.
+7. Late packets with that ID are rejected.
+8. Only committed/heard context is retained.
+9. Capture continues, so the user's correction reaches turn detection without another button press.
+
+When debugging this flow, log timestamps and identifiers, not conversation content. Useful fields include frame counts, queue depth, response ID, route, error code, and rendered sample position.
+
+## Check your understanding
+
+1. Why can a system have VAD but still fail at barge-in?
+2. If a transcript arrives before its audio is played, which clock should the caption follow?
+3. Why is an interrupted response ID necessary even on an ordered transport?
+4. Which store should contain "use Celsius": working context, user memory, history, or device storage?
+5. Why does transport encryption not prove that a privacy design is complete?
+
+Answers: (1) barge-in also requires echo handling, local playback cancellation, upstream cancellation, and late-chunk rejection; (2) the rendered-audio/playback cursor; (3) cancellation creates a semantic generation boundary even if bytes are ordered; (4) structured user memory after consent; (5) it does not define collection, authorization, retention, or deletion.
+
+## Where Mochi's exact decisions live
+
+This primer explains concepts. Exact product rules and acceptance thresholds live in [ADR 0003](../docs/decisions/0003_use_secure_realtime_gateway.md), [ADR 0006](../docs/decisions/0006_use_button_started_full_duplex_sessions.md), the [companion-app architecture](../docs/design/0002_companion_app_and_sync_architecture.md), and the [MVP requirements](../docs/requirements/0001_mvp_requirements.md). Consult the current [OpenAI Realtime guide](https://developers.openai.com/api/docs/guides/realtime-conversations) and [OpenAI data controls](https://developers.openai.com/api/docs/guides/your-data) before freezing provider-specific behavior.

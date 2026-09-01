@@ -16,7 +16,7 @@ The current phase is V1 interaction implementation plus EVT (engineering validat
 - [Independent verification and corrections](docs/research/0003_independent_verification_and_corrections.md)
 - [35-project-day build plan plus companion-app track](scrum/20260830/task_0001/daily_plan.md)
 - [Technical decision log](docs/decisions/README.md)
-- [Educational notes](edu/README.md)
+- [Beginner IoT and electrical-engineering course](edu/README.md)
 
 ## Current verdict
 
@@ -47,7 +47,7 @@ docs/
   design/          product and industrial-design specifications
   requirements/    measurable product requirements
   research/        source audits, comparisons, and BOMs
-edu/               short concept primers, each capped near three pages
+edu/               progressive IoT and electrical-engineering course for software engineers
 prompt/            version-controlled server-side Realtime instruction templates
 scrum/
   YYYYMMDD/

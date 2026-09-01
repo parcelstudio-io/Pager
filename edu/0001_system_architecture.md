@@ -1,96 +1,350 @@
 # 0001 — System architecture: from a button press to a live conversation
 
-Hardware architecture is easiest to understand as a set of failure and timing boundaries. A companion that “talks to ChatGPT” is not one program. It is a local real-time appliance, two unreliable networks, a security boundary, a probabilistic model, and several services cooperating while the user expects one character.
+## Prerequisite
 
-## The five planes
+Read [0000 — Start here: IoT and electrical fundamentals](0000_start_here_iot_and_electrical_fundamentals.md) first. It introduces voltage, current, power, energy, digital signals, firmware, networks, and the basic shape of an Internet of Things (IoT) system.
 
-### 1. Interaction plane
+This lesson assumes you can build a web service, but not that you have written firmware or designed electronics.
 
-The device owns anything that must feel immediate: toggling the live session from the conversation button, drawing the face and its sliding caption, stopping playback on barge-in, and showing offline state. These actions cannot wait for a round trip. In software terms, treat this as a local state machine with hard latency expectations, not a view that passively renders cloud state.
+## Learning goals
 
-For Mochi, one button edge moves the session from `INACTIVE` through `CONNECTING` (input `GATED`) to `LIVE`; the next closes it. Inside `LIVE`, input can be `QUIET` or `USER_SPEAKING` while output independently can be `IDLE`, `GENERATING`, or `PLAYING`. `USER_SPEAKING + PLAYING` is valid while barge-in propagates. The product exposes exactly two physical controls ([ADR 0008](../docs/decisions/0008_use_exactly_two_physical_controls.md)): the conversation button and a latching power switch whose off position physically de-energizes the system — the hardware privacy authority. A normal power-on returns to private idle and never resumes capture without a fresh button press; an unclaimed first boot or the deliberate recovery boot chord may instead enter capture-gated setup. The assistant may suggest “delighted,” but it cannot override capture, safety, or connectivity truth.
+By the end, you should be able to:
 
-The carrier's capture-enable command is biased inactive before firmware configures a GPIO and stays inactive through reset, boot, crash/watchdog, recovery, and OTA. Firmware may assert the coupled gate/indicator command only after authenticated live-session readiness, then waits the measured electrical/codec settling interval before sending the first microphone frame. This is a fail-low path: loss of control drives capture closed, while the latching power switch remains the stronger hardware-certain kill.
+- draw Mochi as a set of physical and software components;
+- decide which behavior belongs on the device and which belongs in the cloud;
+- describe a conversation with states and events;
+- explain why listening and speaking are independent, concurrent activities—a pattern called full duplex;
+- trace audio, control messages, credentials, history, and electrical power separately;
+- turn a vague requirement such as “it should feel fast” into a latency budget; and
+- predict safe behavior when one component fails.
 
-### 2. Media plane
+## Start with one user action
 
-Microphone samples arrive at a fixed clock while returned audio is decoded and played against a synchronized render clock. The paths run concurrently. Before uplink, the microphone path uses a documented render reference and calibrated delay—post-amplifier analog feedback, rendered digital PCM, or both—then applies noise/gain processing, buffering, and any resampling/compression. If network code blocks either media task, the result is not a slow page—it is lost speech, a click, a gap, or a buffer overflow.
+Imagine the user presses Mochi's conversation button and says, “What should I cook tonight?” Several different systems participate:
 
-This suggests separate tasks and bounded queues:
+1. A physical switch changes an electrical signal.
+2. Firmware on the device notices that signal and changes local state.
+3. The device establishes an encrypted network session with Mochi's gateway, the server-side mediator between the pager and outside services.
+4. The gateway authenticates the device—verifies its claimed identity—and connects to OpenAI Realtime, the provider's live audio conversation service.
+5. A microphone continuously converts sound into digital samples.
+6. Those samples travel to the model while returned speech travels in the other direction.
+7. The device plays the reply, moves the eyes, and scrolls the caption.
+8. If the user interrupts, the device must stop the old reply while continuing to capture the correction.
+
+To the user, this is one conversation. Architecturally, it is concurrent work across electronics, firmware, networks, backend services, and an artificial-intelligence provider.
+
+**System architecture** is the map of those components, their responsibilities, and their boundaries. It is comparable to a service diagram for a distributed application, except some components are constrained by batteries, clocks, wires, radios, and physical safety.
+
+## The first useful system map
+
+The arrows below are data paths unless marked as power:
 
 ```text
-microphone -> AEC/NS -> capture queue -> encoder/uplink
-                   ^
-                   | synchronized render reference + playback cursor
-network -> response-scoped jitter queue -> decoder/limiter -> speaker
+                         Internet
+                  encrypted audio + events
+                 ┌──────────────────────────┐
+                 │                          v
+person       ┌──────────┐              ┌───────────┐        ┌─────────────────┐
+voice ─────> │          │              │ Mochi     │ <────> │ OpenAI Realtime │
+button ─────>│  pager   │ <==========> │ gateway   │        │ live session    │
+eyes/speaker │          │              └─────┬─────┘        └─────────────────┘
+<────────────│          │                    │
+             └────┬─────┘                    │ durable configuration/history
+                  ^                          v
+                  │ short-range setup   ┌───────────┐
+                  └ - - - - - - - - -  │ companion │
+                    Bluetooth only      │ app/cloud │
+                                       └───────────┘
+
+battery ── electrical power ──> pager electronics
 ```
 
-Queues absorb short scheduling differences but create latency when oversized. Record fill level, underflow, overflow, and timestamps. “Add buffering” is a trade, not a universal fix.
+`<====>` represents a long-lived, two-way network connection. The dotted Bluetooth path is for nearby setup, not for live conversation audio.
 
-### 3. Control plane
+This diagram is deliberately incomplete. Its job is to answer “what talks to what?” before we discuss implementation details.
 
-Small versioned events describe session open/close, capture truth, VAD, response generation, playback progress, transcript deltas for the live caption, interruption/truncation, expression accents, configuration, errors, and health. Keep these distinct from audio frames. A versioned device protocol lets the backend adapt to provider events without reflashing all hardware.
+## Boundaries are more important than boxes
 
-An event should contain a type, schema version, `conversation_id`, `session_epoch`, the relevant `input_segment_id` or `response_id`, an independent stream sequence, and a device timestamp. Playback acknowledgements use samples actually rendered, not bytes received or queued. This resembles distributed-service tracing because that is exactly what it is.
+A **boundary** is a place where assumptions change. In software, crossing from one process to another changes latency and failure behavior. Hardware adds more kinds of boundaries.
 
-### 4. Connectivity plane
+### Execution boundary: device versus network
 
-The network manager knows Wi-Fi and, later, cellular. It chooses a route, detects real reachability rather than mere link association, reconnects with bounded backoff, and reports state to the face. It should not know OpenAI's event schema. Separation lets us test network failure by swapping a fake transport under the media/control layers. This plane also owns first-run provisioning: before any IP route exists, the companion app delivers Wi-Fi and cellular credentials through Espressif protocomm Security 2 over BLE ([ADR 0007](../docs/decisions/0007_use_companion_app_and_cloud_history_sync.md)). Security 0/1 are rejected. Custom Wi-Fi/APN values and cellular authentication secrets stay in the pager's encrypted credential store and never enter Mochi's cloud or the app's persistent storage; public signed carrier-preset metadata may ship with the product or synchronize from the service.
+The pager must own behavior that has to remain immediate or truthful when the network is slow:
 
-Setup is an explicit capture-gated state, not a third shipping control. A factory-fresh pager enters it automatically. On a claimed pager, the app entry works only while the pager is online and private-idle: a signed-in app sends an authenticated gateway request, and the gateway authorizes the pager to advertise for a bounded window. Offline network repair instead starts from the touchscreen while private-idle or by holding the conversation button while sliding power on for eight seconds. That boot-only chord plus the current binding's recovery proof can repair local networks, but cannot transfer an owned cloud binding or reveal prior history; factory-package proof works only for first unclaimed setup and is disabled after initial claim. Account-loss transfer is a separate server-authorized recovery requiring account verification and a factory-key-signed physical-proof challenge. After release or an authorized generation change, the pager closes capture and purges every prior-binding credential, recovery verifier, config cache, caption, media queue, working-context item, volatile transcript, Wi-Fi password, and custom cellular/APN/authentication profile before setup. Only immutable factory identity remains, and the next binding receives a newly rotated recovery proof. BLE then shuts down after provisioning and never carries live audio or conversation history.
+- reading the conversation button;
+- opening and closing the physical microphone capture path;
+- rendering the face and caption;
+- stopping local playback when the user interrupts; and
+- showing that the connection is unavailable.
 
-Wi-Fi preferred plus LTE failover sounds simple but changes IP addresses, NAT mappings, RTT, jitter, and cost. Re-establishing the secure device and provider sessions is an explicit transition: show amber reconnecting, close microphone uplink, discard raw/uncommitted input and queued output, select a route with hysteresis when needed, perform DNS/TLS/authentication again, and reconstruct only committed context. Any recoverable route, gateway, or provider transport/session failure that enters `reconnecting` starts one non-extendable 10-second capture-reopen timer (NW-02c) — deliberately tighter than the 15-second NW-02a transport-restore bound, because listening again is a privacy event held to a stricter deadline than reconnecting is. Reopen capture and restore cyan `LIVE` only if authentication and provider readiness finish before its deadline. At expiry, clear live intent, turn off, and require a fresh press even if connectivity later returns. Never buffer speech across the outage or automatically replay speech or a possibly side-effecting tool action.
+The gateway owns work that requires Internet connectivity or a protected server environment:
 
-### 5. Service plane
+- keeping the OpenAI credential off the pager;
+- authenticating devices and accounts;
+- translating provider events into Mochi's stable protocol;
+- validating tool requests; and
+- synchronizing opted-in history and configuration.
 
-Our gateway authenticates the pager, owns the OpenAI API credential, rate-limits use, translates audio and events, forwards transcript deltas for the caption, constrains tools, and records timing. It also serves the companion app as a second authenticated client: account binding, non-secret versioned configuration, and opt-in conversation history all flow through it — the device never talks to the app's history store directly. Both app and pager configuration mutations carry an idempotency ID, binding generation, and base revision; the gateway orders accepted revisions. It orders durable history with a server sequence and cursor, deduplicates source retries before assigning event IDs, and distributes content-free deletion tombstones. Tombstones live through the maximum valid cursor age; a cursor older than the gateway's `oldest_available_seq` must perform an authenticated full reconciliation. The app is an authenticated encrypted cache; the pager is authoritative only for physical capture/playback state. OpenAI Realtime provides the ephemeral live speech-to-speech session, not Mochi's durable history database. Separate tool and memory services handle only allowed side effects and opted-in facts.
+This resembles choosing between browser code and backend code. The analogy stops at the physical boundary: a browser cannot usually energize a microphone rail or continue emitting sound after its process crashes, but embedded hardware can do both unless the circuit and firmware are designed to fail safely.
 
-Never give the model arbitrary network or database access. Tool calls are untrusted proposals: validate the name, schema, authorization, idempotency, timeout, and result size before execution.
+### Trust boundary: model output is a proposal
 
-## Walking a live session
+The model may generate speech, an expression hint, or a request to use a tool. It is not allowed to decide whether the microphone is electrically enabled, whether the network is healthy, or whether a purchase should occur.
 
-1. A conversation-button edge is debounced. The local face shows opening within 100 ms; capture begins only after the session becomes visibly `LIVE`.
-2. The audio task continuously sends AEC-cleaned microphone frames through a bounded queue while the live session is active.
-3. The device sends authenticated control and input media to our gateway over TLS WebSocket. Provider semantic VAD emits speech-start/stop events and creates responses.
-4. The model emits audio and perhaps tool calls. The gateway validates calls and tags every audio chunk with its response generation before streaming it back.
-5. The device fills a small response-scoped jitter buffer, begins playback, feeds a synchronized render reference to AEC (the CoreS3 uses its MIC3 speaker-feedback lane), counts rendered samples, drives mouth/cheek animation from local amplitude, and slides the caption below the face from gateway-forwarded transcript deltas, paced against the playback cursor. Capture continues.
-6. If post-AEC local VAD detects the user during playback, the device immediately stops that generation, snapshots the render cursor, trims the displayed caption to the words actually heard (the provider truncates its context but does not send a truncated transcript back), and reports an interruption. The gateway cancels generation, rejects late chunks, and truncates the unheard suffix from provider context.
-7. Capture continues through the user's correction; no button press begins a new utterance. A second conversation-button press instead ends the entire session: capture closes first, playback clears, active work cancels, and the live indicator turns off.
+The gateway validates a proposed tool's name, input shape, user authorization, idempotency identifier, timeout, and result size. **Idempotency** means that retrying the same request does not repeat a side effect. This is the same rule used around payment or job-processing APIs: generated output is untrusted input until deterministic code accepts it.
 
-## Latency as a budget
+### Persistence boundary: live context versus durable history
 
-Measure the phases rather than one vague number:
+A live model session is **ephemeral**: it exists for the current connection and then disappears. Conversation history is **durable** only if Mochi deliberately stores it in its own service with user consent.
+
+The pager may hold a small working context in memory during a session. The gateway and companion app handle opted-in durable records. Bluetooth setup does not become a hidden history channel. Keeping these roles separate makes deletion, account transfer, and offline behavior understandable.
+
+### Electrical privacy boundary: software “mute” versus no capture
+
+A user-visible “not listening” state must mean more than “the application promises not to upload samples.” A **capture gate** is an electronic switch that permits or blocks the microphone signal or power path. Mochi uses a hardware capture-enable command that defaults inactive before firmware starts. Reset, a crash, recovery, or a failed update must leave it inactive. The same command controls the visible listening indicator so the indicator and capture path cannot intentionally disagree.
+
+The latching power switch is stronger still: **latching** means the switch mechanically remains in its chosen position. Its off position physically removes system power, including microphone power. This is a circuit property, not a user-interface animation.
+
+> **Mochi product decision:** The shipping device has exactly two physical controls: one conversation start/stop button and one latching power switch. Power-on returns to private idle. It does not resume listening automatically. See [architecture decision record (ADR) 0008](../docs/decisions/0008_use_exactly_two_physical_controls.md).
+
+## Model behavior as a state machine
+
+A **state machine** describes a component using:
+
+- a finite set of states;
+- events that arrive while it is in a state;
+- transitions caused by those events; and
+- actions performed during a transition.
+
+This is familiar from reducers, workflow engines, or a connection protocol. The important embedded difference is that some transition actions change physical outputs.
+
+Mochi's top-level conversation state can begin simply. Writing each event next to its own transition avoids hiding which event causes which move:
 
 ```text
-speech-end-to-reply = endpoint-detection delay
-                    + device/gateway handling
-                    + model first-audio time
-                    + downlink
-                    + playback buffer
+PRIVATE_IDLE
+  └── button press ───────────────────────> CONNECTING
 
-speech-onset-to-stop = local post-AEC VAD
+CONNECTING
+  ├── session ready before deadline ──────> LIVE
+  └── failure or timeout ─────────────────> PRIVATE_IDLE
+
+LIVE
+  └── button press or unsafe failure ─────> PRIVATE_IDLE
+
+POWER_OFF
+  └── physical switch on ──> boot ────────> PRIVATE_IDLE
+
+any powered state
+  └── physical switch off ────────────────> POWER_OFF
+```
+
+While `CONNECTING`, the face may immediately show that work started, but microphone capture remains closed. Capture opens only after device authentication and the live provider session are ready. The measured electrical and audio settling time then passes before the first microphone frame is sent.
+
+Why not represent everything with one large enum such as `USER_TALKING` or `MOCHI_TALKING`? Because full-duplex conversation permits both at once. Inside `LIVE`, use independent state dimensions:
+
+| Dimension | Possible states | Question answered |
+|---|---|---|
+| Input | `QUIET`, `USER_SPEAKING` | What is arriving from the microphone? |
+| Output | `IDLE`, `GENERATING`, `PLAYING` | What is Mochi producing or playing? |
+| Connection | `READY`, `RECONNECTING` | Can media safely reach the current session? |
+
+`USER_SPEAKING + PLAYING` is valid for a short time when the user interrupts. Treating it as impossible creates bugs in interruption handling.
+
+### Decide who owns each truth
+
+Distributed systems become unreliable when two components believe they are authoritative for the same state. For Mochi:
+
+| Truth | Authority |
+|---|---|
+| Physical power is on | Latching power circuit |
+| Microphone capture is enabled | Device gate and local firmware |
+| Samples have actually reached the speaker | Device playback cursor |
+| Device/account is authenticated | Gateway |
+| Model response exists | OpenAI live session, mediated by gateway |
+| Durable history order | Mochi history service |
+| Suggested emotional accent | Model or local mood system, below safety/activity state |
+
+A **playback cursor** is a counter of samples actually rendered by the speaker path. Bytes downloaded or queued are not proof that the user heard them.
+
+## Full duplex means two pipelines run at once
+
+**Full duplex** means Mochi can capture input and play output simultaneously. It is like a video call, not like sending alternating voice messages.
+
+Firmware usually expresses concurrent work as **tasks**: independently scheduled loops with narrow responsibilities. They are similar to operating-system threads or asynchronous workers, but they run with tighter memory and timing limits.
+
+The audio paths look like this:
+
+```text
+CAPTURE
+air -> microphone -> digital samples -> echo/noise processing
+     -> bounded capture queue -> network upload
+
+PLAYBACK
+network download -> response-specific jitter queue -> decoder
+     -> volume limiter -> speaker samples -> speaker -> air
+                               |
+                               └──> synchronized echo reference
+```
+
+A **queue** lets a producer and consumer run at slightly different moments. A **bounded queue** has a fixed maximum size. The bound matters because an unbounded queue can consume all memory or make a reply seconds late.
+
+A **jitter queue** absorbs small variations in network arrival time. More queued audio reduces gaps but increases delay. “Add buffering” is therefore a trade-off, not a universal fix.
+
+The **decoder** turns the received audio representation back into speaker samples. The **limiter** caps their maximum level. The synchronized echo reference is a time-aligned copy of those playback samples used to recognize Mochi's own sound in the microphone.
+
+Media should not share one blocking loop with caption, configuration, or network-control work. If a configuration request stalls the microphone task, the result is not merely a slow API response; samples are permanently lost.
+
+## Audio frames and control events are different data
+
+An **audio frame** is a short block of samples. It is high-volume, ordered, and time-sensitive. A **control event** is a small structured message such as:
+
+- session opened or closed;
+- user speech started or stopped;
+- response generation began;
+- caption text arrived;
+- response was interrupted at a playback position; or
+- network health changed.
+
+Separating media and control is similar to separating a video stream from its player commands. They can share one secure connection, but they need different queueing and retry rules. Retrying a configuration update may be safe; replaying old microphone audio after an outage is not.
+
+Useful event fields include:
+
+- `conversation_id`: which conversation owns the event;
+- `session_epoch`: which connection attempt within that conversation;
+- `input_segment_id`: which user utterance;
+- `response_id`: which assistant response;
+- `sequence`: ordering within one stream; and
+- `device_timestamp`: when the device observed it.
+
+These identifiers play the same role as trace identifiers and sequence numbers in backend services. They let us reject a late audio chunk from a canceled response rather than accidentally play it during the next response.
+
+## Walk through one live conversation
+
+Now we can expand the original button press without hiding the important boundaries:
+
+1. The device **debounces** the button, meaning it turns several rapid electrical transitions from one physical press into one software event.
+2. Firmware enters `CONNECTING` and updates the face locally. The capture gate remains inactive.
+3. The device authenticates to Mochi's gateway over an encrypted connection. The gateway establishes the OpenAI live session.
+4. When both sessions are ready, firmware enables the coupled capture-and-indicator signal. After the hardware settles, microphone frames begin flowing.
+5. OpenAI detects speech boundaries and returns generated audio. The gateway tags each response and streams it to the pager.
+6. The device buffers a small amount, plays the audio, advances the playback cursor, and scrolls transcript text as a caption. It also gives a copy of the played samples to acoustic echo cancellation, processing that removes Mochi's own speaker sound from its microphone input.
+7. If local post-cancellation voice detection sees the user during playback, the device stops the current response immediately. It records the heard playback position and removes unheard caption text. The gateway cancels the generation and rejects late chunks.
+8. Capture remains active for the correction. The user does not press again between utterances.
+9. The next conversation-button press closes capture first, cancels active work, clears queued output, and returns to `PRIVATE_IDLE`.
+
+As introduced above, the **gateway** is Mochi's Internet-facing backend. It protects service credentials, authenticates clients, applies product policy, and adapts provider-specific messages. The pager talks to the gateway instead of embedding a valuable provider credential in firmware.
+
+## Latency is a sum, not one mystery number
+
+**Latency** is elapsed time between a cause and a visible or audible effect. Different interactions have different latency budgets.
+
+The button should feel immediate because the face update is local. A spoken reply must cross several boundaries:
+
+```text
+speech-end-to-reply = speech-end detection
+                    + device and gateway handling
+                    + model first-audio generation
+                    + downlink travel
+                    + playback buffering
+```
+
+**Downlink** means network data traveling toward the pager; **uplink** means data traveling from the pager toward the service.
+
+Interruption has another budget:
+
+```text
+speech-onset-to-stop = local voice detection after echo cancellation
                      + audio-task scheduling
-                     + jitter/DMA clear
+                     + queued Direct Memory Access (DMA) playback clear
 ```
 
-Place clocks at every boundary and correlate with `conversation_id`, `session_epoch`, `input_segment_id`, and `response_id`. MCU clocks and server clocks differ, so use durations measured on one clock where possible; estimate cross-system segments with synchronized clocks and record uncertainty. Optimize the largest stable contributor first.
+Do not measure only “request duration.” Timestamp each phase and attach the identifiers from the previous section. Device and server clocks are not automatically identical, so prefer durations whose start and end use the same clock. If clocks are synchronized, record the expected synchronization error as part of the measurement.
 
-## Failure design
+> **Mochi product decision:** The local face acknowledges a conversation-button press within 100 milliseconds. During a recoverable live connection failure, capture closes immediately. A single non-extendable 10-second deadline allows authenticated reconnection; after that, live intent is cleared and another press is required. These are requirements to verify, not universal IoT constants.
 
-A good architecture defines degraded behavior before happy-path polish:
+## Connectivity and setup are separate from conversation
 
-- A recoverable network, gateway, or provider transport/session disappears during a live session: immediately close the uplink gate, discard rather than buffer raw input, clear stale output, and show amber reconnecting. Start the non-extendable 10-second capture-reopen timer (NW-02c); reopen capture only after authentication and provider readiness before its deadline. Expiry clears intent to off/private, and later recovery requires a fresh press.
-- AEC confidence or resource headroom collapses: close the full-duplex session and return to private idle; never change the conversation button's start/stop meaning or keep a misleading live indicator. Developer bench firmware may compare a fixture-gated capture path with full duplex to isolate AEC faults, but that fixture behavior is not a product mode or acceptance fallback.
-- Provider stalls: cancel on timeout and restore a usable idle state.
-- Gateway rejects credentials: do not retry aggressively; enter a provisioning/service state.
-- Speaker buffer starves: log it, recover the decoder, and keep controls responsive.
-- Memory/tool service fails: conversation should continue without it.
-- Firmware update fails: boot the last known-good image.
+**Bluetooth Low Energy (BLE)** is a short-range radio protocol designed for low-power devices. **Wi-Fi** provides the pager's normal Internet route. A future **Long-Term Evolution (LTE)** modem could provide fourth-generation cellular fallback.
 
-The face is part of reliability. An honest offline expression is better than frozen smiling eyes.
+On first setup, the phone sends Wi-Fi credentials to the nearby pager using Espressif's authenticated `protocomm Security 2` setup protocol over BLE. The pager stores private network credentials in its protected local credential store. The app does not persist custom Wi-Fi passwords or cellular authentication secrets, and Mochi's cloud does not need them.
 
-## Applying it to this project
+After setup, BLE shuts down. Live audio and history use their authenticated Internet services instead. This reduces the number of protocols that can access sensitive content.
 
-The interaction mule validates planes 1–3 over Wi-Fi. A desktop client validates planes 3 and 5 before embedded hardware. The companion-app slice (Security 2 BLE provisioning, claiming/recovery, configuration revisions, and cursor-based history sync) validates the app half of planes 4 and 5 against the same gateway. The cellular mule validates plane 4 plus power. The custom carrier validates the product's physical integration. Keeping these tests separate makes failures diagnosable and preserves evidence for each purchase gate.
+Changing from Wi-Fi to cellular is not like changing a local variable. The old network connection is no longer valid. The device must close capture, discard uncommitted input and stale output, choose a route, perform name resolution—turning a service name into a network address—set up encryption, and authenticate again. It then reconstructs only committed context. It must never record speech during the gap for later automatic upload.
 
-See [ADR 0003](../docs/decisions/0003_use_secure_realtime_gateway.md), [ADR 0006](../docs/decisions/0006_use_button_started_full_duplex_sessions.md), the [companion-app and synchronization architecture](../docs/design/0002_companion_app_and_sync_architecture.md), and the [MVP requirements](../docs/requirements/0001_mvp_requirements.md).
+> **Mochi product decision:** A factory-fresh pager may advertise setup automatically while capture remains closed. An already-owned pager requires an authorized, time-limited setup window or the documented boot-time **recovery chord**, a physical button-and-power gesture recognized only during startup. BLE setup cannot transfer ownership or reveal old history. See [ADR 0007](../docs/decisions/0007_use_companion_app_and_cloud_history_sync.md).
+
+## Durable synchronization is its own distributed system
+
+The companion app and pager are two clients of Mochi's gateway. The gateway gives accepted configuration changes a revision number and durable history events a server sequence. A client asks for events after its last **cursor**, which is a token marking its synchronization position.
+
+Retries can deliver the same source event more than once, so the service deduplicates it before assigning a durable identifier. Deletion is synchronized with a content-free **tombstone**: a record saying an item was deleted without retaining its deleted content. A client whose cursor is too old performs a complete authenticated reconciliation: it downloads and compares the current authorized state instead of trusting an incomplete event range.
+
+This is intentionally more like database replication than Bluetooth file copying. The pager remains authoritative for physical capture and playback; the cloud remains authoritative for durable record ordering.
+
+## Failure behavior is part of the architecture
+
+For each component, ask: “If this stops responding now, what state is still truthful?”
+
+| Failure | Safe, understandable behavior |
+|---|---|
+| Network or live session disappears | Close capture, discard uncommitted input and stale output, show reconnecting, then require a new press if the deadline expires |
+| Echo cancellation becomes unreliable | End the live session and return to private idle rather than pretending full duplex still works |
+| Provider stalls | Cancel on timeout and restore a usable local state |
+| Authentication is rejected | Stop aggressive retries and enter a service/setup state |
+| Speaker queue runs dry | Record the underflow, recover playback, and keep buttons responsive |
+| History or tool service fails | Continue the conversation without that optional capability |
+| Firmware update fails | Boot a previously verified image with capture inactive |
+
+The face is an operational signal. Honest offline or reconnecting eyes are better than a cheerful frozen face.
+
+## Names used in the design documents
+
+Other Mochi documents group the responsibilities above into five **planes**. A plane is a conceptual category, not necessarily a process, task, server, or circuit:
+
+| Plane | Responsibilities already introduced |
+|---|---|
+| Interaction | Button semantics, face, caption, local user-visible state |
+| Media | Timed microphone and speaker frames, buffers, playback cursor |
+| Control | Versioned session, speech, caption, interruption, and health events |
+| Connectivity | BLE setup, Wi-Fi/cellular routes, reconnect behavior |
+| Service | Gateway authentication, provider adapter, tools, configuration, durable history |
+
+Starting with the end-to-end flow makes these names useful labels instead of abstract boxes.
+
+## Applying this architecture to the prototype
+
+Do not test every unknown at once. Here a **mule** is an intentionally rough prototype that isolates one risky subsystem, and a **carrier board** is a custom circuit board that mechanically and electrically connects prebuilt modules:
+
+- The interaction mule tests the button, eyes, caption, capture truth, and full-duplex audio over Wi-Fi.
+- A desktop client tests gateway events and OpenAI integration before constrained embedded hardware is involved.
+- The companion-app slice tests secure BLE setup, account binding, configuration revisions, and cursor-based history synchronization.
+- The cellular mule later tests route changes, antenna behavior, peak power, latency, and data use.
+- A custom carrier board tests the final power, connector, acoustic, and mechanical integration.
+
+This is the hardware equivalent of testing a database adapter, application programming interface (API), and user interface independently before one large integration test.
+
+## Self-check
+
+Try to answer these before opening the answers:
+
+1. Why must the face react to the conversation button before the cloud responds?
+2. Why are `USER_SPEAKING` and `PLAYING` not mutually exclusive?
+3. Which component is authoritative for how much assistant audio the user actually heard?
+4. Why should old microphone frames be discarded rather than retried after reconnection?
+5. What is the difference between a live model session and durable Mochi history?
+6. Why can the model suggest an eye expression but not enable microphone capture?
+
+<details>
+<summary>Answers</summary>
+
+1. Local feedback stays responsive even when the network is slow or unavailable, and it truthfully reports the device's own transition.
+2. Full duplex allows the user to interrupt while assistant audio is still playing.
+3. The device's playback cursor, because it counts samples rendered rather than downloaded.
+4. Retrying stale speech can violate privacy, confuse ordering, and cause the model to act on words spoken during an outage.
+5. The live session is temporary provider state; durable history is an explicit, consented Mochi service record.
+6. Capture is a privacy and hardware state governed by deterministic local policy; model output is untrusted input.
+
+</details>
+
+Continue with [0002 — Modules, pins, buses, and real-time audio](0002_modules_buses_and_audio.md). For the formal product decisions, see [ADR 0003](../docs/decisions/0003_use_secure_realtime_gateway.md), [ADR 0006](../docs/decisions/0006_use_button_started_full_duplex_sessions.md), the [companion-app and synchronization architecture](../docs/design/0002_companion_app_and_sync_architecture.md), and the [minimum viable product (MVP) requirements](../docs/requirements/0001_mvp_requirements.md).
